@@ -14,9 +14,19 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy, rustfmt
-      - name: Install G3RS
-        run: cargo install --git https://github.com/websmasher/guardrail3 guardrail3-rs --bin g3rs
-      - name: Verify
-        run: scripts/verify-all.sh
+      - name: Verify manifest layers
+        run: |
+          python3 scripts/verify-manifest.py tree
+          python3 scripts/verify-manifest.py forbidden
+          python3 scripts/verify-manifest.py config
+          python3 scripts/verify-manifest.py modules
+          python3 scripts/verify-manifest.py cli
+      - name: Verify Rust
+        run: |
+          cargo fmt --check
+          cargo check
+          cargo clippy --workspace --all-targets --all-features -- -D warnings
+      - name: Verify goldencheck self suite
+        run: cargo run -p goldencheck-cli -- check --suite self --manifest goldencheck.yaml
       - name: Stub package dry run
         run: cargo publish -p goldencheck --dry-run
