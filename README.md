@@ -4,9 +4,40 @@
 
 It is independent of any one project. A project gives `goldencheck` a manifest that says which fixtures to run, which command to execute, how to normalize output, and where approved and received files live.
 
+Use it when behavior is easiest to verify by comparing current command output against reviewed output stored in git. Typical uses are CLI output, parser output, generated JSON, diagnostics, migrations, rule engines, and API examples.
+
+The full agent-oriented usage guide is built into the binary:
+
+```bash
+goldencheck --help
+```
+
+That help text explains the manifest schema, `{fixtures}` substitution, file layout, workflow, `--change`, and exit codes without requiring an agent to traverse subcommand help.
+
 ## Install
 
-Use `cargo binstall`:
+### GitHub Release
+
+Download the prebuilt binary for your platform from the GitHub release:
+
+```bash
+curl -L -o goldencheck-aarch64-apple-darwin.tar.gz \
+  https://github.com/websmasher/goldencheck/releases/download/v0.1.4/goldencheck-aarch64-apple-darwin.tar.gz
+tar xzf goldencheck-aarch64-apple-darwin.tar.gz
+install -m 0755 goldencheck ~/.cargo/bin/goldencheck
+goldencheck --version
+```
+
+Available release targets:
+
+- `aarch64-apple-darwin`
+- `x86_64-apple-darwin`
+- `aarch64-unknown-linux-gnu`
+- `x86_64-unknown-linux-gnu`
+
+### Cargo Binstall
+
+Once the matching crates.io install stub is published, install with:
 
 ```bash
 cargo install cargo-binstall
@@ -55,11 +86,18 @@ The normalizer is optional. When present, `goldencheck` writes the command stdou
 
 ## Commands
 
-Run a suite:
+Run one suite:
 
 ```bash
 goldencheck check --suite lint-rules
 goldencheck check --suite lint-rules --manifest goldencheck.yaml
+```
+
+Run every suite:
+
+```bash
+goldencheck check --all
+goldencheck check --all --manifest goldencheck.yaml
 ```
 
 Exit codes:
@@ -67,6 +105,8 @@ Exit codes:
 - `0`: received output matches approved output
 - `1`: received output differs from approved output
 - `2`: tool, config, command, or runtime error
+
+For `check --all`, exit `2` wins over exit `1`. That means one errored suite returns `2` even if another suite only differs.
 
 Show the latest diff without rerunning the suite:
 
@@ -97,6 +137,7 @@ Show suite state:
 ```bash
 goldencheck status
 goldencheck status --suite lint-rules
+goldencheck status --all
 ```
 
 Create an example manifest:
