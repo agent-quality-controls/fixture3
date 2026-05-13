@@ -1,6 +1,6 @@
 # Summary
 
-Initialized the standalone `golden-check` repository as a Rust workspace with a minimal `goldencheck` binary crate, G3RS policy files, and golden fixture directories.
+Initialized the standalone `goldencheck` repository as a Rust workspace with a minimal `goldencheck` binary crate, G3RS policy files, and golden fixture directories.
 
 The architecture plan now lives in this repository and explicitly forbids Rust tests. Verification starts with static checks plus a bootstrap verifier and must switch to self-hosted golden fixtures as soon as the CLI can run a suite.
 
@@ -38,4 +38,3 @@ PASS
 
 - Implement the first `goldencheck check` slice against a tiny local fixture suite.
 - Replace bootstrap behavior verification with `goldencheck check` once the CLI can run and compare a suite.
-

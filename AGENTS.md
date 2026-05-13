@@ -1,4 +1,4 @@
-# golden-check
+# goldencheck
 
 ## Verification
 
@@ -14,4 +14,3 @@
 - Keep `guardrail3-rs.toml` at the repository root.
 - Keep `[checks] test = false`.
 - Treat any new G3RS failure as a code or architecture failure unless the plan explicitly changes the guardrail.
-
