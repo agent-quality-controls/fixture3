@@ -15,7 +15,7 @@ jobs:
         with:
           components: clippy, rustfmt
       - name: Install G3RS
-        run: cargo install --git https://github.com/websmasher/guardrail3 --package guardrail3-rs --bin g3rs
+        run: cargo install --git https://github.com/websmasher/guardrail3 guardrail3-rs --bin g3rs
       - name: Verify
         run: scripts/verify-all.sh
       - name: Stub package dry run
