@@ -413,7 +413,17 @@ help_contains = [
 argv = ["cargo", "run", "-p", "goldencheck-cli", "--", "--help"]
 contains = [
   "runs project commands against fixture files",
-  "Workflow:",
+  "Use it for behavior contracts",
+  "Run `goldencheck init` to create a usable example goldencheck.yaml.",
+  "Manifest schema:",
+  "`{fixtures}` is replaced with every discovered fixture path.",
+  "The only supported `output.format` is `json`.",
+  "`output.normalizer` is optional.",
+  "approved_dir/approved.normalized.json is the committed golden output.",
+  "received_dir/received.raw.json stores command stdout from the latest check.",
+  "diff_dir/diff.txt is the human-readable diff.",
+  "`goldencheck diff --suite <suite> --refresh` reruns check before showing the diff.",
+  "The path should point to the reviewed change note, issue, PR, or local change file.",
   "A suite is one golden behavior check",
   "Exit codes:",
   "goldencheck.yaml",
@@ -422,7 +432,7 @@ contains = [
 [[cli_help]]
 argv = ["cargo", "run", "-p", "goldencheck-cli", "--", "--version"]
 contains = [
-  "goldencheck 0.1.2",
+  "goldencheck 0.1.3",
 ]
 
 [[generated_file]]

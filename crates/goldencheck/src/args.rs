@@ -6,16 +6,74 @@ const TOP_LEVEL_HELP: &str = "\
 goldencheck runs project commands against fixture files and compares normalized output with
 committed approved output.
 
-Workflow:
-  1. Write goldencheck.yaml with one or more suites.
-  2. Put fixture inputs under behavior/fixtures.
-  3. Put approved output under behavior/golden/<suite>.
-  4. Run `goldencheck check --suite <name>`.
-  5. Review `.goldencheck/<suite>/diff.txt`.
-  6. Run `goldencheck approve --suite <name> --change <path>` when the change is intentional.
+Use it for behavior contracts where the important output is a file or stdout value:
+CLI output, parser output, codegen output, API examples, diagnostics, migrations, or any
+stable JSON result that should not change without review.
 
 A suite is one golden behavior check. It defines fixture globs, the command to run,
-accepted exit codes, optional output normalization, and approved/received/diff storage.
+accepted exit codes, output handling, and approved/received/diff storage.
+
+Quick start:
+  1. Run `goldencheck init` to create a usable example goldencheck.yaml.
+  2. Edit the example suite for your command and fixture paths.
+  3. Add approved output at behavior/golden/<suite>/approved.normalized.json.
+  4. Run `goldencheck check --suite <suite>`.
+  5. Review `.goldencheck/<suite>/diff.txt`.
+  6. Run `goldencheck approve --suite <suite> --change <path>` for intentional drift.
+
+Manifest schema:
+  version: 1
+  suites:
+    <suite>:
+      fixtures:
+        - \"behavior/fixtures/<suite>/*/input.json\"
+      command:
+        argv:
+          - \"program\"
+          - \"{fixtures}\"
+        ok_exit_codes:
+          - 0
+      output:
+        format: \"json\"
+        normalizer:
+          argv:
+            - \"optional-normalizer\"
+      storage:
+        approved_dir: \"behavior/golden/<suite>\"
+        received_dir: \".goldencheck/<suite>\"
+        diff_dir: \".goldencheck/<suite>\"
+
+Command argv:
+  `{fixtures}` is replaced with every discovered fixture path.
+  If an arg is exactly `{fixtures}`, each fixture becomes a separate argv item.
+  If `{fixtures}` appears inside a larger arg, fixture paths are joined with spaces.
+
+Output:
+  The only supported `output.format` is `json`.
+  `output.normalizer` is optional.
+  The command stdout must be JSON after the optional normalizer runs.
+  JSON is pretty-printed before comparison so formatting-only changes do not matter.
+
+Files:
+  approved_dir/approved.normalized.json is the committed golden output.
+  approved_dir/approved.meta.json records approved fixture, manifest, and normalizer hashes.
+  received_dir/received.raw.json stores command stdout from the latest check.
+  received_dir/received.normalized.json stores normalized output from the latest check.
+  received_dir/received.meta.json stores run metadata from the latest check.
+  diff_dir/diff.txt is the human-readable diff.
+  diff_dir/diff.json is the machine-readable diff status.
+
+Workflow:
+  `goldencheck check --suite <suite>` runs fixtures and compares approved output.
+  `goldencheck diff --suite <suite>` shows the latest stored diff.
+  `goldencheck diff --suite <suite> --refresh` reruns check before showing the diff.
+  `goldencheck approve --suite <suite> --change <path>` promotes received output.
+  `goldencheck status` lists approved, received, and diff file state.
+
+Approve:
+  `--change <path>` is required when output differs.
+  The path should point to the reviewed change note, issue, PR, or local change file.
+  goldencheck records the string in approved.meta.json; it does not read that file.
 
 Exit codes:
   0  received output matches approved output
