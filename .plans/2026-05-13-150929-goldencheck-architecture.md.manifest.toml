@@ -212,6 +212,93 @@ path = "behavior/fixtures/self/cases/normalizer/input.txt"
 path = "behavior/fixtures/self/cases/normalizer/golden/approved.normalized.json"
 
 [[tree]]
+path = "behavior/fixtures/self/cases/check-all-match/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-match/input-a.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-match/input-b.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-match/golden/alpha/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-match/golden/beta/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-mismatch/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-mismatch/input-a.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-mismatch/input-b.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-mismatch/golden/alpha/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-mismatch/golden/beta/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-error/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-error/input-a.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-error/input-b.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-error/golden/alpha/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-error/golden/beta/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status-all/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status-all/input-a.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status-all/input-b.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status-all/golden/alpha/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status-all/golden/beta/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-suite-all-conflict/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-suite-all-conflict/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-suite-all-conflict/golden/alpha/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-target-required/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-target-required/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-target-required/golden/alpha/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status-suite-all-conflict/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status-suite-all-conflict/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status-suite-all-conflict/golden/alpha/approved.normalized.json"
+
+[[tree]]
 path = "goldencheck.yaml"
 
 [[tree]]
@@ -355,14 +442,16 @@ to = ["diff", "error", "fs", "manifest", "metadata"]
 
 [[cli_command]]
 name = "check"
-required_flags = ["--suite"]
-optional_flags = ["--manifest"]
+required_flags = []
+optional_flags = ["--suite", "--all", "--manifest"]
 exit_codes = [0, 1, 2]
 help_contains = [
-  "Run one suite from goldencheck.yaml.",
+  "Run one suite or every suite from goldencheck.yaml.",
   "discovers fixtures",
   "writes received files",
   "received output with `approved.normalized.json`",
+  "Exit code is 2 if any",
+  "Exit code is 1 if any suite differs",
 ]
 
 [[cli_command]]
@@ -390,12 +479,11 @@ help_contains = [
 [[cli_command]]
 name = "status"
 required_flags = []
-optional_flags = ["--suite", "--manifest"]
+optional_flags = ["--suite", "--all", "--manifest"]
 exit_codes = [0, 2]
 help_contains = [
-  "Report whether approved output",
-  "received output",
-  "diff files exist",
+  "Show one suite or every suite",
+  "omit both flags",
 ]
 
 [[cli_command]]
@@ -422,6 +510,7 @@ contains = [
   "approved_dir/approved.normalized.json is the committed golden output.",
   "received_dir/received.raw.json stores command stdout from the latest check.",
   "diff_dir/diff.txt is the human-readable diff.",
+  "`goldencheck check --all` runs every suite",
   "`goldencheck diff --suite <suite> --refresh` reruns check before showing the diff.",
   "The path should point to the reviewed change note, issue, PR, or local change file.",
   "A suite is one golden behavior check",
@@ -432,7 +521,7 @@ contains = [
 [[cli_help]]
 argv = ["cargo", "run", "-p", "goldencheck-cli", "--", "--version"]
 contains = [
-  "goldencheck 0.1.3",
+  "goldencheck 0.1.4",
 ]
 
 [[generated_file]]

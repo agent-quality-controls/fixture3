@@ -1,0 +1,132 @@
+[[cli_command]]
+name = "check"
+required_flags = []
+optional_flags = ["--suite", "--all", "--manifest"]
+mutually_exclusive = [["--suite", "--all"]]
+requires_one_of = ["--suite", "--all"]
+exit_codes = [0, 1, 2]
+help_contains = [
+  "Run one suite or every suite from goldencheck.yaml.",
+  "--all",
+  "Exit code is 2 if any suite errors",
+  "Exit code is 1 if any suite differs",
+]
+
+[[cli_command]]
+name = "status"
+required_flags = []
+optional_flags = ["--suite", "--all", "--manifest"]
+mutually_exclusive = [["--suite", "--all"]]
+exit_codes = [0, 2]
+help_contains = [
+  "Show one suite or every suite",
+  "--all",
+  "omit both flags to list every suite",
+]
+
+[[behavior_case]]
+name = "check-all-match"
+command = ["check", "--all"]
+expected_exit_code = 0
+stdout_contains = [
+  "suite: alpha",
+  "suite: beta",
+  "status: matched",
+]
+stderr_contains = []
+generated_files = [
+  ".goldencheck/self-cases/check-all-match/alpha/received.normalized.json",
+  ".goldencheck/self-cases/check-all-match/alpha/diff.json",
+  ".goldencheck/self-cases/check-all-match/beta/received.normalized.json",
+  ".goldencheck/self-cases/check-all-match/beta/diff.json",
+]
+
+[[behavior_case]]
+name = "check-all-mismatch"
+command = ["check", "--all"]
+expected_exit_code = 1
+stdout_contains = [
+  "suite: alpha",
+  "suite: beta",
+  "status: matched",
+  "status: different",
+]
+stderr_contains = []
+generated_files = [
+  ".goldencheck/self-cases/check-all-mismatch/alpha/diff.json",
+  ".goldencheck/self-cases/check-all-mismatch/beta/diff.json",
+]
+
+[[behavior_case]]
+name = "check-all-error"
+command = ["check", "--all"]
+expected_exit_code = 2
+stdout_contains = [
+  "suite: alpha",
+]
+stderr_contains = [
+  "suite: beta",
+  "exit code 7 was not in [0]",
+]
+
+[[behavior_case]]
+name = "status-all"
+command = ["status", "--all"]
+expected_exit_code = 0
+stdout_contains = [
+  "suite: alpha",
+  "suite: beta",
+  "approved: yes",
+]
+stderr_contains = []
+
+[[behavior_case]]
+name = "check-suite-all-conflict"
+command = ["check", "--suite", "alpha", "--all"]
+expected_exit_code = 2
+stderr_contains = [
+  "cannot be used",
+  "--suite",
+  "--all",
+]
+
+[[behavior_case]]
+name = "check-target-required"
+command = ["check"]
+expected_exit_code = 2
+stderr_contains = [
+  "required",
+  "--suite",
+  "--all",
+]
+
+[[behavior_case]]
+name = "status-suite-all-conflict"
+command = ["status", "--suite", "alpha", "--all"]
+expected_exit_code = 2
+stderr_contains = [
+  "cannot be used",
+  "--suite",
+  "--all",
+]
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-match/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-mismatch/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-all-error/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status-all/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-suite-all-conflict/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/check-target-required/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status-suite-all-conflict/goldencheck.yaml"

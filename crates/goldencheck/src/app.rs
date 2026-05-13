@@ -14,6 +14,8 @@ use crate::metadata;
 use crate::normalize;
 use crate::storage;
 
+type SuiteNames = Vec<String>;
+
 #[derive(Debug)]
 pub(crate) struct AppOutcome {
     pub(crate) exit_code: u8,
@@ -72,12 +74,28 @@ fn run_checked(cli: Cli) -> Result<AppOutcome, AppError> {
 }
 
 fn check(args: &CheckArgs) -> Result<AppOutcome, AppError> {
-    let result = run_check(&args.suite, &args.manifest)?;
-    Ok(AppOutcome {
-        exit_code: result.report.exit_code(),
-        stdout: result.stdout,
-        stderr: result.stderr,
-    })
+    let suite_names = selected_suite_names(args.suite.as_deref(), args.all, &args.manifest)?;
+    let mut exit_code = 0;
+    let mut stdout = String::new();
+    let mut stderr = String::new();
+
+    for suite_name in suite_names {
+        match run_check(&suite_name, &args.manifest) {
+            Ok(result) => {
+                exit_code = exit_code.max(result.report.exit_code());
+                stdout.push_str(&result.stdout);
+                stderr.push_str(&result.stderr);
+            }
+            Err(error) => {
+                exit_code = 2;
+                write!(&mut stderr, "suite: {suite_name}\n{error}\n").map_err(|source| {
+                    AppError::Manifest(format!("failed to render error: {source}"))
+                })?;
+            }
+        }
+    }
+
+    Ok(AppOutcome { exit_code, stdout, stderr })
 }
 
 fn diff_command(args: &DiffArgs) -> Result<AppOutcome, AppError> {
@@ -108,12 +126,15 @@ fn approve(args: &ApproveArgs) -> Result<AppOutcome, AppError> {
 
 fn status(args: &StatusArgs) -> Result<AppOutcome, AppError> {
     let manifest = manifest::load(&args.manifest)?;
+    let suite_names =
+        selected_suite_names_from_manifest(args.suite.as_deref(), args.all, &manifest);
     let mut output = String::new();
 
-    for (name, suite) in manifest.suites {
-        if args.suite.as_ref().is_some_and(|requested| requested != &name) {
-            continue;
-        }
+    for name in suite_names {
+        let suite = manifest
+            .suites
+            .get(&name)
+            .ok_or_else(|| AppError::Manifest(format!("suite not found in manifest: {name}")))?;
         let state = storage::status(&suite.storage);
         write!(
             &mut output,
@@ -152,6 +173,28 @@ struct CheckResult {
     stdout: String,
     stderr: String,
     diff_text: String,
+}
+
+fn selected_suite_names(
+    suite_name: Option<&str>,
+    all: bool,
+    manifest_path: &std::path::Path,
+) -> Result<SuiteNames, AppError> {
+    let manifest = manifest::load(manifest_path)?;
+    Ok(selected_suite_names_from_manifest(suite_name, all, &manifest))
+}
+
+fn selected_suite_names_from_manifest(
+    suite_name: Option<&str>,
+    all: bool,
+    manifest: &manifest::Manifest,
+) -> SuiteNames {
+    if all {
+        return manifest.suites.keys().cloned().collect();
+    }
+
+    suite_name
+        .map_or_else(|| manifest.suites.keys().cloned().collect(), |name| vec![name.to_owned()])
 }
 
 fn run_check(suite_name: &str, manifest_path: &std::path::Path) -> Result<CheckResult, AppError> {

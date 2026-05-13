@@ -52,6 +52,55 @@
       "stderr_contains_ok": true
     },
     {
+      "case": "check-all-error",
+      "exit_code": 2,
+      "exit_code_ok": true,
+      "generated_files_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stderr_contains_ok": true,
+      "stdout_contains_ok": true
+    },
+    {
+      "case": "check-all-match",
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "generated_files_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stdout_contains_ok": true
+    },
+    {
+      "case": "check-all-mismatch",
+      "exit_code": 1,
+      "exit_code_ok": true,
+      "generated_files_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stdout_contains_ok": true
+    },
+    {
+      "case": "check-suite-all-conflict",
+      "exit_code": 2,
+      "exit_code_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stderr_contains_ok": true
+    },
+    {
+      "case": "check-target-required",
+      "exit_code": 2,
+      "exit_code_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stderr_contains_ok": true
+    },
+    {
       "case": "diff-existing",
       "exit_code": 0,
       "exit_code_ok": true,
@@ -146,6 +195,24 @@
       "received_normalized_exists": true,
       "received_raw_exists": true,
       "stdout_contains_ok": true
+    },
+    {
+      "case": "status-all",
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stdout_contains_ok": true
+    },
+    {
+      "case": "status-suite-all-conflict",
+      "exit_code": 2,
+      "exit_code_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stderr_contains_ok": true
     }
   ]
 }

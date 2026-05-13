@@ -1,0 +1,8 @@
+{
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/check-all-match/input-b.txt",
+      "text": "beta match\n"
+    }
+  ]
+}

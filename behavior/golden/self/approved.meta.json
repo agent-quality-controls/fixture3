@@ -1,14 +1,14 @@
 {
   "suite": "self",
   "kind": "approved",
-  "run_id": "2026-05-13T17-17-54.968856Z-053ae8ee",
-  "run_commit": "fa8f1c1",
+  "run_id": "2026-05-13T20-59-58.821653Z-053ae8ee",
+  "run_commit": "2635fff",
   "working_tree": "dirty",
-  "recorded_at": "2026-05-13T17:17:54.968856Z",
-  "fixture_hash": "sha256:3dc6a27b6ff0f31cfb6b20b3083f1e3855e6cca5a2419524ad351f2937749a37",
+  "recorded_at": "2026-05-13T20:59:58.821653Z",
+  "fixture_hash": "sha256:88de9a8120a6420be793d3c8072f925765a6f2f14a98885fab76904facb9bb36",
   "manifest_hash": "sha256:053ae8eeac5f385de277c9c9629443134b8631db2324ac75c586fe93e3fb34e1",
   "normalizer_hash": "sha256:c219507b61710f3b35350618b95d841c65b681fbeb96caf8ae69c0af301f4d2f",
-  "tool_version": "0.1.0",
+  "tool_version": "0.1.4",
   "output_schema_version": "1",
   "fixtures": [
     {
@@ -30,6 +30,26 @@
     {
       "path": "behavior/fixtures/self/cases/bad-json/goldencheck.yaml",
       "sha256": "sha256:d008493c6a24964fa23332d3d142d056c620e256e446ab650a65e08b7a48ae9c"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/check-all-error/goldencheck.yaml",
+      "sha256": "sha256:424ac8f73ab24c8aeb70522be96200091ae563d3a8321f1fe18c34c74776b4da"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/check-all-match/goldencheck.yaml",
+      "sha256": "sha256:4ce90bf18f9c6aa01e1133b909eebbd777acd43e55753969a139951f0749c4b9"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/check-all-mismatch/goldencheck.yaml",
+      "sha256": "sha256:693d6284e4f6fe70eb3045c8454d5735586caab6242a45e696702b6cf68a1336"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/check-suite-all-conflict/goldencheck.yaml",
+      "sha256": "sha256:9860770a1a7be6901281a3f942fd56cf4166b4c453c0453e2d06291aac1df1d4"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/check-target-required/goldencheck.yaml",
+      "sha256": "sha256:07bdcca9eeb61595a72343da72e929e787c8bc103f7ae434731118b4722fae8a"
     },
     {
       "path": "behavior/fixtures/self/cases/diff-existing/goldencheck.yaml",
@@ -66,6 +86,15 @@
     {
       "path": "behavior/fixtures/self/cases/status/goldencheck.yaml",
       "sha256": "sha256:b28d2b46f566125694dd9799a89bd4972109604f6d6c22b0f31be0e0beff3182"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/status-all/goldencheck.yaml",
+      "sha256": "sha256:726dec03ad8b8cffc22551c1c09685638256370ad15b2b9cd7b55b4736a73d92"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/status-suite-all-conflict/goldencheck.yaml",
+      "sha256": "sha256:5083e7be0af93605db83a8212f0b64fbcd104805ca7b4087f7527a25094df3df"
     }
-  ]
+  ],
+  "change_path": ".plans/2026-05-13-215321-all-suites.md"
 }

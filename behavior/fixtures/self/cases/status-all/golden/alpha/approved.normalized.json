@@ -1,0 +1,8 @@
+{
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/status-all/input-a.txt",
+      "text": "alpha status\n"
+    }
+  ]
+}

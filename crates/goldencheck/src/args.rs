@@ -64,7 +64,8 @@ Files:
   diff_dir/diff.json is the machine-readable diff status.
 
 Workflow:
-  `goldencheck check --suite <suite>` runs fixtures and compares approved output.
+  `goldencheck check --suite <suite>` runs one suite and compares approved output.
+  `goldencheck check --all` runs every suite and returns the highest-severity status.
   `goldencheck diff --suite <suite>` shows the latest stored diff.
   `goldencheck diff --suite <suite> --refresh` reruns check before showing the diff.
   `goldencheck approve --suite <suite> --change <path>` promotes received output.
@@ -82,11 +83,14 @@ Exit codes:
 ";
 
 const CHECK_HELP: &str = "\
-Run one suite from goldencheck.yaml.
+Run one suite or every suite from goldencheck.yaml.
 
-check discovers fixtures, runs the suite command, optionally runs the normalizer,
+check discovers fixtures, runs each suite command, optionally runs the normalizer,
 normalizes JSON output, writes received files under `.goldencheck/<suite>`, compares
 received output with `approved.normalized.json`, and writes diff files.
+
+Use `--suite <name>` for one suite or `--all` for every suite. Exit code is 2 if any
+suite errors. Exit code is 1 if any suite differs and no suite errors.
 
 Use this before reviewing behavior changes.
 ";
@@ -109,9 +113,10 @@ records the reviewed change file.
 ";
 
 const STATUS_HELP: &str = "\
-Report whether approved output, received output, and diff files exist for configured suites.
+Show one suite or every suite from goldencheck.yaml.
 
-Use `--suite <name>` to show one suite, or omit it to list every suite in the manifest.
+Use `--suite <name>` to show one suite, `--all` to show every suite, or omit both flags
+to list every suite.
 ";
 
 const INIT_HELP: &str = "\
@@ -157,9 +162,17 @@ pub(crate) enum Commands {
 }
 
 #[derive(Debug, Parser)]
+#[command(group(
+    clap::ArgGroup::new("target")
+        .required(true)
+        .args(["suite", "all"])
+))]
 pub(crate) struct CheckArgs {
-    #[arg(long, help = "Suite name from goldencheck.yaml")]
-    pub(crate) suite: String,
+    #[arg(long, conflicts_with = "all", help = "Suite name from goldencheck.yaml")]
+    pub(crate) suite: Option<String>,
+
+    #[arg(long, conflicts_with = "suite", help = "Run every suite in goldencheck.yaml")]
+    pub(crate) all: bool,
 
     #[arg(long, default_value = "goldencheck.yaml", help = "Manifest path")]
     pub(crate) manifest: PathBuf,
@@ -191,8 +204,11 @@ pub(crate) struct ApproveArgs {
 
 #[derive(Debug, Parser)]
 pub(crate) struct StatusArgs {
-    #[arg(long, help = "Suite name from goldencheck.yaml")]
+    #[arg(long, conflicts_with = "all", help = "Suite name from goldencheck.yaml")]
     pub(crate) suite: Option<String>,
+
+    #[arg(long, conflicts_with = "suite", help = "Show every suite in goldencheck.yaml")]
+    pub(crate) all: bool,
 
     #[arg(long, default_value = "goldencheck.yaml", help = "Manifest path")]
     pub(crate) manifest: PathBuf,

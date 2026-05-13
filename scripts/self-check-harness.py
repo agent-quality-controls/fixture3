@@ -32,6 +32,41 @@ EXPECTED = {
         "exit_code": 2,
         "stderr_contains": "json error in command stdout",
     },
+    "check-all-error": {
+        "exit_code": 2,
+        "stdout_contains": ["suite: alpha", "status: matched"],
+        "stderr_contains": ["suite: beta", "exit code 7 was not in [0]"],
+        "generated_files": [
+            ".goldencheck/self-cases/check-all-error/alpha/received.normalized.json",
+            ".goldencheck/self-cases/check-all-error/alpha/diff.json",
+        ],
+    },
+    "check-all-match": {
+        "exit_code": 0,
+        "stdout_contains": ["suite: alpha", "suite: beta", "status: matched"],
+        "generated_files": [
+            ".goldencheck/self-cases/check-all-match/alpha/received.normalized.json",
+            ".goldencheck/self-cases/check-all-match/alpha/diff.json",
+            ".goldencheck/self-cases/check-all-match/beta/received.normalized.json",
+            ".goldencheck/self-cases/check-all-match/beta/diff.json",
+        ],
+    },
+    "check-all-mismatch": {
+        "exit_code": 1,
+        "stdout_contains": ["suite: alpha", "suite: beta", "status: matched", "status: different"],
+        "generated_files": [
+            ".goldencheck/self-cases/check-all-mismatch/alpha/diff.json",
+            ".goldencheck/self-cases/check-all-mismatch/beta/diff.json",
+        ],
+    },
+    "check-suite-all-conflict": {
+        "exit_code": 2,
+        "stderr_contains": ["cannot be used", "--suite", "--all"],
+    },
+    "check-target-required": {
+        "exit_code": 2,
+        "stderr_contains": ["required", "--suite", "--all"],
+    },
     "match": {
         "exit_code": 0,
         "diff_status": "matched",
@@ -73,6 +108,14 @@ EXPECTED = {
     "status": {
         "exit_code": 0,
         "stdout_contains": "approved: yes",
+    },
+    "status-all": {
+        "exit_code": 0,
+        "stdout_contains": ["suite: alpha", "suite: beta", "approved: yes"],
+    },
+    "status-suite-all-conflict": {
+        "exit_code": 2,
+        "stderr_contains": ["cannot be used", "--suite", "--all"],
     },
 }
 
@@ -121,9 +164,11 @@ def run_case(binary: Path, manifest: Path) -> dict:
         record["stdout_status"] = line_value(result.stdout, "status:")
         record["stdout_status_ok"] = record["stdout_status"] == expected["stdout_status"]
     if "stderr_contains" in expected:
-        record["stderr_contains_ok"] = expected["stderr_contains"] in result.stderr
+        record["stderr_contains_ok"] = contains_all(result.stderr, expected["stderr_contains"])
     if "stdout_contains" in expected:
-        record["stdout_contains_ok"] = expected["stdout_contains"] in result.stdout
+        record["stdout_contains_ok"] = contains_all(result.stdout, expected["stdout_contains"])
+    if "generated_files" in expected:
+        record["generated_files_ok"] = all(Path(path).exists() for path in expected["generated_files"])
     if "created_manifest" in expected:
         record["created_manifest_exists"] = Path(expected["created_manifest"]).exists()
     if "approved_meta_kind" in expected and approved_meta is not None:
@@ -169,12 +214,23 @@ def prepare_case(case: str, manifest: Path, received_root: Path) -> None:
         meta.unlink(missing_ok=True)
     if case == "init":
         Path(".goldencheck/self-init/generated.yaml").unlink(missing_ok=True)
+    if case.startswith("check-all-") or case == "status-all":
+        shutil.rmtree(received_root, ignore_errors=True)
+        return
     if case != "init":
         for name in ("diff.json", "diff.txt", "received.meta.json", "received.normalized.json", "received.raw.json"):
             (received_root / name).unlink(missing_ok=True)
 
 
 def run_case_command(binary: Path, case: str, manifest: Path) -> subprocess.CompletedProcess[str]:
+    if case.startswith("check-all-"):
+        return run_command([str(binary), "check", "--all", "--manifest", str(manifest)])
+    if case == "check-suite-all-conflict":
+        return run_command(
+            [str(binary), "check", "--suite", "alpha", "--all", "--manifest", str(manifest)]
+        )
+    if case == "check-target-required":
+        return run_command([str(binary), "check", "--manifest", str(manifest)])
     if case == "approve-no-change":
         run_command(check_command(binary, manifest))
         return run_command([str(binary), "approve", "--suite", "case", "--manifest", str(manifest)])
@@ -208,7 +264,20 @@ def run_case_command(binary: Path, case: str, manifest: Path) -> subprocess.Comp
     if case == "status":
         run_command(check_command(binary, manifest))
         return run_command([str(binary), "status", "--suite", "case", "--manifest", str(manifest)])
+    if case == "status-all":
+        run_command([str(binary), "check", "--all", "--manifest", str(manifest)])
+        return run_command([str(binary), "status", "--all", "--manifest", str(manifest)])
+    if case == "status-suite-all-conflict":
+        return run_command(
+            [str(binary), "status", "--suite", "alpha", "--all", "--manifest", str(manifest)]
+        )
     return run_command(check_command(binary, manifest))
+
+
+def contains_all(haystack: str, needle: str | list[str]) -> bool:
+    if isinstance(needle, str):
+        return needle in haystack
+    return all(item in haystack for item in needle)
 
 
 def main() -> int:

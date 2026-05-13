@@ -1,0 +1,8 @@
+{
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/check-all-match/input-a.txt",
+      "text": "alpha match\n"
+    }
+  ]
+}
