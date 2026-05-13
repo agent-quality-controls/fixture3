@@ -1,0 +1,84 @@
+[graph]
+all-features = true
+no-default-features = false
+
+[bans]
+multiple-versions = "deny"
+wildcards = "allow"
+allow-wildcard-paths = true
+highlight = "all"
+
+deny = [
+  { name = "simd-json", wrappers = [] },
+  { name = "json5", wrappers = [] },
+  { name = "sonic-rs", wrappers = [] },
+  { name = "openssl", wrappers = [] },
+  { name = "openssl-sys", wrappers = [] },
+  { name = "ureq", wrappers = [] },
+  { name = "surf", wrappers = [] },
+  { name = "isahc", wrappers = [] },
+  { name = "log4rs", wrappers = [] },
+  { name = "env_logger", wrappers = [] },
+  { name = "simple_logger", wrappers = [] },
+  { name = "fern", wrappers = [] },
+  { name = "async-std", wrappers = [] },
+  { name = "smol", wrappers = [] },
+  { name = "lazy_static", wrappers = [] },
+  { name = "anyhow", wrappers = [] },
+  { name = "actix-web", wrappers = [] },
+  { name = "rocket", wrappers = [] },
+  { name = "warp", wrappers = [] },
+  { name = "poem", wrappers = [] },
+  { name = "chrono", wrappers = [] },
+  { name = "diesel", wrappers = [] },
+  { name = "sea-orm", wrappers = [] },
+  { name = "bincode", wrappers = [] },
+  { name = "rmp-serde", wrappers = [] },
+  { name = "prost", wrappers = [] },
+  { name = "flatbuffers", wrappers = [] },
+  { name = "regex", wrappers = [] },
+  { name = "fancy-regex", wrappers = [] },
+  { name = "onig", wrappers = [] },
+  { name = "pcre2", wrappers = [] },
+  { name = "grep-cli", wrappers = [] },
+  { name = "grep-regex", wrappers = [] },
+  { name = "grep-matcher", wrappers = [] },
+]
+
+[[bans.features]]
+name = "tokio"
+deny = ["full"]
+allow = ["rt-multi-thread", "macros", "net", "sync", "signal", "bytes", "default", "io-util", "time"]
+
+[licenses]
+allow = [
+  "MIT",
+  "Apache-2.0",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "ISC",
+  "Unicode-DFS-2016",
+  "Unicode-3.0",
+  "Zlib",
+  "CC0-1.0",
+  "OpenSSL",
+  "BSL-1.0",
+  "MPL-2.0",
+  "CDLA-Permissive-2.0",
+]
+confidence-threshold = 0.8
+
+[licenses.private]
+ignore = true
+
+[advisories]
+unmaintained = "workspace"
+yanked = "deny"
+ignore = []
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["sparse+https://index.crates.io/"]
+allow-git = []
+

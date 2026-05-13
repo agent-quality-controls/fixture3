@@ -1,0 +1,54 @@
+[[tree]]
+path = "Cargo.toml"
+
+[[tree]]
+path = "crates/goldencheck/Cargo.toml"
+
+[[tree]]
+path = "crates/goldencheck/src/main.rs"
+
+[[tree]]
+path = "guardrail3-rs.toml"
+
+[[tree]]
+path = "clippy.toml"
+
+[[tree]]
+path = "deny.toml"
+
+[[tree]]
+path = "behavior/fixtures/bootstrap/.gitkeep"
+
+[[tree]]
+path = "behavior/golden/bootstrap/.gitkeep"
+
+[[tree]]
+path = "behavior/changes/.gitkeep"
+
+[[tree]]
+path = "scripts/verify-all.sh"
+
+[[config_value]]
+file = "guardrail3-rs.toml"
+key = "checks.test"
+value = false
+
+[[forbidden_path]]
+pattern = "tests"
+
+[[forbidden_source]]
+pattern = "#[test]"
+
+[[forbidden_source]]
+pattern = "#[cfg(test)]"
+
+[[forbidden_source]]
+pattern = "cargo test"
+
+[[command]]
+name = "static-g3rs"
+argv = ["g3rs", "validate", "--path", ".", "--rules-only"]
+
+[[command]]
+name = "compile"
+argv = ["cargo", "check"]

@@ -1,0 +1,61 @@
+too-many-lines-threshold = 75
+cognitive-complexity-threshold = 15
+too-many-arguments-threshold = 7
+type-complexity-threshold = 75
+max-struct-bools = 3
+max-fn-params-bools = 3
+excessive-nesting-threshold = 4
+avoid-breaking-exported-api = false
+
+allow-dbg-in-tests = false
+allow-expect-in-tests = true
+allow-panic-in-tests = false
+allow-print-in-tests = false
+allow-unwrap-in-tests = false
+
+disallowed-methods = [
+  { path = "std::env::var", reason = "Use a centralized config module; direct env access scatters configuration." },
+  { path = "std::env::var_os", reason = "Use a centralized config module; direct env access scatters configuration." },
+  { path = "std::env::vars", reason = "Use a centralized config module; direct env access scatters configuration." },
+  { path = "std::env::set_var", reason = "Environment mutation is unsafe in multi-threaded contexts." },
+  { path = "std::env::remove_var", reason = "Environment mutation is unsafe in multi-threaded contexts." },
+  { path = "std::process::exit", reason = "Return Result from main so destructors and reporting still run." },
+  { path = "std::process::abort", reason = "Return an error instead; abort bypasses normal shutdown." },
+  { path = "std::process::Command::new", reason = "Route command execution through the command adapter." },
+  { path = "std::thread::sleep", reason = "Avoid wall-clock sleeps in deterministic CLI behavior." },
+  { path = "std::fs::read_to_string", reason = "Route filesystem reads through one filesystem adapter." },
+  { path = "std::fs::read", reason = "Route filesystem reads through one filesystem adapter." },
+  { path = "std::fs::read_dir", reason = "Route directory reads through one filesystem adapter." },
+  { path = "std::fs::read_link", reason = "Route filesystem reads through one filesystem adapter." },
+  { path = "std::fs::write", reason = "Route filesystem writes through one filesystem adapter." },
+  { path = "std::fs::remove_file", reason = "Route destructive filesystem operations through one filesystem adapter." },
+  { path = "std::fs::remove_dir_all", reason = "Route destructive filesystem operations through one filesystem adapter." },
+  { path = "std::fs::create_dir_all", reason = "Route directory creation through one filesystem adapter." },
+  { path = "std::fs::rename", reason = "Route filesystem writes through one filesystem adapter." },
+  { path = "std::fs::copy", reason = "Route filesystem writes through one filesystem adapter." },
+  { path = "std::fs::metadata", reason = "Route filesystem inspection through one filesystem adapter." },
+  { path = "std::fs::symlink_metadata", reason = "Route filesystem inspection through one filesystem adapter." },
+  { path = "std::fs::canonicalize", reason = "Route path normalization through one filesystem adapter." },
+  { path = "std::fs::set_permissions", reason = "Route filesystem writes through one filesystem adapter." },
+  { path = "std::fs::hard_link", reason = "Route filesystem writes through one filesystem adapter." },
+  { path = "reqwest::Client::new", reason = "Inject shared clients instead of constructing clients ad hoc." },
+  { path = "reqwest::Client::builder", reason = "Inject shared clients instead of constructing clients ad hoc." },
+]
+
+disallowed-types = [
+  { path = "std::collections::HashMap", reason = "Use BTreeMap for deterministic iteration order." },
+  { path = "std::collections::HashSet", reason = "Use BTreeSet for deterministic iteration order." },
+  { path = "std::sync::Mutex", reason = "Use an injected synchronization primitive at the boundary." },
+  { path = "std::sync::RwLock", reason = "Use an injected synchronization primitive at the boundary." },
+  { path = "std::fs::File", reason = "Route file handles through one filesystem adapter." },
+  { path = "std::any::Any", reason = "Type erasure weakens typed boundaries." },
+]
+
+disallowed-macros = [
+  { path = "std::println", reason = "Use explicit output rendering instead of ad hoc stdout writes." },
+  { path = "std::eprintln", reason = "Use explicit error rendering instead of ad hoc stderr writes." },
+  { path = "std::dbg", reason = "Remove debugging probes before commit." },
+  { path = "std::todo", reason = "Ship concrete code or explicit errors." },
+  { path = "std::unimplemented", reason = "Ship concrete code or explicit errors." },
+]
+
