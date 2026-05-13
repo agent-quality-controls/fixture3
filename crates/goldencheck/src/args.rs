@@ -65,6 +65,7 @@ accepted exit codes, and storage paths with the behavior contract for your proje
 
 #[derive(Debug, Parser)]
 #[command(name = "goldencheck")]
+#[command(version)]
 #[command(about = "Fixture-based golden output checks")]
 #[command(long_about = TOP_LEVEL_HELP)]
 pub(crate) struct Cli {

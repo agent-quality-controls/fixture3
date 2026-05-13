@@ -419,6 +419,12 @@ contains = [
   "goldencheck.yaml",
 ]
 
+[[cli_help]]
+argv = ["cargo", "run", "-p", "goldencheck-cli", "--", "--version"]
+contains = [
+  "goldencheck 0.1.2",
+]
+
 [[generated_file]]
 suite = "self"
 path = ".goldencheck/self/received.raw.json"

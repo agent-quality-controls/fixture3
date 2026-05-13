@@ -1,6 +1,6 @@
 [package]
 name = "goldencheck"
-version = "0.1.1"
+version = "0.1.2"
 edition.workspace = true
 rust-version.workspace = true
 description = "Install stub for the goldencheck CLI; use cargo binstall for the real binary"
