@@ -1,6 +1,15 @@
 profile = "service"
 
-allowed_deps = []
+allowed_deps = [
+  "clap",
+  "glob",
+  "serde",
+  "serde_json",
+  "serde_norway",
+  "sha2",
+  "thiserror",
+  "time",
+]
 
 [checks]
 test = false
@@ -8,4 +17,3 @@ garde = false
 release = false
 hooks_shared = false
 hooks_rs = false
-

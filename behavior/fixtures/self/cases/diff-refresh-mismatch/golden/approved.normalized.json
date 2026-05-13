@@ -1,0 +1,8 @@
+{
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/diff-refresh-mismatch/input.txt",
+      "text": "approved refresh\n"
+    }
+  ]
+}

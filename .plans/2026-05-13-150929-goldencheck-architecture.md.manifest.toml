@@ -8,6 +8,45 @@ path = "crates/goldencheck/Cargo.toml"
 path = "crates/goldencheck/src/main.rs"
 
 [[tree]]
+path = "crates/goldencheck/src/lib.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/app.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/args.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/command.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/diff.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/error.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/fixture.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/fs.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/git.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/manifest.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/metadata.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/normalize.rs"
+
+[[tree]]
+path = "crates/goldencheck/src/storage.rs"
+
+[[tree]]
 path = "guardrail3-rs.toml"
 
 [[tree]]
@@ -26,7 +65,175 @@ path = "behavior/golden/bootstrap/.gitkeep"
 path = "behavior/changes/.gitkeep"
 
 [[tree]]
+path = "behavior/golden/self/approved.normalized.json"
+
+[[tree]]
+path = "behavior/golden/self/approved.meta.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/match/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/match/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/match/golden/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/mismatch/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/mismatch/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/mismatch/golden/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/missing-approved/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/missing-approved/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/bad-exit/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/bad-exit/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/bad-exit/golden/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/bad-json/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/bad-json/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/bad-json/golden/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/diff-existing/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/diff-existing/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/diff-existing/golden/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/diff-refresh-mismatch/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/diff-refresh-mismatch/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/diff-refresh-mismatch/golden/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/approve-no-change/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/approve-no-change/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/approve-no-change/golden/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/approve-requires-change/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/approve-requires-change/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/approve-requires-change/golden/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/approve-with-change/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/approve-with-change/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/approve-with-change/golden/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/status/golden/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/init/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/hash-drift/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/hash-drift/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/hash-drift/golden/approved.normalized.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/hash-drift/golden/approved.meta.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/normalizer/goldencheck.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/normalizer/input.txt"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/normalizer/golden/approved.normalized.json"
+
+[[tree]]
+path = "goldencheck.yaml"
+
+[[tree]]
 path = "scripts/verify-all.sh"
+
+[[tree]]
+path = "scripts/verify-manifest.py"
+
+[[tree]]
+path = "scripts/verify-layer-1-tree.sh"
+
+[[tree]]
+path = "scripts/verify-layer-2-forbidden.sh"
+
+[[tree]]
+path = "scripts/verify-layer-3-config.sh"
+
+[[tree]]
+path = "scripts/verify-layer-4-modules.sh"
+
+[[tree]]
+path = "scripts/verify-layer-5-static.sh"
+
+[[tree]]
+path = "scripts/verify-layer-6-goldencheck.sh"
+
+[[tree]]
+path = "scripts/verify-layer-7-cli.sh"
+
+[[tree]]
+path = "scripts/self-case-emit-json.py"
+
+[[tree]]
+path = "scripts/self-case-bad-json.py"
+
+[[tree]]
+path = "scripts/self-case-exit-7.py"
+
+[[tree]]
+path = "scripts/self-check-harness.py"
+
+[[tree]]
+path = "scripts/self-case-normalize-json.py"
 
 [[config_value]]
 file = "guardrail3-rs.toml"
@@ -45,6 +252,136 @@ pattern = "#[cfg(test)]"
 [[forbidden_source]]
 pattern = "cargo test"
 
+[[module_dep]]
+from = "main"
+to = []
+
+[[module_dep]]
+from = "lib"
+to = [
+  "app",
+  "args",
+  "command",
+  "diff",
+  "error",
+  "fixture",
+  "fs",
+  "git",
+  "manifest",
+  "metadata",
+  "normalize",
+  "storage",
+]
+
+[[module_dep]]
+from = "app"
+to = [
+  "args",
+  "command",
+  "diff",
+  "error",
+  "fixture",
+  "git",
+  "manifest",
+  "metadata",
+  "normalize",
+  "storage",
+]
+
+[[module_dep]]
+from = "args"
+to = []
+
+[[module_dep]]
+from = "command"
+to = ["error", "manifest"]
+
+[[module_dep]]
+from = "diff"
+to = ["error"]
+
+[[module_dep]]
+from = "error"
+to = []
+
+[[module_dep]]
+from = "fixture"
+to = ["error", "fs", "manifest"]
+
+[[module_dep]]
+from = "fs"
+to = ["error"]
+
+[[module_dep]]
+from = "git"
+to = ["command", "error"]
+
+[[module_dep]]
+from = "manifest"
+to = ["error", "fs"]
+
+[[module_dep]]
+from = "metadata"
+to = ["error", "fixture", "fs", "git", "manifest"]
+
+[[module_dep]]
+from = "normalize"
+to = ["command", "error", "manifest"]
+
+[[module_dep]]
+from = "storage"
+to = ["diff", "error", "fs", "manifest", "metadata"]
+
+[[cli_command]]
+name = "check"
+required_flags = ["--suite"]
+optional_flags = ["--manifest"]
+exit_codes = [0, 1, 2]
+
+[[cli_command]]
+name = "diff"
+required_flags = ["--suite"]
+optional_flags = ["--manifest", "--refresh"]
+exit_codes = [0, 1, 2]
+
+[[cli_command]]
+name = "approve"
+required_flags = ["--suite"]
+optional_flags = ["--manifest", "--change"]
+exit_codes = [0, 2]
+
+[[cli_command]]
+name = "status"
+required_flags = []
+optional_flags = ["--suite", "--manifest"]
+exit_codes = [0, 2]
+
+[[cli_command]]
+name = "init"
+required_flags = []
+optional_flags = ["--manifest"]
+exit_codes = [0, 2]
+
+[[generated_file]]
+suite = "self"
+path = ".goldencheck/self/received.raw.json"
+
+[[generated_file]]
+suite = "self"
+path = ".goldencheck/self/received.normalized.json"
+
+[[generated_file]]
+suite = "self"
+path = ".goldencheck/self/received.meta.json"
+
+[[generated_file]]
+suite = "self"
+path = ".goldencheck/self/diff.json"
+
+[[generated_file]]
+suite = "self"
+path = ".goldencheck/self/diff.txt"
+
 [[command]]
 name = "static-g3rs"
 argv = ["g3rs", "validate", "--path", ".", "--rules-only"]
@@ -52,3 +389,15 @@ argv = ["g3rs", "validate", "--path", ".", "--rules-only"]
 [[command]]
 name = "compile"
 argv = ["cargo", "check"]
+
+[[command]]
+name = "format"
+argv = ["cargo", "fmt", "--check"]
+
+[[command]]
+name = "clippy"
+argv = ["cargo", "clippy", "--workspace", "--all-targets", "--all-features", "--", "-D", "warnings"]
+
+[[command]]
+name = "self-check"
+argv = ["cargo", "run", "-p", "goldencheck", "--", "check", "--suite", "self", "--manifest", "goldencheck.yaml"]

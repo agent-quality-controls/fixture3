@@ -1,0 +1,8 @@
+{
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/match/input.txt",
+      "text": "goldencheck self fixture\n"
+    }
+  ]
+}

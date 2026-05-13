@@ -1,0 +1,9 @@
+{
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/normalizer/input.txt",
+      "text": "normalizer case\n"
+    }
+  ],
+  "normalized": true
+}

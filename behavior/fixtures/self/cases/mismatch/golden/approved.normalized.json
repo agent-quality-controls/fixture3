@@ -1,0 +1,8 @@
+{
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/mismatch/input.txt",
+      "text": "approved value\n"
+    }
+  ]
+}

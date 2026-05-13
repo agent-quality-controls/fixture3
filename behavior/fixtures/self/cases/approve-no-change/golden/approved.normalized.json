@@ -1,0 +1,8 @@
+{
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/approve-no-change/input.txt",
+      "text": "approve no change\n"
+    }
+  ]
+}

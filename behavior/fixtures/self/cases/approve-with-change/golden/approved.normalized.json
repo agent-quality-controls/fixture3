@@ -1,0 +1,8 @@
+{
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/approve-with-change/input.txt",
+      "text": "approved approve with change\n"
+    }
+  ]
+}

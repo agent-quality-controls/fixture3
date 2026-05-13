@@ -1,0 +1,8 @@
+{
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/diff-existing/input.txt",
+      "text": "diff existing\n"
+    }
+  ]
+}

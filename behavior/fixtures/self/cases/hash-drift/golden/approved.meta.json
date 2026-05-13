@@ -1,0 +1,14 @@
+{
+  "suite": "case",
+  "kind": "approved",
+  "run_id": "seed",
+  "run_commit": "seed",
+  "working_tree": "clean",
+  "recorded_at": "2026-05-13T00:00:00Z",
+  "fixture_hash": "sha256:wrong",
+  "manifest_hash": "sha256:wrong",
+  "normalizer_hash": "sha256:wrong",
+  "tool_version": "0.1.0",
+  "output_schema_version": "1",
+  "fixtures": []
+}

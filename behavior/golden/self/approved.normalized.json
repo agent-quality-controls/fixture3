@@ -1,0 +1,151 @@
+{
+  "cases": [
+    {
+      "approved_meta_kind": "approved",
+      "approved_meta_kind_ok": true,
+      "approved_normalized_matches_received": true,
+      "case": "approve-no-change",
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "received_meta_exists": true,
+      "received_normalized_exists": true,
+      "received_raw_exists": true
+    },
+    {
+      "case": "approve-requires-change",
+      "exit_code": 2,
+      "exit_code_ok": true,
+      "received_meta_exists": true,
+      "received_normalized_exists": true,
+      "received_raw_exists": true,
+      "stderr_contains_ok": true
+    },
+    {
+      "approved_change_path": "behavior/changes/.gitkeep",
+      "approved_change_path_ok": true,
+      "approved_meta_kind": "approved",
+      "approved_meta_kind_ok": true,
+      "approved_normalized_matches_received": true,
+      "case": "approve-with-change",
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "received_meta_exists": true,
+      "received_normalized_exists": true,
+      "received_raw_exists": true
+    },
+    {
+      "case": "bad-exit",
+      "exit_code": 2,
+      "exit_code_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stderr_contains_ok": true
+    },
+    {
+      "case": "bad-json",
+      "exit_code": 2,
+      "exit_code_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stderr_contains_ok": true
+    },
+    {
+      "case": "diff-existing",
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "received_meta_exists": true,
+      "received_normalized_exists": true,
+      "received_raw_exists": true,
+      "stdout_contains_ok": true
+    },
+    {
+      "case": "diff-refresh-mismatch",
+      "exit_code": 1,
+      "exit_code_ok": true,
+      "received_meta_exists": true,
+      "received_normalized_exists": true,
+      "received_raw_exists": true,
+      "stdout_contains_ok": true
+    },
+    {
+      "case": "hash-drift",
+      "exit_code": 2,
+      "exit_code_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stderr_contains_ok": true
+    },
+    {
+      "case": "init",
+      "created_manifest_exists": true,
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false
+    },
+    {
+      "case": "match",
+      "diff_changed": false,
+      "diff_changed_ok": true,
+      "diff_status": "matched",
+      "diff_status_ok": true,
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "received_meta_exists": true,
+      "received_normalized_exists": true,
+      "received_raw_exists": true,
+      "stdout_status": "matched",
+      "stdout_status_ok": true
+    },
+    {
+      "case": "mismatch",
+      "diff_changed": true,
+      "diff_changed_ok": true,
+      "diff_status": "different",
+      "diff_status_ok": true,
+      "exit_code": 1,
+      "exit_code_ok": true,
+      "received_meta_exists": true,
+      "received_normalized_exists": true,
+      "received_raw_exists": true,
+      "stdout_status": "different",
+      "stdout_status_ok": true
+    },
+    {
+      "case": "missing-approved",
+      "exit_code": 2,
+      "exit_code_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stderr_contains_ok": true
+    },
+    {
+      "case": "normalizer",
+      "diff_changed": false,
+      "diff_changed_ok": true,
+      "diff_status": "matched",
+      "diff_status_ok": true,
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "received_meta_exists": true,
+      "received_normalized_exists": true,
+      "received_raw_exists": true,
+      "stdout_status": "matched",
+      "stdout_status_ok": true
+    },
+    {
+      "case": "status",
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "received_meta_exists": true,
+      "received_normalized_exists": true,
+      "received_raw_exists": true,
+      "stdout_contains_ok": true
+    }
+  ]
+}

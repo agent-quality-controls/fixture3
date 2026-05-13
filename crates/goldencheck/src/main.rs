@@ -1,7 +1,16 @@
 //! `goldencheck` CLI entry point.
 
-#[allow(
-    clippy::missing_const_for_fn,
-    reason = "Rust entry points are executable boundaries, not reusable const helpers."
-)]
-fn main() {}
+use std::process::ExitCode;
+
+use clap as _;
+use glob as _;
+use serde as _;
+use serde_json as _;
+use serde_norway as _;
+use sha2 as _;
+use thiserror as _;
+use time as _;
+
+fn main() -> ExitCode {
+    goldencheck::run_to_stdio()
+}

@@ -1,0 +1,8 @@
+{
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/hash-drift/input.txt",
+      "text": "hash drift\n"
+    }
+  ]
+}
