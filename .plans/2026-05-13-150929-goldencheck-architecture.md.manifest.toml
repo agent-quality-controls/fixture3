@@ -358,30 +358,66 @@ name = "check"
 required_flags = ["--suite"]
 optional_flags = ["--manifest"]
 exit_codes = [0, 1, 2]
+help_contains = [
+  "Run one suite from goldencheck.yaml.",
+  "discovers fixtures",
+  "writes received files",
+  "received output with `approved.normalized.json`",
+]
 
 [[cli_command]]
 name = "diff"
 required_flags = ["--suite"]
 optional_flags = ["--manifest", "--refresh"]
 exit_codes = [0, 1, 2]
+help_contains = [
+  "Show the latest stored diff",
+  "Without `--refresh`",
+  "does not rerun",
+]
 
 [[cli_command]]
 name = "approve"
 required_flags = ["--suite"]
 optional_flags = ["--manifest", "--change"]
 exit_codes = [0, 2]
+help_contains = [
+  "Publish the last received output",
+  "approved.normalized.json",
+  "--change <path>",
+]
 
 [[cli_command]]
 name = "status"
 required_flags = []
 optional_flags = ["--suite", "--manifest"]
 exit_codes = [0, 2]
+help_contains = [
+  "Report whether approved output",
+  "received output",
+  "diff files exist",
+]
 
 [[cli_command]]
 name = "init"
 required_flags = []
 optional_flags = ["--manifest"]
 exit_codes = [0, 2]
+help_contains = [
+  "Write an example goldencheck.yaml manifest",
+  "fixture glob",
+  "command argv",
+]
+
+[[cli_help]]
+argv = ["cargo", "run", "-p", "goldencheck-cli", "--", "--help"]
+contains = [
+  "runs project commands against fixture files",
+  "Workflow:",
+  "A suite is one golden behavior check",
+  "Exit codes:",
+  "goldencheck.yaml",
+]
 
 [[generated_file]]
 suite = "self"

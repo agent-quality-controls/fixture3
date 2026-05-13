@@ -190,6 +190,15 @@ def layer_goldencheck(manifest: dict) -> int:
 
 def layer_cli(manifest: dict) -> int:
     findings: list[str] = []
+    for row in manifest.get("cli_help", []):
+        code, output = run_command(row["argv"])
+        if code != 0:
+            findings.append(f"cli help failed: {' '.join(row['argv'])} exit {code}\n{output}")
+            continue
+        for text in row["contains"]:
+            if text not in output:
+                findings.append(f"top-level cli help missing text: {text}")
+
     for row in manifest.get("cli_command", []):
         code, output = run_command(["cargo", "run", "-p", "goldencheck-cli", "--", row["name"], "--help"])
         if code != 0:
@@ -198,6 +207,9 @@ def layer_cli(manifest: dict) -> int:
         for flag in row["required_flags"] + row["optional_flags"]:
             if flag not in output:
                 findings.append(f"cli command {row['name']} missing flag in help: {flag}")
+        for text in row.get("help_contains", []):
+            if text not in output:
+                findings.append(f"cli command {row['name']} help missing text: {text}")
 
     if findings:
         return fail(findings)
