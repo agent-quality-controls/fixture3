@@ -5,6 +5,12 @@ path = "Cargo.toml"
 path = "crates/goldencheck/Cargo.toml"
 
 [[tree]]
+path = "crates/goldencheck-install/Cargo.toml"
+
+[[tree]]
+path = "crates/goldencheck-install/src/main.rs"
+
+[[tree]]
 path = "crates/goldencheck/src/main.rs"
 
 [[tree]]
@@ -48,6 +54,21 @@ path = "crates/goldencheck/src/storage.rs"
 
 [[tree]]
 path = "guardrail3-rs.toml"
+
+[[tree]]
+path = "README.md"
+
+[[tree]]
+path = "release-plz.toml"
+
+[[tree]]
+path = ".github/workflows/ci.yml"
+
+[[tree]]
+path = ".github/workflows/release.yml"
+
+[[tree]]
+path = ".github/workflows/binary-release.yml"
 
 [[tree]]
 path = "clippy.toml"
@@ -400,4 +421,4 @@ argv = ["cargo", "clippy", "--workspace", "--all-targets", "--all-features", "--
 
 [[command]]
 name = "self-check"
-argv = ["cargo", "run", "-p", "goldencheck", "--", "check", "--suite", "self", "--manifest", "goldencheck.yaml"]
+argv = ["cargo", "run", "-p", "goldencheck-cli", "--", "check", "--suite", "self", "--manifest", "goldencheck.yaml"]

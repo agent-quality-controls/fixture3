@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/goldencheck"]
+members = ["crates/goldencheck", "crates/goldencheck-install"]
 resolver = "3"
 
 [workspace.package]

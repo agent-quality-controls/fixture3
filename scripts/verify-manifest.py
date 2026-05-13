@@ -191,7 +191,7 @@ def layer_goldencheck(manifest: dict) -> int:
 def layer_cli(manifest: dict) -> int:
     findings: list[str] = []
     for row in manifest.get("cli_command", []):
-        code, output = run_command(["cargo", "run", "-p", "goldencheck", "--", row["name"], "--help"])
+        code, output = run_command(["cargo", "run", "-p", "goldencheck-cli", "--", row["name"], "--help"])
         if code != 0:
             findings.append(f"cli help failed: {row['name']} exit {code}\n{output}")
             continue

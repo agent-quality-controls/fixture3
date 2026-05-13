@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: Install G3RS
+        run: cargo install guardrail3-rs
+      - name: Verify
+        run: scripts/verify-all.sh
+      - name: Stub package dry run
+        run: cargo publish -p goldencheck --dry-run

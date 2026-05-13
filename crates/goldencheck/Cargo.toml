@@ -1,5 +1,5 @@
 [package]
-name = "goldencheck"
+name = "goldencheck-cli"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
@@ -7,6 +7,13 @@ description = "CLI for golden fixture behavior checks"
 license.workspace = true
 repository.workspace = true
 publish.workspace = true
+readme = "../../README.md"
+keywords = ["golden", "fixtures", "snapshot", "cli"]
+categories = ["command-line-utilities", "development-tools::testing"]
+
+[[bin]]
+name = "goldencheck"
+path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4.5.53", features = ["derive"] }

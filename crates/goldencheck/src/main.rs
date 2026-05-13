@@ -12,5 +12,5 @@ use thiserror as _;
 use time as _;
 
 fn main() -> ExitCode {
-    goldencheck::run_to_stdio()
+    goldencheck_cli::run_to_stdio()
 }
