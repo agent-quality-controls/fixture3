@@ -13,7 +13,7 @@ suites:
     output:
       format: "json"
     storage:
-      approved_dir: "behavior/fixtures/self/cases/check-all-match/golden/alpha"
+      approved_dir: "behavior/fixtures/self/cases/check-all-match/approved/alpha"
       received_dir: ".fixture3/self-cases/check-all-match/alpha"
       diff_dir: ".fixture3/self-cases/check-all-match/alpha"
   beta:
@@ -29,6 +29,6 @@ suites:
     output:
       format: "json"
     storage:
-      approved_dir: "behavior/fixtures/self/cases/check-all-match/golden/beta"
+      approved_dir: "behavior/fixtures/self/cases/check-all-match/approved/beta"
       received_dir: ".fixture3/self-cases/check-all-match/beta"
       diff_dir: ".fixture3/self-cases/check-all-match/beta"

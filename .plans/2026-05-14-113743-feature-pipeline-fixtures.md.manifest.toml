@@ -1,0 +1,112 @@
+[[tree]]
+path = "behavior/approved/self/approved.normalized.json"
+
+[[tree]]
+path = "behavior/approved/self/approved.meta.json"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/explain/fixture3.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/doctor-ok/fixture3.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/doctor-error/fixture3.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/new-suite/fixture3.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/tag-selection/fixture3.yaml"
+
+[[tree]]
+path = "behavior/fixtures/self/cases/feature-selection/fixture3.yaml"
+
+[[tree]]
+path = "crates/fixture3/src/selection.rs"
+
+[[tree]]
+path = "crates/fixture3/src/doctor.rs"
+
+[[tree]]
+path = "crates/fixture3/src/scaffold.rs"
+
+[[tree]]
+path = "scripts/verify-feature-pipeline.py"
+
+[[forbidden_path]]
+pattern = "behavior/golden"
+
+[[forbidden_source]]
+scope = "current"
+pattern = "behavior/golden"
+
+[[forbidden_source]]
+scope = "current"
+pattern = "approved behavior"
+
+[[manifest_contains]]
+file = "fixture3.yaml"
+contains = [
+  "features:",
+  "tags:",
+  "approved_dir: \"behavior/approved/self\"",
+]
+
+[[cli_command]]
+name = "check"
+required_flags = []
+optional_flags = ["--suite", "--all", "--tag", "--feature", "--manifest"]
+help_contains = [
+  "Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`",
+]
+
+[[cli_command]]
+name = "status"
+required_flags = []
+optional_flags = ["--suite", "--all", "--tag", "--feature", "--manifest", "--json"]
+help_contains = [
+  "Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`",
+]
+
+[[cli_command]]
+name = "explain"
+required_flags = ["--suite"]
+optional_flags = ["--manifest", "--json"]
+help_contains = [
+  "Show resolved suite configuration",
+]
+
+[[cli_command]]
+name = "doctor"
+required_flags = []
+optional_flags = ["--manifest", "--json"]
+help_contains = [
+  "Validate fixture3.yaml without running project behavior",
+]
+
+[[cli_command]]
+name = "new"
+required_flags = []
+optional_flags = []
+help_contains = [
+  "Create fixture approval scaffolding",
+]
+
+[[self_case]]
+name = "explain"
+
+[[self_case]]
+name = "doctor-ok"
+
+[[self_case]]
+name = "doctor-error"
+
+[[self_case]]
+name = "new-suite"
+
+[[self_case]]
+name = "tag-selection"
+
+[[self_case]]
+name = "feature-selection"

@@ -12,11 +12,12 @@ migrations, or any stable JSON result that should not change without review.
 
 A suite is one fixture approval check. It defines fixture globs, the command to run,
 accepted exit codes, output handling, and approved/received/diff storage.
+Suites can also have tags, and features can group suites for higher-level workflows.
 
 Quick start:
   1. Run `fixture3 init` to create a usable example fixture3.yaml.
   2. Edit the example suite for your command and fixture paths.
-  3. Add approved output at behavior/golden/<suite>/approved.normalized.json.
+  3. Add approved output at behavior/approved/<suite>/approved.normalized.json.
   4. Run `fixture3 check --suite <suite>`.
   5. Review `.fixture3/<suite>/diff.txt`.
   6. Run `fixture3 approve --suite <suite> --change <path>` for intentional drift.
@@ -39,9 +40,14 @@ Manifest schema:
           argv:
             - \"optional-normalizer\"
       storage:
-        approved_dir: \"behavior/golden/<suite>\"
+        approved_dir: \"behavior/approved/<suite>\"
         received_dir: \".fixture3/<suite>\"
         diff_dir: \".fixture3/<suite>\"
+  features:
+    <feature>:
+      spec: \"docs/features/<feature>.md\"
+      suites:
+        - \"<suite>\"
 
 Command argv:
   `{fixtures}` is replaced with every discovered fixture path.
@@ -66,10 +72,15 @@ Files:
 Workflow:
   `fixture3 check --suite <suite>` runs one suite and compares approved output.
   `fixture3 check --all` runs every suite and returns the highest-severity status.
+  `fixture3 check --tag <tag>` runs every suite with that tag.
+  `fixture3 check --feature <feature>` runs every suite in that feature.
   `fixture3 diff --suite <suite>` shows the latest stored diff.
   `fixture3 diff --suite <suite> --refresh` reruns check before showing the diff.
   `fixture3 approve --suite <suite> --change <path>` promotes received output.
   `fixture3 status` lists approved, received, and diff file state.
+  `fixture3 explain --suite <suite>` shows the resolved suite configuration.
+  `fixture3 doctor` validates manifest paths, fixtures, features, and storage.
+  `fixture3 new suite <name>` creates fixture and approved-output scaffolding.
 
 Approve:
   `--change <path>` is required when output differs.
@@ -89,8 +100,8 @@ check discovers fixtures, runs each suite command, optionally runs the normalize
 normalizes JSON output, writes received files under `.fixture3/<suite>`, compares
 received output with `approved.normalized.json`, and writes diff files.
 
-Use `--suite <name>` for one suite or `--all` for every suite. Exit code is 2 if any
-suite errors. Exit code is 1 if any suite differs and no suite errors.
+Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`.
+Exit code is 2 if any suite errors. Exit code is 1 if any suite differs and no suite errors.
 
 Use this before reviewing behavior changes.
 ";
@@ -107,7 +118,7 @@ const APPROVE_HELP: &str = "\
 Publish the last received output as approved output.
 
 approve copies `.fixture3/<suite>/received.normalized.json` to
-`behavior/golden/<suite>/approved.normalized.json` and writes approved metadata.
+`behavior/approved/<suite>/approved.normalized.json` and writes approved metadata.
 If the stored diff says output changed, `--change <path>` is required so the approval
 records the reviewed change file.
 ";
@@ -115,8 +126,8 @@ records the reviewed change file.
 const STATUS_HELP: &str = "\
 Show one suite or every suite from fixture3.yaml.
 
-Use `--suite <name>` to show one suite, `--all` to show every suite, or omit both flags
-to list every suite.
+Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`.
+Omit all target flags to list every suite.
 ";
 
 const INIT_HELP: &str = "\
@@ -124,6 +135,27 @@ Write an example fixture3.yaml manifest.
 
 The generated manifest is a starting point. Replace the fixture glob, command argv,
 accepted exit codes, and storage paths with the behavior contract for your project.
+";
+
+const EXPLAIN_HELP: &str = "\
+Show resolved suite configuration without running project behavior.
+
+explain prints suite tags, feature membership, fixture globs, resolved fixture count,
+command argv, storage paths, and current approved/received/diff file state.
+";
+
+const DOCTOR_HELP: &str = "\
+Validate fixture3.yaml without running project behavior.
+
+doctor checks feature suite references, fixture globs, command argv, exit-code lists,
+normalizer argv, approved output files, and storage path collisions.
+";
+
+const NEW_HELP: &str = "\
+Create fixture approval scaffolding.
+
+new suite creates a sample fixture input, an initial approved output file, and prints
+the manifest block to add under `suites:`.
 ";
 
 #[derive(Debug, Parser)]
@@ -159,23 +191,41 @@ pub(crate) enum Commands {
     #[command(about = "Create an example fixture3.yaml manifest")]
     #[command(long_about = INIT_HELP)]
     Init(InitArgs),
+    #[command(about = "Show resolved suite configuration")]
+    #[command(long_about = EXPLAIN_HELP)]
+    Explain(ExplainArgs),
+    #[command(about = "Validate fixture3.yaml without running project behavior")]
+    #[command(long_about = DOCTOR_HELP)]
+    Doctor(DoctorArgs),
+    #[command(about = "Create fixture approval scaffolding")]
+    #[command(long_about = NEW_HELP)]
+    New(NewArgs),
 }
 
 #[derive(Debug, Parser)]
 #[command(group(
     clap::ArgGroup::new("target")
         .required(true)
-        .args(["suite", "all"])
+        .args(["suite", "all", "tag", "feature"])
 ))]
 pub(crate) struct CheckArgs {
-    #[arg(long, conflicts_with = "all", help = "Suite name from fixture3.yaml")]
+    #[arg(long, help = "Suite name from fixture3.yaml")]
     pub(crate) suite: Option<String>,
 
-    #[arg(long, conflicts_with = "suite", help = "Run every suite in fixture3.yaml")]
+    #[arg(long, help = "Run every suite in fixture3.yaml")]
     pub(crate) all: bool,
+
+    #[arg(long, help = "Run suites with this tag")]
+    pub(crate) tag: Option<String>,
+
+    #[arg(long, help = "Run suites listed under this feature")]
+    pub(crate) feature: Option<String>,
 
     #[arg(long, default_value = "fixture3.yaml", help = "Manifest path")]
     pub(crate) manifest: PathBuf,
+
+    #[arg(long, help = "Write machine-readable JSON output")]
+    pub(crate) json: bool,
 }
 
 #[derive(Debug, Parser)]
@@ -188,6 +238,9 @@ pub(crate) struct DiffArgs {
 
     #[arg(long, help = "Run check before printing the diff")]
     pub(crate) refresh: bool,
+
+    #[arg(long, help = "Write machine-readable JSON output")]
+    pub(crate) json: bool,
 }
 
 #[derive(Debug, Parser)]
@@ -203,19 +256,80 @@ pub(crate) struct ApproveArgs {
 }
 
 #[derive(Debug, Parser)]
+#[command(group(
+    clap::ArgGroup::new("target")
+        .required(false)
+        .args(["suite", "all", "tag", "feature"])
+))]
 pub(crate) struct StatusArgs {
-    #[arg(long, conflicts_with = "all", help = "Suite name from fixture3.yaml")]
+    #[arg(long, help = "Suite name from fixture3.yaml")]
     pub(crate) suite: Option<String>,
 
-    #[arg(long, conflicts_with = "suite", help = "Show every suite in fixture3.yaml")]
+    #[arg(long, help = "Show every suite in fixture3.yaml")]
     pub(crate) all: bool,
+
+    #[arg(long, help = "Show suites with this tag")]
+    pub(crate) tag: Option<String>,
+
+    #[arg(long, help = "Show suites listed under this feature")]
+    pub(crate) feature: Option<String>,
 
     #[arg(long, default_value = "fixture3.yaml", help = "Manifest path")]
     pub(crate) manifest: PathBuf,
+
+    #[arg(long, help = "Write machine-readable JSON output")]
+    pub(crate) json: bool,
 }
 
 #[derive(Debug, Parser)]
 pub(crate) struct InitArgs {
     #[arg(long, default_value = "fixture3.yaml", help = "Manifest path to create")]
     pub(crate) manifest: PathBuf,
+}
+
+#[derive(Debug, Parser)]
+pub(crate) struct ExplainArgs {
+    #[arg(long, help = "Suite name from fixture3.yaml")]
+    pub(crate) suite: String,
+
+    #[arg(long, default_value = "fixture3.yaml", help = "Manifest path")]
+    pub(crate) manifest: PathBuf,
+
+    #[arg(long, help = "Write machine-readable JSON output")]
+    pub(crate) json: bool,
+}
+
+#[derive(Debug, Parser)]
+pub(crate) struct DoctorArgs {
+    #[arg(long, default_value = "fixture3.yaml", help = "Manifest path")]
+    pub(crate) manifest: PathBuf,
+
+    #[arg(long, help = "Write machine-readable JSON output")]
+    pub(crate) json: bool,
+}
+
+#[derive(Debug, Parser)]
+pub(crate) struct NewArgs {
+    #[command(subcommand)]
+    pub(crate) command: NewCommands,
+}
+
+#[derive(Debug, Subcommand)]
+pub(crate) enum NewCommands {
+    #[command(about = "Create one fixture approval suite")]
+    Suite(NewSuiteArgs),
+}
+
+#[derive(Debug, Parser)]
+pub(crate) struct NewSuiteArgs {
+    pub(crate) name: String,
+
+    #[arg(long, default_value = "fixture3.yaml", help = "Manifest path used for root resolution")]
+    pub(crate) manifest: PathBuf,
+
+    #[arg(long, default_value = "input.json", help = "Sample fixture file name")]
+    pub(crate) fixture: String,
+
+    #[arg(long, default_value = "cat", help = "Command program for the manifest block")]
+    pub(crate) command: String,
 }

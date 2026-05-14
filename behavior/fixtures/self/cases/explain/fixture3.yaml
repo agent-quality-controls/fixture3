@@ -1,0 +1,24 @@
+version: 1
+features:
+  inspect-feature:
+    spec: "behavior/fixtures/self/cases/explain/spec.md"
+    suites:
+      - "case"
+suites:
+  case:
+    tags:
+      - "inspect"
+    fixtures:
+      - "behavior/fixtures/self/cases/explain/input.json"
+    command:
+      argv:
+        - "cat"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/fixtures/self/cases/explain/approved"
+      received_dir: ".fixture3/self-cases/explain"
+      diff_dir: ".fixture3/self-cases/explain"

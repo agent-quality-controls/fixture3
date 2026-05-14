@@ -35,8 +35,8 @@ The repository should have a machine-readable manifest that describes required f
 - `crates/fixture3/src/*.rs`
 - `fixture3.yaml`
 - `behavior/fixtures/self/basic/input.txt`
-- `behavior/golden/self/approved.normalized.json`
-- `behavior/golden/self/approved.meta.json`
+- `behavior/approved/self/approved.normalized.json`
+- `behavior/approved/self/approved.meta.json`
 - `scripts/verify-all.sh`
 - `scripts/verify-layer-*.sh`
 - `scripts/verify-manifest.py`

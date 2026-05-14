@@ -24,7 +24,7 @@ Forbidden:
 
 Allowed:
 
-- golden behavior fixtures
+- fixture behavior fixtures
 - approved output files
 - received output files
 - deterministic diff output
@@ -41,7 +41,7 @@ Use `fixture3`.
 
 Reason:
 
-- `golden` maps to the established "golden file" / snapshot testing approach.
+- `approved` maps to the established "approved file" / snapshot testing approach.
 - `check` says the tool verifies current output against recorded output.
 - It is readable as a command: `fixture3 check`, `fixture3 diff`, `fixture3 approve`.
 
@@ -114,7 +114,7 @@ suites:
           - "scripts/normalize-textlint-output.js"
 
     storage:
-      approved_dir: "behavior/golden/textlint-rules"
+      approved_dir: "behavior/approved/textlint-rules"
       received_dir: ".fixture3/textlint-rules"
       diff_dir: ".fixture3/textlint-rules"
 
@@ -219,7 +219,7 @@ Rules:
 Stores:
 
 ```text
-behavior/golden/textlint-rules/
+behavior/approved/textlint-rules/
   approved.normalized.json
   approved.meta.json
 ```
@@ -305,7 +305,7 @@ Suggested layout:
 ```text
 behavior/
   fixtures/
-  golden/
+  approved/
   changes/
   schemas/
 .fixture3/
@@ -392,7 +392,7 @@ suites:
     output:
       format: "json"
     storage:
-      approved_dir: "behavior/golden/textlint-rules"
+      approved_dir: "behavior/approved/textlint-rules"
       received_dir: ".fixture3/textlint-rules"
       diff_dir: ".fixture3/textlint-rules"
 ```

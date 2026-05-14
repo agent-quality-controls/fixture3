@@ -13,6 +13,6 @@ suites:
     output:
       format: "json"
     storage:
-      approved_dir: "behavior/fixtures/self/cases/mismatch/golden"
+      approved_dir: "behavior/fixtures/self/cases/mismatch/approved"
       received_dir: ".fixture3/self-cases/mismatch"
       diff_dir: ".fixture3/self-cases/mismatch"

@@ -1,0 +1,36 @@
+version: 1
+suites:
+  alpha:
+    tags:
+      - "selected"
+    fixtures:
+      - "behavior/fixtures/self/cases/tag-selection/input-a.json"
+    command:
+      argv:
+        - "cat"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/fixtures/self/cases/tag-selection/approved/alpha"
+      received_dir: ".fixture3/self-cases/tag-selection/alpha"
+      diff_dir: ".fixture3/self-cases/tag-selection/alpha"
+  beta:
+    tags:
+      - "ignored"
+    fixtures:
+      - "behavior/fixtures/self/cases/tag-selection/input-b.json"
+    command:
+      argv:
+        - "cat"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/fixtures/self/cases/tag-selection/approved/beta"
+      received_dir: ".fixture3/self-cases/tag-selection/beta"
+      diff_dir: ".fixture3/self-cases/tag-selection/beta"

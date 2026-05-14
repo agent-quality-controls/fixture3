@@ -115,8 +115,15 @@ pub(crate) fn init_manifest(path: &std::path::Path) -> Result<(), AppError> {
     }
 
     let text = r#"version: 1
+features:
+  example:
+    spec: "docs/features/example.md"
+    suites:
+      - "example"
 suites:
   example:
+    tags:
+      - "example"
     fixtures:
       - "behavior/fixtures/example/*/input.json"
     command:
@@ -128,7 +135,7 @@ suites:
     output:
       format: "json"
     storage:
-      approved_dir: "behavior/golden/example"
+      approved_dir: "behavior/approved/example"
       received_dir: ".fixture3/example"
       diff_dir: ".fixture3/example"
 "#;

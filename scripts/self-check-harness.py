@@ -81,6 +81,27 @@ EXPECTED = {
         "exit_code": 1,
         "stdout_contains": "status: different",
     },
+    "doctor-error": {
+        "exit_code": 2,
+        "stdout_contains": ["feature_missing_suite", "fixtures_no_matches", "command_empty"],
+    },
+    "doctor-ok": {
+        "exit_code": 0,
+        "stdout_contains": "status: ok",
+    },
+    "explain": {
+        "exit_code": 0,
+        "stdout_contains": ["suite: case", "tags: inspect", "features: inspect-feature", "approved_exists: yes"],
+    },
+    "feature-selection": {
+        "exit_code": 0,
+        "stdout_contains": ["suite: alpha", "status: matched"],
+        "stdout_not_contains": "suite: beta",
+        "generated_files": [
+            ".fixture3/self-cases/feature-selection/alpha/received.normalized.json",
+            ".fixture3/self-cases/feature-selection/alpha/diff.json",
+        ],
+    },
     "hash-drift": {
         "exit_code": 2,
         "stderr_contains": "fixture hash changed",
@@ -105,6 +126,14 @@ EXPECTED = {
         "diff_changed": False,
         "stdout_status": "matched",
     },
+    "new-suite": {
+        "exit_code": 0,
+        "stdout_contains": ["fixture:", "approved:", "manifest:", "generated:"],
+        "generated_files": [
+            "behavior/fixtures/self/cases/new-suite/behavior/fixtures/generated/example/input.json",
+            "behavior/fixtures/self/cases/new-suite/behavior/approved/generated/approved.normalized.json",
+        ],
+    },
     "status": {
         "exit_code": 0,
         "stdout_contains": "approved: yes",
@@ -116,6 +145,15 @@ EXPECTED = {
     "status-suite-all-conflict": {
         "exit_code": 2,
         "stderr_contains": ["cannot be used", "--suite", "--all"],
+    },
+    "tag-selection": {
+        "exit_code": 0,
+        "stdout_contains": ["suite: alpha", "status: matched"],
+        "stdout_not_contains": "suite: beta",
+        "generated_files": [
+            ".fixture3/self-cases/tag-selection/alpha/received.normalized.json",
+            ".fixture3/self-cases/tag-selection/alpha/diff.json",
+        ],
     },
 }
 
@@ -167,6 +205,10 @@ def run_case(binary: Path, manifest: Path) -> dict:
         record["stderr_contains_ok"] = contains_all(result.stderr, expected["stderr_contains"])
     if "stdout_contains" in expected:
         record["stdout_contains_ok"] = contains_all(result.stdout, expected["stdout_contains"])
+    if "stdout_not_contains" in expected:
+        record["stdout_not_contains_ok"] = not contains_all(
+            result.stdout, expected["stdout_not_contains"]
+        )
     if "generated_files" in expected:
         record["generated_files_ok"] = all(Path(path).exists() for path in expected["generated_files"])
     if "created_manifest" in expected:
@@ -198,8 +240,8 @@ def run_case(binary: Path, manifest: Path) -> dict:
 
 def approved_root(case: str, manifest: Path) -> Path:
     if case.startswith("approve-"):
-        return Path(".fixture3/self-cases") / case / "golden"
-    return manifest.parent / "golden"
+        return Path(".fixture3/self-cases") / case / "approved"
+    return manifest.parent / "approved"
 
 
 def prepare_case(case: str, manifest: Path, received_root: Path) -> None:
@@ -207,13 +249,15 @@ def prepare_case(case: str, manifest: Path, received_root: Path) -> None:
         runtime_golden = approved_root(case, manifest)
         runtime_golden.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(
-            manifest.parent / "golden" / "approved.normalized.json",
+            manifest.parent / "approved" / "approved.normalized.json",
             runtime_golden / "approved.normalized.json",
         )
         meta = runtime_golden / "approved.meta.json"
         meta.unlink(missing_ok=True)
     if case == "init":
         Path(".fixture3/self-init/generated.yaml").unlink(missing_ok=True)
+    if case == "new-suite":
+        shutil.rmtree(manifest.parent / "behavior", ignore_errors=True)
     if case.startswith("check-all-") or case == "status-all":
         shutil.rmtree(received_root, ignore_errors=True)
         return
@@ -258,9 +302,20 @@ def run_case_command(binary: Path, case: str, manifest: Path) -> subprocess.Comp
         return run_command(
             [str(binary), "diff", "--suite", "case", "--manifest", str(manifest), "--refresh"]
         )
+    if case == "doctor-error" or case == "doctor-ok":
+        return run_command([str(binary), "doctor", "--manifest", str(manifest)])
+    if case == "explain":
+        run_command(check_command(binary, manifest))
+        return run_command([str(binary), "explain", "--suite", "case", "--manifest", str(manifest)])
+    if case == "feature-selection":
+        return run_command(
+            [str(binary), "check", "--feature", "selected-feature", "--manifest", str(manifest)]
+        )
     if case == "init":
         created = Path(".fixture3/self-init/generated.yaml")
         return run_command([str(binary), "init", "--manifest", str(created)])
+    if case == "new-suite":
+        return run_command([str(binary), "new", "suite", "generated", "--manifest", str(manifest)])
     if case == "status":
         run_command(check_command(binary, manifest))
         return run_command([str(binary), "status", "--suite", "case", "--manifest", str(manifest)])
@@ -271,6 +326,8 @@ def run_case_command(binary: Path, case: str, manifest: Path) -> subprocess.Comp
         return run_command(
             [str(binary), "status", "--suite", "alpha", "--all", "--manifest", str(manifest)]
         )
+    if case == "tag-selection":
+        return run_command([str(binary), "check", "--tag", "selected", "--manifest", str(manifest)])
     return run_command(check_command(binary, manifest))
 
 

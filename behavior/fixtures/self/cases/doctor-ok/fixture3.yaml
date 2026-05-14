@@ -1,0 +1,23 @@
+version: 1
+features:
+  doctor-feature:
+    suites:
+      - "case"
+suites:
+  case:
+    tags:
+      - "doctor"
+    fixtures:
+      - "behavior/fixtures/self/cases/doctor-ok/input.json"
+    command:
+      argv:
+        - "cat"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/fixtures/self/cases/doctor-ok/approved"
+      received_dir: ".fixture3/self-cases/doctor-ok"
+      diff_dir: ".fixture3/self-cases/doctor-ok"

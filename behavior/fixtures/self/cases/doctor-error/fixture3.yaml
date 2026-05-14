@@ -1,0 +1,18 @@
+version: 1
+features:
+  broken-feature:
+    suites:
+      - "missing-suite"
+suites:
+  case:
+    fixtures:
+      - "behavior/fixtures/self/cases/doctor-error/missing/*.json"
+    command:
+      argv: []
+      ok_exit_codes: []
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/fixtures/self/cases/doctor-error/approved"
+      received_dir: ".fixture3/self-cases/doctor-error"
+      diff_dir: ".fixture3/self-cases/doctor-error"

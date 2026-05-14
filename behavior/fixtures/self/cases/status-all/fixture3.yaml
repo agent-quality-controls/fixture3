@@ -13,7 +13,7 @@ suites:
     output:
       format: "json"
     storage:
-      approved_dir: "behavior/fixtures/self/cases/status-all/golden/alpha"
+      approved_dir: "behavior/fixtures/self/cases/status-all/approved/alpha"
       received_dir: ".fixture3/self-cases/status-all/alpha"
       diff_dir: ".fixture3/self-cases/status-all/alpha"
   beta:
@@ -29,6 +29,6 @@ suites:
     output:
       format: "json"
     storage:
-      approved_dir: "behavior/fixtures/self/cases/status-all/golden/beta"
+      approved_dir: "behavior/fixtures/self/cases/status-all/approved/beta"
       received_dir: ".fixture3/self-cases/status-all/beta"
       diff_dir: ".fixture3/self-cases/status-all/beta"

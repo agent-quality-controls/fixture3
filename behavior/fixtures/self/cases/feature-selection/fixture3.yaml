@@ -1,0 +1,41 @@
+version: 1
+features:
+  selected-feature:
+    spec: "behavior/fixtures/self/cases/feature-selection/spec.md"
+    suites:
+      - "alpha"
+suites:
+  alpha:
+    tags:
+      - "feature"
+    fixtures:
+      - "behavior/fixtures/self/cases/feature-selection/input-a.json"
+    command:
+      argv:
+        - "cat"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/fixtures/self/cases/feature-selection/approved/alpha"
+      received_dir: ".fixture3/self-cases/feature-selection/alpha"
+      diff_dir: ".fixture3/self-cases/feature-selection/alpha"
+  beta:
+    tags:
+      - "feature"
+    fixtures:
+      - "behavior/fixtures/self/cases/feature-selection/input-b.json"
+    command:
+      argv:
+        - "cat"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/fixtures/self/cases/feature-selection/approved/beta"
+      received_dir: ".fixture3/self-cases/feature-selection/beta"
+      diff_dir: ".fixture3/self-cases/feature-selection/beta"

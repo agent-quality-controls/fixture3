@@ -119,6 +119,44 @@
       "stdout_contains_ok": true
     },
     {
+      "case": "doctor-error",
+      "exit_code": 2,
+      "exit_code_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stdout_contains_ok": true
+    },
+    {
+      "case": "doctor-ok",
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stdout_contains_ok": true
+    },
+    {
+      "case": "explain",
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "received_meta_exists": true,
+      "received_normalized_exists": true,
+      "received_raw_exists": true,
+      "stdout_contains_ok": true
+    },
+    {
+      "case": "feature-selection",
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "generated_files_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stdout_contains_ok": true,
+      "stdout_not_contains_ok": true
+    },
+    {
       "case": "hash-drift",
       "exit_code": 2,
       "exit_code_ok": true,
@@ -174,6 +212,16 @@
       "stderr_contains_ok": true
     },
     {
+      "case": "new-suite",
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "generated_files_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stdout_contains_ok": true
+    },
+    {
       "case": "normalizer",
       "diff_changed": false,
       "diff_changed_ok": true,
@@ -213,6 +261,17 @@
       "received_normalized_exists": false,
       "received_raw_exists": false,
       "stderr_contains_ok": true
+    },
+    {
+      "case": "tag-selection",
+      "exit_code": 0,
+      "exit_code_ok": true,
+      "generated_files_ok": true,
+      "received_meta_exists": false,
+      "received_normalized_exists": false,
+      "received_raw_exists": false,
+      "stdout_contains_ok": true,
+      "stdout_not_contains_ok": true
     }
   ]
 }

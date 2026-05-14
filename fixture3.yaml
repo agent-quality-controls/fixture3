@@ -1,6 +1,14 @@
 version: 1
+features:
+  self:
+    spec: ".plans/2026-05-14-113743-feature-pipeline-fixtures.md"
+    suites:
+      - "self"
 suites:
   self:
+    tags:
+      - "self"
+      - "fixture-pipeline"
     fixtures:
       - "behavior/fixtures/self/cases/*/fixture3.yaml"
     command:
@@ -13,6 +21,6 @@ suites:
     output:
       format: "json"
     storage:
-      approved_dir: "behavior/golden/self"
+      approved_dir: "behavior/approved/self"
       received_dir: ".fixture3/self"
       diff_dir: ".fixture3/self"

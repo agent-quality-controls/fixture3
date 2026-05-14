@@ -1,0 +1,124 @@
+{
+  "suite": "self",
+  "kind": "approved",
+  "run_id": "2026-05-14T10-50-09.772802Z-ea8a792c",
+  "run_commit": "fd0a97f",
+  "working_tree": "dirty",
+  "recorded_at": "2026-05-14T10:50:09.772802Z",
+  "fixture_hash": "sha256:7fb5792e965532207466503202cc91e620031e2df8ebcc6b90ae39ef7367cfa1",
+  "manifest_hash": "sha256:ea8a792c32e6aab6f137bb1d6b9d3bb7d2cd7579e25e068f305c2398287cf344",
+  "normalizer_hash": "sha256:c219507b61710f3b35350618b95d841c65b681fbeb96caf8ae69c0af301f4d2f",
+  "tool_version": "0.1.6",
+  "output_schema_version": "1",
+  "fixtures": [
+    {
+      "path": "behavior/fixtures/self/cases/approve-no-change/fixture3.yaml",
+      "sha256": "sha256:5adac9d0e53ed4f4df5ad05aab19abadcb87ab06db4da6777f7876446e363c53"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/approve-requires-change/fixture3.yaml",
+      "sha256": "sha256:977293a52a24079fcf9e75f0d47150dc7bb93e4db9dc188cdadd9412df280f18"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/approve-with-change/fixture3.yaml",
+      "sha256": "sha256:b6b9d8a5f9d847974470fa0ebfbc8b3930b583d7126d2cbab378e1cfec9b1178"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/bad-exit/fixture3.yaml",
+      "sha256": "sha256:6f23209e723fb11f01f95b48bcd921585bac03512aa940abf34e9f459876258c"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/bad-json/fixture3.yaml",
+      "sha256": "sha256:ef56a8c32202ca30ee4d763c9a7eb440590191619266cf5987680dc6ea597435"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/check-all-error/fixture3.yaml",
+      "sha256": "sha256:5d8953b65477d62ece44046ba899d0ee8e84a3b0d5095d986c46cf3aa2833687"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/check-all-match/fixture3.yaml",
+      "sha256": "sha256:82ee63874399fc3cd3263166fbbaa57a7ca19965859525b5275114a778a6742d"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/check-all-mismatch/fixture3.yaml",
+      "sha256": "sha256:6064cc9efc2e30b034a54df2346f38dc9a3e90f7f6b2906ae3416619a702caf9"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/check-suite-all-conflict/fixture3.yaml",
+      "sha256": "sha256:bf9bfdc54b37c425b0c4284da8df6a9e49b3a20e195b4371c4226f09cf800b85"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/check-target-required/fixture3.yaml",
+      "sha256": "sha256:8ccb293e57e3c6d0077d24d8148a24a3257ed10d06acd32e9e37917b66dddb13"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/diff-existing/fixture3.yaml",
+      "sha256": "sha256:6ae7170378cb34a14987d0f408c262d2e32d863ee74bb3331d86a6f83f5a84c3"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/diff-refresh-mismatch/fixture3.yaml",
+      "sha256": "sha256:9045e3b275955bc3538cfd231c1a42faa8a3bc2ae39be56f2de2229ddcd8c624"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/doctor-error/fixture3.yaml",
+      "sha256": "sha256:5402b40659ba127692513bcb43ffa75bcf740c2e3f29f09abb7b13ef46c77aee"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/doctor-ok/fixture3.yaml",
+      "sha256": "sha256:5ed00ff787b3f23ae5a75f5b6433d3453bb1a88bb36f1629b1acdadcbc5b64f1"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/explain/fixture3.yaml",
+      "sha256": "sha256:7bb6fe7546c50a9d9d2881d464ced886e830789383d5349635c538edf9826a85"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/feature-selection/fixture3.yaml",
+      "sha256": "sha256:8b0ef7311570b570afe92f14c545030c35261af5086f0f206539b0627ec5d2f9"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/hash-drift/fixture3.yaml",
+      "sha256": "sha256:1cf1702e0fd2a5305dddff9ae1261acdb4780a9666ae6a41518484907a6c92cf"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/init/fixture3.yaml",
+      "sha256": "sha256:7b3b4fd1b3d2c80415cd05ad87ac0b700a5a19c8046bee6ab380b34c38320d23"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/match/fixture3.yaml",
+      "sha256": "sha256:c5186df566bad6c9c61bdd2fd02211ccede450623546b0f442031699b8c0daed"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/mismatch/fixture3.yaml",
+      "sha256": "sha256:e565a39c82b45b480297ad773b9f62f756cfba67569b9ab20d52f534539f39b5"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/missing-approved/fixture3.yaml",
+      "sha256": "sha256:3fc88657128a7b2c7f131c3286fb934eae11b77599685174719e658bb5b8e753"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/new-suite/fixture3.yaml",
+      "sha256": "sha256:7b3b4fd1b3d2c80415cd05ad87ac0b700a5a19c8046bee6ab380b34c38320d23"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/normalizer/fixture3.yaml",
+      "sha256": "sha256:d9958a3adda1522f0c8df5ecd028eca3712948bd202f3c0e7e7f320062d3f39e"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/status/fixture3.yaml",
+      "sha256": "sha256:8cd75592df3575c23d2fea341ffb27044e1ad15aedaf9c21c8f7a62d2b948812"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/status-all/fixture3.yaml",
+      "sha256": "sha256:7d7ed077ea1bed4b74738c73f0ef79a5b68995ad2b17569b4a21250b64bb189a"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/status-suite-all-conflict/fixture3.yaml",
+      "sha256": "sha256:388fe4f9eeb1691ec04712069017a4238a84d46700e5c07df86dc78b5f6a1c1c"
+    },
+    {
+      "path": "behavior/fixtures/self/cases/tag-selection/fixture3.yaml",
+      "sha256": "sha256:8a8dfc84ff2040980f9ec01f7c717797176fe86b55cf086d616079e93d4ea899"
+    }
+  ],
+  "change_path": ".plans/2026-05-14-113743-feature-pipeline-fixtures.md"
+}

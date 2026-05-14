@@ -31,13 +31,22 @@ A project defines suites in `fixture3.yaml`. Each suite says:
 - which exit codes are accepted
 - how stdout is normalized
 - where approved, received, and diff files live
+- which tags and features group suites for feature-level workflows
 
 Example:
 
 ```yaml
 version: 1
+features:
+  linting:
+    spec: "docs/features/linting.md"
+    suites:
+      - "lint-rules"
 suites:
   lint-rules:
+    tags:
+      - "lint"
+      - "rules"
     fixtures:
       - "behavior/fixtures/lint-rules/*/input.json"
     command:
@@ -53,7 +62,7 @@ suites:
         argv:
           - "scripts/normalize-output.py"
     storage:
-      approved_dir: "behavior/golden/lint-rules"
+      approved_dir: "behavior/approved/lint-rules"
       received_dir: ".fixture3/lint-rules"
       diff_dir: ".fixture3/lint-rules"
 ```
@@ -83,6 +92,13 @@ Run every suite:
 fixture3 check --all
 ```
 
+Run suites by tag or feature:
+
+```bash
+fixture3 check --tag lint
+fixture3 check --feature linting
+```
+
 Show a stored diff:
 
 ```bash
@@ -109,6 +125,19 @@ fixture3 status --suite lint-rules
 fixture3 status --all
 ```
 
+Inspect and validate a suite pipeline:
+
+```bash
+fixture3 explain --suite lint-rules
+fixture3 doctor
+```
+
+Create fixture and approval scaffolding:
+
+```bash
+fixture3 new suite lint-rules
+```
+
 Exit codes:
 
 - `0`: received output matches approved output
@@ -124,7 +153,7 @@ Committed files:
 ```text
 behavior/
   fixtures/
-  golden/
+  approved/
   changes/
 ```
 
@@ -143,7 +172,7 @@ Generated files:
 Approved output:
 
 ```text
-behavior/golden/<suite>/
+behavior/approved/<suite>/
   approved.normalized.json
   approved.meta.json
 ```

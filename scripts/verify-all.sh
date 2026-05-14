@@ -11,5 +11,6 @@ scripts/verify-layer-4-modules.sh
 scripts/verify-layer-5-static.sh
 scripts/verify-layer-6-fixture3.sh
 scripts/verify-layer-7-cli.sh
+python3 scripts/verify-feature-pipeline.py
 
 printf 'PASS\n'

@@ -17,6 +17,6 @@ suites:
           - "python3"
           - "scripts/self-case-normalize-json.py"
     storage:
-      approved_dir: "behavior/fixtures/self/cases/normalizer/golden"
+      approved_dir: "behavior/fixtures/self/cases/normalizer/approved"
       received_dir: ".fixture3/self-cases/normalizer"
       diff_dir: ".fixture3/self-cases/normalizer"

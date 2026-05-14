@@ -29,6 +29,9 @@ path = "crates/fixture3/src/command.rs"
 path = "crates/fixture3/src/diff.rs"
 
 [[tree]]
+path = "crates/fixture3/src/doctor.rs"
+
+[[tree]]
 path = "crates/fixture3/src/error.rs"
 
 [[tree]]
@@ -48,6 +51,12 @@ path = "crates/fixture3/src/metadata.rs"
 
 [[tree]]
 path = "crates/fixture3/src/normalize.rs"
+
+[[tree]]
+path = "crates/fixture3/src/scaffold.rs"
+
+[[tree]]
+path = "crates/fixture3/src/selection.rs"
 
 [[tree]]
 path = "crates/fixture3/src/storage.rs"
@@ -80,16 +89,16 @@ path = "deny.toml"
 path = "behavior/fixtures/bootstrap/.gitkeep"
 
 [[tree]]
-path = "behavior/golden/bootstrap/.gitkeep"
+path = "behavior/approved/bootstrap/.gitkeep"
 
 [[tree]]
 path = "behavior/changes/.gitkeep"
 
 [[tree]]
-path = "behavior/golden/self/approved.normalized.json"
+path = "behavior/approved/self/approved.normalized.json"
 
 [[tree]]
-path = "behavior/golden/self/approved.meta.json"
+path = "behavior/approved/self/approved.meta.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/match/fixture3.yaml"
@@ -98,7 +107,7 @@ path = "behavior/fixtures/self/cases/match/fixture3.yaml"
 path = "behavior/fixtures/self/cases/match/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/match/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/match/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/mismatch/fixture3.yaml"
@@ -107,7 +116,7 @@ path = "behavior/fixtures/self/cases/mismatch/fixture3.yaml"
 path = "behavior/fixtures/self/cases/mismatch/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/mismatch/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/mismatch/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/missing-approved/fixture3.yaml"
@@ -122,7 +131,7 @@ path = "behavior/fixtures/self/cases/bad-exit/fixture3.yaml"
 path = "behavior/fixtures/self/cases/bad-exit/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/bad-exit/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/bad-exit/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/bad-json/fixture3.yaml"
@@ -131,7 +140,7 @@ path = "behavior/fixtures/self/cases/bad-json/fixture3.yaml"
 path = "behavior/fixtures/self/cases/bad-json/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/bad-json/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/bad-json/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/diff-existing/fixture3.yaml"
@@ -140,7 +149,7 @@ path = "behavior/fixtures/self/cases/diff-existing/fixture3.yaml"
 path = "behavior/fixtures/self/cases/diff-existing/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/diff-existing/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/diff-existing/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/diff-refresh-mismatch/fixture3.yaml"
@@ -149,7 +158,7 @@ path = "behavior/fixtures/self/cases/diff-refresh-mismatch/fixture3.yaml"
 path = "behavior/fixtures/self/cases/diff-refresh-mismatch/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/diff-refresh-mismatch/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/diff-refresh-mismatch/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/approve-no-change/fixture3.yaml"
@@ -158,7 +167,7 @@ path = "behavior/fixtures/self/cases/approve-no-change/fixture3.yaml"
 path = "behavior/fixtures/self/cases/approve-no-change/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/approve-no-change/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/approve-no-change/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/approve-requires-change/fixture3.yaml"
@@ -167,7 +176,7 @@ path = "behavior/fixtures/self/cases/approve-requires-change/fixture3.yaml"
 path = "behavior/fixtures/self/cases/approve-requires-change/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/approve-requires-change/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/approve-requires-change/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/approve-with-change/fixture3.yaml"
@@ -176,7 +185,7 @@ path = "behavior/fixtures/self/cases/approve-with-change/fixture3.yaml"
 path = "behavior/fixtures/self/cases/approve-with-change/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/approve-with-change/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/approve-with-change/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/status/fixture3.yaml"
@@ -185,7 +194,7 @@ path = "behavior/fixtures/self/cases/status/fixture3.yaml"
 path = "behavior/fixtures/self/cases/status/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/status/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/status/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/init/fixture3.yaml"
@@ -197,10 +206,10 @@ path = "behavior/fixtures/self/cases/hash-drift/fixture3.yaml"
 path = "behavior/fixtures/self/cases/hash-drift/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/hash-drift/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/hash-drift/approved/approved.normalized.json"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/hash-drift/golden/approved.meta.json"
+path = "behavior/fixtures/self/cases/hash-drift/approved/approved.meta.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/normalizer/fixture3.yaml"
@@ -209,7 +218,7 @@ path = "behavior/fixtures/self/cases/normalizer/fixture3.yaml"
 path = "behavior/fixtures/self/cases/normalizer/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/normalizer/golden/approved.normalized.json"
+path = "behavior/fixtures/self/cases/normalizer/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/check-all-match/fixture3.yaml"
@@ -221,10 +230,10 @@ path = "behavior/fixtures/self/cases/check-all-match/input-a.txt"
 path = "behavior/fixtures/self/cases/check-all-match/input-b.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-all-match/golden/alpha/approved.normalized.json"
+path = "behavior/fixtures/self/cases/check-all-match/approved/alpha/approved.normalized.json"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-all-match/golden/beta/approved.normalized.json"
+path = "behavior/fixtures/self/cases/check-all-match/approved/beta/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/check-all-mismatch/fixture3.yaml"
@@ -236,10 +245,10 @@ path = "behavior/fixtures/self/cases/check-all-mismatch/input-a.txt"
 path = "behavior/fixtures/self/cases/check-all-mismatch/input-b.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-all-mismatch/golden/alpha/approved.normalized.json"
+path = "behavior/fixtures/self/cases/check-all-mismatch/approved/alpha/approved.normalized.json"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-all-mismatch/golden/beta/approved.normalized.json"
+path = "behavior/fixtures/self/cases/check-all-mismatch/approved/beta/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/check-all-error/fixture3.yaml"
@@ -251,10 +260,10 @@ path = "behavior/fixtures/self/cases/check-all-error/input-a.txt"
 path = "behavior/fixtures/self/cases/check-all-error/input-b.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-all-error/golden/alpha/approved.normalized.json"
+path = "behavior/fixtures/self/cases/check-all-error/approved/alpha/approved.normalized.json"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-all-error/golden/beta/approved.normalized.json"
+path = "behavior/fixtures/self/cases/check-all-error/approved/beta/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/status-all/fixture3.yaml"
@@ -266,10 +275,10 @@ path = "behavior/fixtures/self/cases/status-all/input-a.txt"
 path = "behavior/fixtures/self/cases/status-all/input-b.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/status-all/golden/alpha/approved.normalized.json"
+path = "behavior/fixtures/self/cases/status-all/approved/alpha/approved.normalized.json"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/status-all/golden/beta/approved.normalized.json"
+path = "behavior/fixtures/self/cases/status-all/approved/beta/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/check-suite-all-conflict/fixture3.yaml"
@@ -278,7 +287,7 @@ path = "behavior/fixtures/self/cases/check-suite-all-conflict/fixture3.yaml"
 path = "behavior/fixtures/self/cases/check-suite-all-conflict/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-suite-all-conflict/golden/alpha/approved.normalized.json"
+path = "behavior/fixtures/self/cases/check-suite-all-conflict/approved/alpha/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/check-target-required/fixture3.yaml"
@@ -287,7 +296,7 @@ path = "behavior/fixtures/self/cases/check-target-required/fixture3.yaml"
 path = "behavior/fixtures/self/cases/check-target-required/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-target-required/golden/alpha/approved.normalized.json"
+path = "behavior/fixtures/self/cases/check-target-required/approved/alpha/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/status-suite-all-conflict/fixture3.yaml"
@@ -296,7 +305,7 @@ path = "behavior/fixtures/self/cases/status-suite-all-conflict/fixture3.yaml"
 path = "behavior/fixtures/self/cases/status-suite-all-conflict/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/status-suite-all-conflict/golden/alpha/approved.normalized.json"
+path = "behavior/fixtures/self/cases/status-suite-all-conflict/approved/alpha/approved.normalized.json"
 
 [[tree]]
 path = "fixture3.yaml"
@@ -327,6 +336,9 @@ path = "scripts/verify-layer-6-fixture3.sh"
 
 [[tree]]
 path = "scripts/verify-layer-7-cli.sh"
+
+[[tree]]
+path = "scripts/verify-feature-pipeline.py"
 
 [[tree]]
 path = "scripts/self-case-emit-json.py"
@@ -371,6 +383,7 @@ to = [
   "args",
   "command",
   "diff",
+  "doctor",
   "error",
   "fixture",
   "fs",
@@ -378,6 +391,8 @@ to = [
   "manifest",
   "metadata",
   "normalize",
+  "scaffold",
+  "selection",
   "storage",
 ]
 
@@ -387,12 +402,15 @@ to = [
   "args",
   "command",
   "diff",
+  "doctor",
   "error",
   "fixture",
   "git",
   "manifest",
   "metadata",
   "normalize",
+  "scaffold",
+  "selection",
   "storage",
 ]
 
@@ -407,6 +425,10 @@ to = ["error", "manifest"]
 [[module_dep]]
 from = "diff"
 to = ["error"]
+
+[[module_dep]]
+from = "doctor"
+to = ["fs", "manifest"]
 
 [[module_dep]]
 from = "error"
@@ -437,19 +459,28 @@ from = "normalize"
 to = ["command", "error", "manifest"]
 
 [[module_dep]]
+from = "scaffold"
+to = ["error", "fs"]
+
+[[module_dep]]
+from = "selection"
+to = ["error", "manifest"]
+
+[[module_dep]]
 from = "storage"
 to = ["diff", "error", "fs", "manifest", "metadata"]
 
 [[cli_command]]
 name = "check"
 required_flags = []
-optional_flags = ["--suite", "--all", "--manifest"]
+optional_flags = ["--suite", "--all", "--tag", "--feature", "--manifest", "--json"]
 exit_codes = [0, 1, 2]
 help_contains = [
   "Run one suite or every suite from fixture3.yaml.",
   "discovers fixtures",
   "writes received files",
   "received output with `approved.normalized.json`",
+  "Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`",
   "Exit code is 2 if any",
   "Exit code is 1 if any suite differs",
 ]
@@ -457,7 +488,7 @@ help_contains = [
 [[cli_command]]
 name = "diff"
 required_flags = ["--suite"]
-optional_flags = ["--manifest", "--refresh"]
+optional_flags = ["--manifest", "--refresh", "--json"]
 exit_codes = [0, 1, 2]
 help_contains = [
   "Show the latest stored diff",
@@ -479,11 +510,12 @@ help_contains = [
 [[cli_command]]
 name = "status"
 required_flags = []
-optional_flags = ["--suite", "--all", "--manifest"]
+optional_flags = ["--suite", "--all", "--tag", "--feature", "--manifest", "--json"]
 exit_codes = [0, 2]
 help_contains = [
   "Show one suite or every suite",
-  "omit both flags",
+  "Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`",
+  "Omit all target flags",
 ]
 
 [[cli_command]]
@@ -495,6 +527,33 @@ help_contains = [
   "Write an example fixture3.yaml manifest",
   "fixture glob",
   "command argv",
+]
+
+[[cli_command]]
+name = "explain"
+required_flags = ["--suite"]
+optional_flags = ["--manifest", "--json"]
+exit_codes = [0, 2]
+help_contains = [
+  "Show resolved suite configuration",
+]
+
+[[cli_command]]
+name = "doctor"
+required_flags = []
+optional_flags = ["--manifest", "--json"]
+exit_codes = [0, 2]
+help_contains = [
+  "Validate fixture3.yaml without running project behavior",
+]
+
+[[cli_command]]
+name = "new"
+required_flags = []
+optional_flags = []
+exit_codes = [0, 2]
+help_contains = [
+  "Create fixture approval scaffolding",
 ]
 
 [[cli_help]]
@@ -511,6 +570,9 @@ contains = [
   "received_dir/received.raw.json stores command stdout from the latest check.",
   "diff_dir/diff.txt is the human-readable diff.",
   "`fixture3 check --all` runs every suite",
+  "`fixture3 check --tag <tag>` runs every suite with that tag.",
+  "`fixture3 explain --suite <suite>` shows the resolved suite configuration.",
+  "`fixture3 doctor` validates manifest paths, fixtures, features, and storage.",
   "`fixture3 diff --suite <suite> --refresh` reruns check before showing the diff.",
   "The path should point to the reviewed change note, issue, PR, or local change file.",
   "A suite is one fixture approval check",
@@ -521,7 +583,7 @@ contains = [
 [[cli_help]]
 argv = ["cargo", "run", "-p", "fixture3-cli", "--", "--version"]
 contains = [
-  "fixture3 0.1.5",
+  "fixture3 0.1.6",
 ]
 
 [[generated_file]]
