@@ -11,21 +11,30 @@ stdout value: CLI output, parser output, codegen output, API examples, diagnosti
 migrations, or any stable JSON result that should not change without review.
 
 A suite is one fixture approval check. It defines fixture globs, the command to run,
-accepted exit codes, output handling, and approved/received/diff storage.
-Suites can also have tags, and features can group suites for higher-level workflows.
+accepted exit codes, output handling, tags, and approved/received/diff storage.
+A feature is a named group of suites with an optional spec path. fixture3 uses features
+only for selection and reporting; the project owns what the feature means.
 
 Quick start:
   1. Run `fixture3 init` to create a usable example fixture3.yaml.
   2. Edit the example suite for your command and fixture paths.
   3. Add approved output at behavior/approved/<suite>/approved.normalized.json.
   4. Run `fixture3 check --suite <suite>`.
-  5. Review `.fixture3/<suite>/diff.txt`.
-  6. Run `fixture3 approve --suite <suite> --change <path>` for intentional drift.
+  5. Run `fixture3 explain --suite <suite>` or `fixture3 doctor` when setup is unclear.
+  6. Review `.fixture3/<suite>/diff.txt`.
+  7. Run `fixture3 approve --suite <suite> --change <path>` for intentional drift.
 
 Manifest schema:
   version: 1
+  features:
+    <feature>:
+      spec: \"docs/features/<feature>.md\"
+      suites:
+        - \"<suite>\"
   suites:
     <suite>:
+      tags:
+        - \"<tag>\"
       fixtures:
         - \"behavior/fixtures/<suite>/*/input.json\"
       command:
@@ -43,11 +52,14 @@ Manifest schema:
         approved_dir: \"behavior/approved/<suite>\"
         received_dir: \".fixture3/<suite>\"
         diff_dir: \".fixture3/<suite>\"
-  features:
-    <feature>:
-      spec: \"docs/features/<feature>.md\"
-      suites:
-        - \"<suite>\"
+
+Feature pipeline:
+  Fixtures are stable inputs.
+  approved_dir stores reviewed behavior.
+  received_dir stores the latest command output.
+  diff_dir stores the review surface.
+  tags select loose groups of suites, such as parser or cli.
+  features select intentional behavior slices, such as imports or migrations.
 
 Command argv:
   `{fixtures}` is replaced with every discovered fixture path.
@@ -74,10 +86,13 @@ Workflow:
   `fixture3 check --all` runs every suite and returns the highest-severity status.
   `fixture3 check --tag <tag>` runs every suite with that tag.
   `fixture3 check --feature <feature>` runs every suite in that feature.
+  `fixture3 check --json` writes suite results as structured JSON.
   `fixture3 diff --suite <suite>` shows the latest stored diff.
   `fixture3 diff --suite <suite> --refresh` reruns check before showing the diff.
+  `fixture3 diff --suite <suite> --json` writes diff status and text as JSON.
   `fixture3 approve --suite <suite> --change <path>` promotes received output.
   `fixture3 status` lists approved, received, and diff file state.
+  `fixture3 status --json` writes suite state as structured JSON.
   `fixture3 explain --suite <suite>` shows the resolved suite configuration.
   `fixture3 doctor` validates manifest paths, fixtures, features, and storage.
   `fixture3 new suite <name>` creates fixture and approved-output scaffolding.
@@ -102,6 +117,8 @@ received output with `approved.normalized.json`, and writes diff files.
 
 Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`.
 Exit code is 2 if any suite errors. Exit code is 1 if any suite differs and no suite errors.
+`--json` writes one record per selected suite with status, exit_code, fixture count,
+received path, diff path, and error text when a suite fails.
 
 Use this before reviewing behavior changes.
 ";
@@ -112,6 +129,9 @@ Show the latest stored diff for one suite.
 Without `--refresh`, diff reads `.fixture3/<suite>/diff.txt` and does not rerun the
 project command. With `--refresh`, it first runs the same behavior as `check`, then
 prints the new diff.
+
+Use `--json` when an agent needs the diff status and text without parsing terminal
+formatting.
 ";
 
 const APPROVE_HELP: &str = "\
@@ -128,6 +148,7 @@ Show one suite or every suite from fixture3.yaml.
 
 Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`.
 Omit all target flags to list every suite.
+Use `--json` when an agent needs approved, received, and diff booleans per suite.
 ";
 
 const INIT_HELP: &str = "\
@@ -142,6 +163,8 @@ Show resolved suite configuration without running project behavior.
 
 explain prints suite tags, feature membership, fixture globs, resolved fixture count,
 command argv, storage paths, and current approved/received/diff file state.
+It does not run the project command. Use it to debug what fixture3 will run before
+checking behavior.
 ";
 
 const DOCTOR_HELP: &str = "\
@@ -149,6 +172,8 @@ Validate fixture3.yaml without running project behavior.
 
 doctor checks feature suite references, fixture globs, command argv, exit-code lists,
 normalizer argv, approved output files, and storage path collisions.
+It does not run project commands or compare behavior. Exit 0 means the manifest shape
+is usable. Exit 2 means setup needs repair.
 ";
 
 const NEW_HELP: &str = "\
@@ -156,6 +181,8 @@ Create fixture approval scaffolding.
 
 new suite creates a sample fixture input, an initial approved output file, and prints
 the manifest block to add under `suites:`.
+It does not edit fixture3.yaml. The project keeps ownership of manifest formatting,
+feature grouping, and review policy.
 ";
 
 #[derive(Debug, Parser)]

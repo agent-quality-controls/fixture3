@@ -59,6 +59,7 @@ required_flags = []
 optional_flags = ["--suite", "--all", "--tag", "--feature", "--manifest"]
 help_contains = [
   "Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`",
+  "`--json` writes one record per selected suite",
 ]
 
 [[cli_command]]
@@ -67,6 +68,7 @@ required_flags = []
 optional_flags = ["--suite", "--all", "--tag", "--feature", "--manifest", "--json"]
 help_contains = [
   "Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`",
+  "Use `--json` when an agent needs approved",
 ]
 
 [[cli_command]]
@@ -75,6 +77,7 @@ required_flags = ["--suite"]
 optional_flags = ["--manifest", "--json"]
 help_contains = [
   "Show resolved suite configuration",
+  "does not run the project command",
 ]
 
 [[cli_command]]
@@ -83,6 +86,7 @@ required_flags = []
 optional_flags = ["--manifest", "--json"]
 help_contains = [
   "Validate fixture3.yaml without running project behavior",
+  "Exit 0 means the manifest shape",
 ]
 
 [[cli_command]]
@@ -91,6 +95,7 @@ required_flags = []
 optional_flags = []
 help_contains = [
   "Create fixture approval scaffolding",
+  "does not edit fixture3.yaml",
 ]
 
 [[self_case]]

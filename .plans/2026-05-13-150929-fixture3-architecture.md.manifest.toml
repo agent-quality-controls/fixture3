@@ -481,6 +481,7 @@ help_contains = [
   "writes received files",
   "received output with `approved.normalized.json`",
   "Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`",
+  "`--json` writes one record per selected suite",
   "Exit code is 2 if any",
   "Exit code is 1 if any suite differs",
 ]
@@ -494,6 +495,7 @@ help_contains = [
   "Show the latest stored diff",
   "Without `--refresh`",
   "does not rerun",
+  "Use `--json` when an agent needs the diff status",
 ]
 
 [[cli_command]]
@@ -516,6 +518,7 @@ help_contains = [
   "Show one suite or every suite",
   "Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`",
   "Omit all target flags",
+  "Use `--json` when an agent needs approved",
 ]
 
 [[cli_command]]
@@ -536,6 +539,7 @@ optional_flags = ["--manifest", "--json"]
 exit_codes = [0, 2]
 help_contains = [
   "Show resolved suite configuration",
+  "does not run the project command",
 ]
 
 [[cli_command]]
@@ -545,6 +549,7 @@ optional_flags = ["--manifest", "--json"]
 exit_codes = [0, 2]
 help_contains = [
   "Validate fixture3.yaml without running project behavior",
+  "Exit 0 means the manifest shape",
 ]
 
 [[cli_command]]
@@ -554,6 +559,7 @@ optional_flags = []
 exit_codes = [0, 2]
 help_contains = [
   "Create fixture approval scaffolding",
+  "does not edit fixture3.yaml",
 ]
 
 [[cli_help]]
@@ -563,6 +569,7 @@ contains = [
   "Use it for fixture-based approval testing",
   "Run `fixture3 init` to create a usable example fixture3.yaml.",
   "Manifest schema:",
+  "Feature pipeline:",
   "`{fixtures}` is replaced with every discovered fixture path.",
   "The only supported `output.format` is `json`.",
   "`output.normalizer` is optional.",
@@ -571,6 +578,7 @@ contains = [
   "diff_dir/diff.txt is the human-readable diff.",
   "`fixture3 check --all` runs every suite",
   "`fixture3 check --tag <tag>` runs every suite with that tag.",
+  "`fixture3 check --json` writes suite results as structured JSON.",
   "`fixture3 explain --suite <suite>` shows the resolved suite configuration.",
   "`fixture3 doctor` validates manifest paths, fixtures, features, and storage.",
   "`fixture3 diff --suite <suite> --refresh` reruns check before showing the diff.",
