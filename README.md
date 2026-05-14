@@ -2,35 +2,17 @@
 
 `fixture3` is a CLI for fixture-based approval testing in agent-managed codebases.
 
-Install the current GitHub release:
-
-```bash
-curl -L -o fixture3-aarch64-apple-darwin.tar.gz \
-  https://github.com/websmasher/fixture3/releases/download/v0.1.5/fixture3-aarch64-apple-darwin.tar.gz
-tar xzf fixture3-aarch64-apple-darwin.tar.gz
-install -m 0755 fixture3 ~/.cargo/bin/fixture3
-fixture3 --version
-```
-
-Available release targets:
-
-- `aarch64-apple-darwin`
-- `x86_64-apple-darwin`
-- `aarch64-unknown-linux-gnu`
-- `x86_64-unknown-linux-gnu`
-
-The full agent guide is in `fixture3 --help`. It explains the manifest schema, `{fixtures}` substitution, file layout, workflow, `--change`, and exit codes from the top-level help screen.
-
-## Cargo binstall
-
-After the matching crates.io install stub is published:
+Install:
 
 ```bash
 cargo install cargo-binstall
 cargo binstall fixture3
+fixture3 --version
 ```
 
-`cargo install fixture3` installs only the stub package. The real binary is downloaded by `cargo binstall fixture3` from the GitHub release.
+Use `cargo binstall fixture3` as the install path. The crates.io package is an install stub for cargo-binstall metadata, not the real CLI implementation.
+
+The full agent guide is in `fixture3 --help`. It explains the manifest schema, `{fixtures}` substitution, file layout, workflow, `--change`, and exit codes from the top-level help screen.
 
 ## Why this exists
 
