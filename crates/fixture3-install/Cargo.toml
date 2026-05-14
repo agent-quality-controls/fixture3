@@ -1,0 +1,27 @@
+[package]
+name = "fixture3"
+version = "0.1.5"
+edition.workspace = true
+rust-version.workspace = true
+description = "Install stub for the fixture3 CLI; use cargo binstall for the real binary"
+license.workspace = true
+repository.workspace = true
+publish = true
+readme = "../../README.md"
+include = ["src/**", "Cargo.toml", "../../README.md", "../../LICENSE*"]
+keywords = ["approval", "fixtures", "snapshot", "cli"]
+categories = ["command-line-utilities", "development-tools::testing"]
+
+[[bin]]
+name = "fixture3"
+path = "src/main.rs"
+
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/fixture3-{ target }.tar.gz"
+bin-dir = "fixture3{ binary-ext }"
+pkg-fmt = "tgz"
+
+[dependencies]
+
+[lints]
+workspace = true

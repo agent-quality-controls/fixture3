@@ -1,0 +1,18 @@
+version: 1
+suites:
+  self:
+    fixtures:
+      - "behavior/fixtures/self/cases/*/fixture3.yaml"
+    command:
+      argv:
+        - "python3"
+        - "scripts/self-check-harness.py"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/golden/self"
+      received_dir: ".fixture3/self"
+      diff_dir: ".fixture3/self"

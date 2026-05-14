@@ -158,6 +158,24 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
 
 [[package]]
+name = "fixture3"
+version = "0.1.5"
+
+[[package]]
+name = "fixture3-cli"
+version = "0.1.5"
+dependencies = [
+ "clap",
+ "glob",
+ "serde",
+ "serde_json",
+ "serde_norway",
+ "sha2",
+ "thiserror",
+ "time",
+]
+
+[[package]]
 name = "generic-array"
 version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -172,24 +190,6 @@ name = "glob"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0cc23270f6e1808e30a928bdc84dea0b9b4136a8bc82338574f23baf47bbd280"
-
-[[package]]
-name = "goldencheck"
-version = "0.1.4"
-
-[[package]]
-name = "goldencheck-cli"
-version = "0.1.4"
-dependencies = [
- "clap",
- "glob",
- "serde",
- "serde_json",
- "serde_norway",
- "sha2",
- "thiserror",
- "time",
-]
 
 [[package]]
 name = "hashbrown"

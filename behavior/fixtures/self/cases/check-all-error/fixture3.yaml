@@ -1,0 +1,33 @@
+version: 1
+suites:
+  alpha:
+    fixtures:
+      - "behavior/fixtures/self/cases/check-all-error/input-a.txt"
+    command:
+      argv:
+        - "python3"
+        - "scripts/self-case-emit-json.py"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/fixtures/self/cases/check-all-error/golden/alpha"
+      received_dir: ".fixture3/self-cases/check-all-error/alpha"
+      diff_dir: ".fixture3/self-cases/check-all-error/alpha"
+  beta:
+    fixtures:
+      - "behavior/fixtures/self/cases/check-all-error/input-b.txt"
+    command:
+      argv:
+        - "python3"
+        - "scripts/self-case-exit-7.py"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/fixtures/self/cases/check-all-error/golden/beta"
+      received_dir: ".fixture3/self-cases/check-all-error/beta"
+      diff_dir: ".fixture3/self-cases/check-all-error/beta"

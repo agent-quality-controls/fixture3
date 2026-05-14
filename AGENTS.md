@@ -1,4 +1,4 @@
-# goldencheck
+# fixture3
 
 ## Verification
 
@@ -7,7 +7,7 @@
 - Do not use `cargo test` as project verification.
 - Use golden behavior fixtures as the verification model.
 - Use `cargo check`, `cargo clippy`, `cargo fmt --check`, and `g3rs validate --rules-only` for compile and static checks.
-- As soon as the CLI can run one command, it must verify its own fixture suite through `goldencheck check`.
+- As soon as the CLI can run one command, it must verify its own fixture suite through `fixture3 check`.
 
 ## G3RS
 

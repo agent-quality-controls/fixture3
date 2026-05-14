@@ -1,100 +1,100 @@
 {
   "suite": "self",
   "kind": "approved",
-  "run_id": "2026-05-13T20-59-58.821653Z-053ae8ee",
-  "run_commit": "2635fff",
+  "run_id": "2026-05-14T10-03-58.842949Z-499c8b86",
+  "run_commit": "7a225b4",
   "working_tree": "dirty",
-  "recorded_at": "2026-05-13T20:59:58.821653Z",
-  "fixture_hash": "sha256:88de9a8120a6420be793d3c8072f925765a6f2f14a98885fab76904facb9bb36",
-  "manifest_hash": "sha256:053ae8eeac5f385de277c9c9629443134b8631db2324ac75c586fe93e3fb34e1",
+  "recorded_at": "2026-05-14T10:03:58.842949Z",
+  "fixture_hash": "sha256:4092fa49c510413d8e0df3455a8289cd7aa78c7d734afc0867e6e964b55a3c85",
+  "manifest_hash": "sha256:499c8b864ef42de941ba31802037dc5223bea7872d3006d5ac42105d97b50989",
   "normalizer_hash": "sha256:c219507b61710f3b35350618b95d841c65b681fbeb96caf8ae69c0af301f4d2f",
-  "tool_version": "0.1.4",
+  "tool_version": "0.1.5",
   "output_schema_version": "1",
   "fixtures": [
     {
-      "path": "behavior/fixtures/self/cases/approve-no-change/goldencheck.yaml",
-      "sha256": "sha256:b90150f528c811c1d9c47e82b87b37e5db128d78783cc9ddaa8837de4d2ac5f7"
+      "path": "behavior/fixtures/self/cases/approve-no-change/fixture3.yaml",
+      "sha256": "sha256:952e326c5c92c889dea31672db3b8443ba8d8364ebc99820d2c0f3fa07805f3c"
     },
     {
-      "path": "behavior/fixtures/self/cases/approve-requires-change/goldencheck.yaml",
-      "sha256": "sha256:1bcd4a2c6c3921e52e3748fd4803109912ced17944287d54c652de0e55bc80b8"
+      "path": "behavior/fixtures/self/cases/approve-requires-change/fixture3.yaml",
+      "sha256": "sha256:9314abc64ec80e6fb457023b56a3dafe751867fffa878f1dd9d624607b9d0b14"
     },
     {
-      "path": "behavior/fixtures/self/cases/approve-with-change/goldencheck.yaml",
-      "sha256": "sha256:e5b2ffb6f1169a2e148c4e3ba968d77da45cf5df9883099669355b1e3a9b6224"
+      "path": "behavior/fixtures/self/cases/approve-with-change/fixture3.yaml",
+      "sha256": "sha256:fc05fc6f7e354a50e2e22a88ba3b3aed00e54f6085913070c31c6bfe50516a1b"
     },
     {
-      "path": "behavior/fixtures/self/cases/bad-exit/goldencheck.yaml",
-      "sha256": "sha256:0300d478a61bab1fd860e18f7e20d09136a0519d4f145f8956667caee553c123"
+      "path": "behavior/fixtures/self/cases/bad-exit/fixture3.yaml",
+      "sha256": "sha256:8cda76526c746faba3c6f8214786367a2e974f31e909f40916310c57cb73b48d"
     },
     {
-      "path": "behavior/fixtures/self/cases/bad-json/goldencheck.yaml",
-      "sha256": "sha256:d008493c6a24964fa23332d3d142d056c620e256e446ab650a65e08b7a48ae9c"
+      "path": "behavior/fixtures/self/cases/bad-json/fixture3.yaml",
+      "sha256": "sha256:d7cc9fa2b84ec2cf93cca17ae3a7700f6ec9fd612cb7018386329a35a2036209"
     },
     {
-      "path": "behavior/fixtures/self/cases/check-all-error/goldencheck.yaml",
-      "sha256": "sha256:424ac8f73ab24c8aeb70522be96200091ae563d3a8321f1fe18c34c74776b4da"
+      "path": "behavior/fixtures/self/cases/check-all-error/fixture3.yaml",
+      "sha256": "sha256:9812e1935e612acb4115b15eeea244988c7cf500ed6b90556a0f8de006e96e22"
     },
     {
-      "path": "behavior/fixtures/self/cases/check-all-match/goldencheck.yaml",
-      "sha256": "sha256:4ce90bf18f9c6aa01e1133b909eebbd777acd43e55753969a139951f0749c4b9"
+      "path": "behavior/fixtures/self/cases/check-all-match/fixture3.yaml",
+      "sha256": "sha256:ed0750e675d325858c488fb69536c6d93c2bb98955476e0c92f2ec9b66f6e7e3"
     },
     {
-      "path": "behavior/fixtures/self/cases/check-all-mismatch/goldencheck.yaml",
-      "sha256": "sha256:693d6284e4f6fe70eb3045c8454d5735586caab6242a45e696702b6cf68a1336"
+      "path": "behavior/fixtures/self/cases/check-all-mismatch/fixture3.yaml",
+      "sha256": "sha256:f398784e202d0d2686a2e97e86f1e7036fbc90ad8a837c9c36944846ecf3f688"
     },
     {
-      "path": "behavior/fixtures/self/cases/check-suite-all-conflict/goldencheck.yaml",
-      "sha256": "sha256:9860770a1a7be6901281a3f942fd56cf4166b4c453c0453e2d06291aac1df1d4"
+      "path": "behavior/fixtures/self/cases/check-suite-all-conflict/fixture3.yaml",
+      "sha256": "sha256:eef904d33b4f351361212f627dabe7e3f2b347d5536b09308f5019fbd35ea70d"
     },
     {
-      "path": "behavior/fixtures/self/cases/check-target-required/goldencheck.yaml",
-      "sha256": "sha256:07bdcca9eeb61595a72343da72e929e787c8bc103f7ae434731118b4722fae8a"
+      "path": "behavior/fixtures/self/cases/check-target-required/fixture3.yaml",
+      "sha256": "sha256:f38512e23ef282ae9fec5a93a1c4dfdfab64499c1adebc7f18362c4c18fe2454"
     },
     {
-      "path": "behavior/fixtures/self/cases/diff-existing/goldencheck.yaml",
-      "sha256": "sha256:e59a096191e2e4d3ae6f72948499f20a6a27ff3e5ce9a72f421711f327e45e88"
+      "path": "behavior/fixtures/self/cases/diff-existing/fixture3.yaml",
+      "sha256": "sha256:5769b28b6ee622b9e6798a9274c1ce2d5cf65e505c93785a5209b3502c167b2b"
     },
     {
-      "path": "behavior/fixtures/self/cases/diff-refresh-mismatch/goldencheck.yaml",
-      "sha256": "sha256:82a65b11f751ac718c7b077967c6f5283cfa3750ef3deddaebb68a9c2ed46566"
+      "path": "behavior/fixtures/self/cases/diff-refresh-mismatch/fixture3.yaml",
+      "sha256": "sha256:6209938090d11cf829bdbf85070ce44878a7648932abbea4d0c0b87922c7a3df"
     },
     {
-      "path": "behavior/fixtures/self/cases/hash-drift/goldencheck.yaml",
-      "sha256": "sha256:0e551716a5dfe49450e97929d1fca4c97656e8cf38ffd82c92de16c0ebbf5939"
+      "path": "behavior/fixtures/self/cases/hash-drift/fixture3.yaml",
+      "sha256": "sha256:c2240661b0d7aae8b32c647c78ee9b4bda1ad5a07cc6eff386288ec73865985c"
     },
     {
-      "path": "behavior/fixtures/self/cases/init/goldencheck.yaml",
+      "path": "behavior/fixtures/self/cases/init/fixture3.yaml",
       "sha256": "sha256:7b3b4fd1b3d2c80415cd05ad87ac0b700a5a19c8046bee6ab380b34c38320d23"
     },
     {
-      "path": "behavior/fixtures/self/cases/match/goldencheck.yaml",
-      "sha256": "sha256:7508ac69837ef5d3c278e16a03e656c34c6ebff22a96e50da77e6bef39e606f7"
+      "path": "behavior/fixtures/self/cases/match/fixture3.yaml",
+      "sha256": "sha256:8bad1105e07f13720ca4752995ea6d00343d074fd0eaaa34b6aef917911437d5"
     },
     {
-      "path": "behavior/fixtures/self/cases/mismatch/goldencheck.yaml",
-      "sha256": "sha256:1b158c01f1649d232b4ed3d8a61b78fdf421b44f0f8de5255339bc7ff9f53619"
+      "path": "behavior/fixtures/self/cases/mismatch/fixture3.yaml",
+      "sha256": "sha256:6f69baff410f09b0918aefb5280ad385a9b2ef0768e102a4b7e240fb8304fe98"
     },
     {
-      "path": "behavior/fixtures/self/cases/missing-approved/goldencheck.yaml",
-      "sha256": "sha256:afcf81b3685b6dc9efe47c5f635a0467b385bc3f38606bf8de4c62de44e24539"
+      "path": "behavior/fixtures/self/cases/missing-approved/fixture3.yaml",
+      "sha256": "sha256:db073c6379999225e4145b2ca539669b7a1dec89d8eaa3aa21723de92f724f5d"
     },
     {
-      "path": "behavior/fixtures/self/cases/normalizer/goldencheck.yaml",
-      "sha256": "sha256:cdb163a63463284e3a0dd49841c3ad130cbe083ec0f02a520bdcf9b4aac3e2d1"
+      "path": "behavior/fixtures/self/cases/normalizer/fixture3.yaml",
+      "sha256": "sha256:2cdcf1b94590b4781772c607e28e91f49fff061032727665b82b9af5237b84f6"
     },
     {
-      "path": "behavior/fixtures/self/cases/status/goldencheck.yaml",
-      "sha256": "sha256:b28d2b46f566125694dd9799a89bd4972109604f6d6c22b0f31be0e0beff3182"
+      "path": "behavior/fixtures/self/cases/status/fixture3.yaml",
+      "sha256": "sha256:29ec04bc04789167fec46329fe9c199015b9f8dd0bc24afceace1f7523de7931"
     },
     {
-      "path": "behavior/fixtures/self/cases/status-all/goldencheck.yaml",
-      "sha256": "sha256:726dec03ad8b8cffc22551c1c09685638256370ad15b2b9cd7b55b4736a73d92"
+      "path": "behavior/fixtures/self/cases/status-all/fixture3.yaml",
+      "sha256": "sha256:2f48621e9b8a9ec90d561a2196c5f8bccf43973a8656ece01e4a3afb9d44e1e8"
     },
     {
-      "path": "behavior/fixtures/self/cases/status-suite-all-conflict/goldencheck.yaml",
-      "sha256": "sha256:5083e7be0af93605db83a8212f0b64fbcd104805ca7b4087f7527a25094df3df"
+      "path": "behavior/fixtures/self/cases/status-suite-all-conflict/fixture3.yaml",
+      "sha256": "sha256:b198e5b2528441b547b7492905c96fe63bf19b2287d2f58ff30d496c2d66c56b"
     }
   ],
-  "change_path": ".plans/2026-05-13-215321-all-suites.md"
+  "change_path": ".plans/2026-05-14-105749-fixture3-rename.md"
 }

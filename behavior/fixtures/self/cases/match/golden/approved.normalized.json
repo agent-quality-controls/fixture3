@@ -2,7 +2,7 @@
   "fixtures": [
     {
       "path": "behavior/fixtures/self/cases/match/input.txt",
-      "text": "goldencheck self fixture\n"
+      "text": "fixture3 self fixture\n"
     }
   ]
 }

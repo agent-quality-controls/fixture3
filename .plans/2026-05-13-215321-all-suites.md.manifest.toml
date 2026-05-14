@@ -6,7 +6,7 @@ mutually_exclusive = [["--suite", "--all"]]
 requires_one_of = ["--suite", "--all"]
 exit_codes = [0, 1, 2]
 help_contains = [
-  "Run one suite or every suite from goldencheck.yaml.",
+  "Run one suite or every suite from fixture3.yaml.",
   "--all",
   "Exit code is 2 if any suite errors",
   "Exit code is 1 if any suite differs",
@@ -35,10 +35,10 @@ stdout_contains = [
 ]
 stderr_contains = []
 generated_files = [
-  ".goldencheck/self-cases/check-all-match/alpha/received.normalized.json",
-  ".goldencheck/self-cases/check-all-match/alpha/diff.json",
-  ".goldencheck/self-cases/check-all-match/beta/received.normalized.json",
-  ".goldencheck/self-cases/check-all-match/beta/diff.json",
+  ".fixture3/self-cases/check-all-match/alpha/received.normalized.json",
+  ".fixture3/self-cases/check-all-match/alpha/diff.json",
+  ".fixture3/self-cases/check-all-match/beta/received.normalized.json",
+  ".fixture3/self-cases/check-all-match/beta/diff.json",
 ]
 
 [[behavior_case]]
@@ -53,8 +53,8 @@ stdout_contains = [
 ]
 stderr_contains = []
 generated_files = [
-  ".goldencheck/self-cases/check-all-mismatch/alpha/diff.json",
-  ".goldencheck/self-cases/check-all-mismatch/beta/diff.json",
+  ".fixture3/self-cases/check-all-mismatch/alpha/diff.json",
+  ".fixture3/self-cases/check-all-mismatch/beta/diff.json",
 ]
 
 [[behavior_case]]
@@ -111,22 +111,22 @@ stderr_contains = [
 ]
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-all-match/goldencheck.yaml"
+path = "behavior/fixtures/self/cases/check-all-match/fixture3.yaml"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-all-mismatch/goldencheck.yaml"
+path = "behavior/fixtures/self/cases/check-all-mismatch/fixture3.yaml"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-all-error/goldencheck.yaml"
+path = "behavior/fixtures/self/cases/check-all-error/fixture3.yaml"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/status-all/goldencheck.yaml"
+path = "behavior/fixtures/self/cases/status-all/fixture3.yaml"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-suite-all-conflict/goldencheck.yaml"
+path = "behavior/fixtures/self/cases/check-suite-all-conflict/fixture3.yaml"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/check-target-required/goldencheck.yaml"
+path = "behavior/fixtures/self/cases/check-target-required/fixture3.yaml"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/status-suite-all-conflict/goldencheck.yaml"
+path = "behavior/fixtures/self/cases/status-suite-all-conflict/fixture3.yaml"

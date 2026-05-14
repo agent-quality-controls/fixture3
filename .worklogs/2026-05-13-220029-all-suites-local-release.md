@@ -1,5 +1,5 @@
 Summary
-- Implemented `goldencheck check --all` and `goldencheck status --all`.
+- Implemented `fixture3 check --all` and `fixture3 status --all`.
 - Added self fixtures for all-match, mixed-diff, error precedence, status-all, and invalid `--suite` / `--all` combinations.
 - Bumped local package versions to `0.1.4`.
 
@@ -13,13 +13,13 @@ Decisions made
 Key files for context
 - `.plans/2026-05-13-215321-all-suites.md`
 - `.plans/2026-05-13-215321-all-suites.md.manifest.toml`
-- `crates/goldencheck/src/args.rs`
-- `crates/goldencheck/src/app.rs`
+- `crates/fixture3/src/args.rs`
+- `crates/fixture3/src/app.rs`
 - `scripts/self-check-harness.py`
-- `behavior/fixtures/self/cases/check-all-match/goldencheck.yaml`
-- `behavior/fixtures/self/cases/check-all-mismatch/goldencheck.yaml`
-- `behavior/fixtures/self/cases/check-all-error/goldencheck.yaml`
-- `behavior/fixtures/self/cases/status-all/goldencheck.yaml`
+- `behavior/fixtures/self/cases/check-all-match/fixture3.yaml`
+- `behavior/fixtures/self/cases/check-all-mismatch/fixture3.yaml`
+- `behavior/fixtures/self/cases/check-all-error/fixture3.yaml`
+- `behavior/fixtures/self/cases/status-all/fixture3.yaml`
 - `behavior/golden/self/approved.normalized.json`
 - `behavior/golden/self/approved.meta.json`
 
@@ -27,10 +27,10 @@ Verification
 - `cargo check`
 - `cargo fmt --check`
 - `cargo clippy --all-targets --all-features -- -D warnings`
-- `python3 scripts/self-check-harness.py behavior/fixtures/self/cases/*/goldencheck.yaml`
+- `python3 scripts/self-check-harness.py behavior/fixtures/self/cases/*/fixture3.yaml`
 - `scripts/verify-all.sh`
 
 Next steps
 - Commit the implementation.
-- Install `0.1.4` locally with `cargo install --path crates/goldencheck --force --locked`.
-- Verify `/Users/tartakovsky/.cargo/bin/goldencheck --version` reports `goldencheck 0.1.4`.
+- Install `0.1.4` locally with `cargo install --path crates/fixture3 --force --locked`.
+- Verify `/Users/tartakovsky/.cargo/bin/fixture3 --version` reports `fixture3 0.1.4`.

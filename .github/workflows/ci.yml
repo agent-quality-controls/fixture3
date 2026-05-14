@@ -26,7 +26,7 @@ jobs:
           cargo fmt --check
           cargo check
           cargo clippy --workspace --all-targets --all-features -- -D warnings
-      - name: Verify goldencheck self suite
-        run: cargo run -p goldencheck-cli -- check --suite self --manifest goldencheck.yaml
+      - name: Verify fixture3 self suite
+        run: cargo run -p fixture3-cli -- check --suite self --manifest fixture3.yaml
       - name: Stub package dry run
-        run: cargo publish -p goldencheck --dry-run
+        run: cargo publish -p fixture3 --dry-run

@@ -8,7 +8,7 @@ import sys
 import tomllib
 from pathlib import Path
 
-MANIFEST_PATH = Path(".plans/2026-05-13-150929-goldencheck-architecture.md.manifest.toml")
+MANIFEST_PATH = Path(".plans/2026-05-13-150929-fixture3-architecture.md.manifest.toml")
 
 
 def load_manifest() -> dict:
@@ -123,7 +123,7 @@ def module_imports(path: Path, module_names: set[str]) -> set[str]:
 
 
 def layer_modules(manifest: dict) -> int:
-    src_dir = Path("crates/goldencheck/src")
+    src_dir = Path("crates/fixture3/src")
     module_files = {module_name(path): path for path in src_dir.glob("*.rs")}
     module_names = set(module_files)
     allowed = {row["from"]: set(row["to"]) for row in manifest.get("module_dep", [])}
@@ -168,7 +168,7 @@ def layer_static(manifest: dict) -> int:
     return pass_layer("layer5 static")
 
 
-def layer_goldencheck(manifest: dict) -> int:
+def layer_fixture3(manifest: dict) -> int:
     findings: list[str] = []
     commands = [row for row in manifest.get("command", []) if row["name"] == "self-check"]
     if len(commands) != 1:
@@ -185,7 +185,7 @@ def layer_goldencheck(manifest: dict) -> int:
 
     if findings:
         return fail(findings)
-    return pass_layer("layer6 goldencheck")
+    return pass_layer("layer6 fixture3")
 
 
 def layer_cli(manifest: dict) -> int:
@@ -200,7 +200,7 @@ def layer_cli(manifest: dict) -> int:
                 findings.append(f"top-level cli help missing text: {text}")
 
     for row in manifest.get("cli_command", []):
-        code, output = run_command(["cargo", "run", "-p", "goldencheck-cli", "--", row["name"], "--help"])
+        code, output = run_command(["cargo", "run", "-p", "fixture3-cli", "--", row["name"], "--help"])
         if code != 0:
             findings.append(f"cli help failed: {row['name']} exit {code}\n{output}")
             continue
@@ -222,7 +222,7 @@ LAYERS = {
     "config": layer_config,
     "modules": layer_modules,
     "static": layer_static,
-    "goldencheck": layer_goldencheck,
+    "fixture3": layer_fixture3,
     "cli": layer_cli,
 }
 

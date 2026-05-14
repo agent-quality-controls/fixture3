@@ -1,0 +1,34 @@
+version: 1
+suites:
+  alpha:
+    fixtures:
+      - "behavior/fixtures/self/cases/check-all-mismatch/input-a.txt"
+    command:
+      argv:
+        - "python3"
+        - "scripts/self-case-emit-json.py"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/fixtures/self/cases/check-all-mismatch/golden/alpha"
+      received_dir: ".fixture3/self-cases/check-all-mismatch/alpha"
+      diff_dir: ".fixture3/self-cases/check-all-mismatch/alpha"
+  beta:
+    fixtures:
+      - "behavior/fixtures/self/cases/check-all-mismatch/input-b.txt"
+    command:
+      argv:
+        - "python3"
+        - "scripts/self-case-emit-json.py"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/fixtures/self/cases/check-all-mismatch/golden/beta"
+      received_dir: ".fixture3/self-cases/check-all-mismatch/beta"
+      diff_dir: ".fixture3/self-cases/check-all-mismatch/beta"

@@ -39,20 +39,20 @@ jobs:
 
       - name: Build with cross
         if: contains(matrix.target, 'linux')
-        run: cross build --release -p goldencheck-cli --bin goldencheck --target ${{ matrix.target }}
+        run: cross build --release -p fixture3-cli --bin fixture3 --target ${{ matrix.target }}
 
       - name: Build native
         if: contains(matrix.target, 'apple')
-        run: cargo build --release -p goldencheck-cli --bin goldencheck --target ${{ matrix.target }}
+        run: cargo build --release -p fixture3-cli --bin fixture3 --target ${{ matrix.target }}
 
       - name: Package
         shell: bash
         run: |
           cd target/${{ matrix.target }}/release
-          tar czf ../../../goldencheck-${{ matrix.target }}.tar.gz goldencheck
+          tar czf ../../../fixture3-${{ matrix.target }}.tar.gz fixture3
           cd ../../..
 
       - name: Upload
         uses: softprops/action-gh-release@v2
         with:
-          files: goldencheck-${{ matrix.target }}.tar.gz
+          files: fixture3-${{ matrix.target }}.tar.gz

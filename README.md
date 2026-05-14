@@ -1,31 +1,15 @@
-# goldencheck
+# fixture3
 
-`goldencheck` is a CLI for fixture-based golden output checks.
+`fixture3` is a CLI for fixture-based approval testing in agent-managed codebases.
 
-It is independent of any one project. A project gives `goldencheck` a manifest that says which fixtures to run, which command to execute, how to normalize output, and where approved and received files live.
-
-Use it when behavior is easiest to verify by comparing current command output against reviewed output stored in git. Typical uses are CLI output, parser output, generated JSON, diagnostics, migrations, rule engines, and API examples.
-
-The full agent-oriented usage guide is built into the binary:
+Install the current GitHub release:
 
 ```bash
-goldencheck --help
-```
-
-That help text explains the manifest schema, `{fixtures}` substitution, file layout, workflow, `--change`, and exit codes without requiring an agent to traverse subcommand help.
-
-## Install
-
-### GitHub Release
-
-Download the prebuilt binary for your platform from the GitHub release:
-
-```bash
-curl -L -o goldencheck-aarch64-apple-darwin.tar.gz \
-  https://github.com/websmasher/goldencheck/releases/download/v0.1.4/goldencheck-aarch64-apple-darwin.tar.gz
-tar xzf goldencheck-aarch64-apple-darwin.tar.gz
-install -m 0755 goldencheck ~/.cargo/bin/goldencheck
-goldencheck --version
+curl -L -o fixture3-aarch64-apple-darwin.tar.gz \
+  https://github.com/websmasher/fixture3/releases/download/v0.1.5/fixture3-aarch64-apple-darwin.tar.gz
+tar xzf fixture3-aarch64-apple-darwin.tar.gz
+install -m 0755 fixture3 ~/.cargo/bin/fixture3
+fixture3 --version
 ```
 
 Available release targets:
@@ -35,24 +19,36 @@ Available release targets:
 - `aarch64-unknown-linux-gnu`
 - `x86_64-unknown-linux-gnu`
 
-### Cargo Binstall
+The full agent guide is in `fixture3 --help`. It explains the manifest schema, `{fixtures}` substitution, file layout, workflow, `--change`, and exit codes from the top-level help screen.
 
-Once the matching crates.io install stub is published, install with:
+## Cargo binstall
+
+After the matching crates.io install stub is published:
 
 ```bash
 cargo install cargo-binstall
-cargo binstall goldencheck
+cargo binstall fixture3
 ```
 
-Do not use `cargo install goldencheck` for the real binary. The crates.io package is an install stub that exists so `cargo binstall goldencheck` can resolve release metadata and download prebuilt binaries.
+`cargo install fixture3` installs only the stub package. The real binary is downloaded by `cargo binstall fixture3` from the GitHub release.
 
-## Manifest
+## Why this exists
 
-Default manifest path:
+Unit tests can be a bad fit for large agent-managed codebases. For behavior-heavy code, the test code can grow until it is as large as the production code. Then an agent has two equally easy ways to make a broken change pass: change the app back to the intended behavior, or rewrite the tests to accept the broken behavior.
 
-```text
-goldencheck.yaml
-```
+`fixture3` moves the trust boundary. Fixtures are stable inputs that describe the behavior surface layer by layer. Approved outputs are the reviewed behavior for the current accepted commit. When code changes, the inputs usually stay put and only the received output changes.
+
+That makes review smaller. Instead of judging a rewritten test suite, a reviewer can inspect the behavior diff: previous approved output against new received output. Agents are much better at reviewing a concrete output diff than guessing intent from changed test code.
+
+## How it works
+
+A project defines suites in `fixture3.yaml`. Each suite says:
+
+- which fixture files are inputs
+- which command runs against those fixtures
+- which exit codes are accepted
+- how stdout is normalized
+- where approved, received, and diff files live
 
 Example:
 
@@ -76,75 +72,68 @@ suites:
           - "scripts/normalize-output.py"
     storage:
       approved_dir: "behavior/golden/lint-rules"
-      received_dir: ".goldencheck/lint-rules"
-      diff_dir: ".goldencheck/lint-rules"
+      received_dir: ".fixture3/lint-rules"
+      diff_dir: ".fixture3/lint-rules"
 ```
 
 `{fixtures}` is replaced with the discovered fixture paths in deterministic order.
 
-The normalizer is optional. When present, `goldencheck` writes the command stdout to the normalizer stdin and reads normalized output from normalizer stdout.
+The only supported output format is JSON. A normalizer is optional. When present, `fixture3` writes command stdout to the normalizer stdin and reads normalized JSON from normalizer stdout.
 
-## Commands
+## Daily workflow
+
+Create a manifest:
+
+```bash
+fixture3 init
+```
 
 Run one suite:
 
 ```bash
-goldencheck check --suite lint-rules
-goldencheck check --suite lint-rules --manifest goldencheck.yaml
+fixture3 check --suite lint-rules
+fixture3 check --suite lint-rules --manifest fixture3.yaml
 ```
 
 Run every suite:
 
 ```bash
-goldencheck check --all
-goldencheck check --all --manifest goldencheck.yaml
+fixture3 check --all
+```
+
+Show a stored diff:
+
+```bash
+fixture3 diff --suite lint-rules
+```
+
+Refresh and show a diff:
+
+```bash
+fixture3 diff --suite lint-rules --refresh
+```
+
+Approve a reviewed behavior change:
+
+```bash
+fixture3 approve --suite lint-rules --change behavior/changes/2026-05-14-rule-change.md
+```
+
+Show suite state:
+
+```bash
+fixture3 status
+fixture3 status --suite lint-rules
+fixture3 status --all
 ```
 
 Exit codes:
 
 - `0`: received output matches approved output
 - `1`: received output differs from approved output
-- `2`: tool, config, command, or runtime error
+- `2`: tool, config, command, normalizer, or runtime error
 
-For `check --all`, exit `2` wins over exit `1`. That means one errored suite returns `2` even if another suite only differs.
-
-Show the latest diff without rerunning the suite:
-
-```bash
-goldencheck diff --suite lint-rules
-```
-
-Refresh and then show the diff:
-
-```bash
-goldencheck diff --suite lint-rules --refresh
-```
-
-Approve a received output:
-
-```bash
-goldencheck approve --suite lint-rules
-```
-
-If the received output differs from approved output, `--change` is required:
-
-```bash
-goldencheck approve --suite lint-rules --change behavior/changes/2026-05-13-change.md
-```
-
-Show suite state:
-
-```bash
-goldencheck status
-goldencheck status --suite lint-rules
-goldencheck status --all
-```
-
-Create an example manifest:
-
-```bash
-goldencheck init
-```
+For `check --all`, exit `2` wins over exit `1`.
 
 ## Files
 
@@ -160,7 +149,7 @@ behavior/
 Generated files:
 
 ```text
-.goldencheck/
+.fixture3/
   <suite>/
     received.raw.json
     received.normalized.json
@@ -177,9 +166,9 @@ behavior/golden/<suite>/
   approved.meta.json
 ```
 
-## Fail-Closed Behavior
+## Fail-closed checks
 
-`goldencheck check` fails with exit `2` when:
+`fixture3 check` exits `2` when:
 
 - approved output is missing
 - the project command exits with a code outside `ok_exit_codes`
@@ -187,22 +176,12 @@ behavior/golden/<suite>/
 - command output or normalized output is invalid JSON
 - approved metadata exists and fixture, manifest, or normalizer hashes changed
 
-## Repository Verification
+## Repository verification
 
-This repository does not use Rust tests.
-
-Run:
+This repository uses its own fixture suite instead of Rust tests.
 
 ```bash
 scripts/verify-all.sh
 ```
 
-The verifier checks:
-
-- required tree shape
-- no Rust test files or test attributes
-- required G3RS config
-- module dependency rules
-- formatting, compilation, clippy, and G3RS
-- self-hosted golden behavior
-- CLI command contract
+The verifier checks the tree, forbidden test files, config, module dependencies, formatting, compilation, clippy, G3RS, self-hosted fixture behavior, and CLI help.

@@ -37,26 +37,26 @@ EXPECTED = {
         "stdout_contains": ["suite: alpha", "status: matched"],
         "stderr_contains": ["suite: beta", "exit code 7 was not in [0]"],
         "generated_files": [
-            ".goldencheck/self-cases/check-all-error/alpha/received.normalized.json",
-            ".goldencheck/self-cases/check-all-error/alpha/diff.json",
+            ".fixture3/self-cases/check-all-error/alpha/received.normalized.json",
+            ".fixture3/self-cases/check-all-error/alpha/diff.json",
         ],
     },
     "check-all-match": {
         "exit_code": 0,
         "stdout_contains": ["suite: alpha", "suite: beta", "status: matched"],
         "generated_files": [
-            ".goldencheck/self-cases/check-all-match/alpha/received.normalized.json",
-            ".goldencheck/self-cases/check-all-match/alpha/diff.json",
-            ".goldencheck/self-cases/check-all-match/beta/received.normalized.json",
-            ".goldencheck/self-cases/check-all-match/beta/diff.json",
+            ".fixture3/self-cases/check-all-match/alpha/received.normalized.json",
+            ".fixture3/self-cases/check-all-match/alpha/diff.json",
+            ".fixture3/self-cases/check-all-match/beta/received.normalized.json",
+            ".fixture3/self-cases/check-all-match/beta/diff.json",
         ],
     },
     "check-all-mismatch": {
         "exit_code": 1,
         "stdout_contains": ["suite: alpha", "suite: beta", "status: matched", "status: different"],
         "generated_files": [
-            ".goldencheck/self-cases/check-all-mismatch/alpha/diff.json",
-            ".goldencheck/self-cases/check-all-mismatch/beta/diff.json",
+            ".fixture3/self-cases/check-all-mismatch/alpha/diff.json",
+            ".fixture3/self-cases/check-all-mismatch/beta/diff.json",
         ],
     },
     "check-suite-all-conflict": {
@@ -87,7 +87,7 @@ EXPECTED = {
     },
     "init": {
         "exit_code": 0,
-        "created_manifest": ".goldencheck/self-init/generated.yaml",
+        "created_manifest": ".fixture3/self-init/generated.yaml",
     },
     "mismatch": {
         "exit_code": 1,
@@ -144,7 +144,7 @@ def check_command(binary: Path, manifest: Path) -> list[str]:
 def run_case(binary: Path, manifest: Path) -> dict:
     case = manifest.parent.name
     expected = EXPECTED[case]
-    received_root = Path(".goldencheck/self-cases") / case
+    received_root = Path(".fixture3/self-cases") / case
     prepare_case(case, manifest, received_root)
     result = run_case_command(binary, case, manifest)
 
@@ -198,7 +198,7 @@ def run_case(binary: Path, manifest: Path) -> dict:
 
 def approved_root(case: str, manifest: Path) -> Path:
     if case.startswith("approve-"):
-        return Path(".goldencheck/self-cases") / case / "golden"
+        return Path(".fixture3/self-cases") / case / "golden"
     return manifest.parent / "golden"
 
 
@@ -213,7 +213,7 @@ def prepare_case(case: str, manifest: Path, received_root: Path) -> None:
         meta = runtime_golden / "approved.meta.json"
         meta.unlink(missing_ok=True)
     if case == "init":
-        Path(".goldencheck/self-init/generated.yaml").unlink(missing_ok=True)
+        Path(".fixture3/self-init/generated.yaml").unlink(missing_ok=True)
     if case.startswith("check-all-") or case == "status-all":
         shutil.rmtree(received_root, ignore_errors=True)
         return
@@ -259,7 +259,7 @@ def run_case_command(binary: Path, case: str, manifest: Path) -> subprocess.Comp
             [str(binary), "diff", "--suite", "case", "--manifest", str(manifest), "--refresh"]
         )
     if case == "init":
-        created = Path(".goldencheck/self-init/generated.yaml")
+        created = Path(".fixture3/self-init/generated.yaml")
         return run_command([str(binary), "init", "--manifest", str(created)])
     if case == "status":
         run_command(check_command(binary, manifest))
@@ -281,7 +281,7 @@ def contains_all(haystack: str, needle: str | list[str]) -> bool:
 
 
 def main() -> int:
-    binary = Path("target/debug/goldencheck")
+    binary = Path("target/debug/fixture3")
     if not binary.exists():
         print(f"missing binary: {binary}", file=sys.stderr)
         return 2

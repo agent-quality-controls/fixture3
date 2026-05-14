@@ -1,6 +1,6 @@
 # Summary
 
-Implemented the first manifest-driven `goldencheck` V1 command surface and made the repository self-host through `goldencheck check --suite self --manifest goldencheck.yaml`.
+Implemented the first manifest-driven `fixture3` V1 command surface and made the repository self-host through `fixture3 check --suite self --manifest fixture3.yaml`.
 
 The verifier stack now reads the architecture manifest, enforces required tree shape, forbidden Rust test surfaces, G3RS config, declared module dependencies, static Rust checks, G3RS, the self golden suite, and the CLI command contract. The self suite now runs nested CLI scenarios for match, mismatch, missing approved output, invalid command exit, invalid JSON output, diff, diff refresh, approve, status, init, fixture hash drift, and normalizer command execution.
 
@@ -14,13 +14,13 @@ The verifier stack now reads the architecture manifest, enforces required tree s
 - Added fail-closed hash comparison when approved metadata exists.
 - Enforced module dependencies through manifest rows and `scripts/verify-layer-4-modules.sh` so the small-module crate shape has a mechanical boundary check.
 - Replaced the initial weak self fixture with a harness that runs the actual built CLI against nested behavior manifests and records stable behavior summaries.
-- Kept approve scenario writes under `.goldencheck` so self verification does not mutate committed fixture files.
+- Kept approve scenario writes under `.fixture3` so self verification does not mutate committed fixture files.
 
 # Key Files For Context
 
-- `.plans/2026-05-13-150929-goldencheck-architecture.md.manifest.toml`
+- `.plans/2026-05-13-150929-fixture3-architecture.md.manifest.toml`
 - `.plans/2026-05-13-175011-manifest-driven-check.md`
-- `goldencheck.yaml`
+- `fixture3.yaml`
 - `scripts/verify-manifest.py`
 - `scripts/self-check-harness.py`
 - `scripts/self-case-emit-json.py`
@@ -32,13 +32,13 @@ The verifier stack now reads the architecture manifest, enforces required tree s
 - `behavior/fixtures/self/cases`
 - `behavior/golden/self/approved.normalized.json`
 - `behavior/golden/self/approved.meta.json`
-- `crates/goldencheck/src/app.rs`
-- `crates/goldencheck/src/manifest.rs`
-- `crates/goldencheck/src/fixture.rs`
-- `crates/goldencheck/src/command.rs`
-- `crates/goldencheck/src/normalize.rs`
-- `crates/goldencheck/src/storage.rs`
-- `crates/goldencheck/src/diff.rs`
+- `crates/fixture3/src/app.rs`
+- `crates/fixture3/src/manifest.rs`
+- `crates/fixture3/src/fixture.rs`
+- `crates/fixture3/src/command.rs`
+- `crates/fixture3/src/normalize.rs`
+- `crates/fixture3/src/storage.rs`
+- `crates/fixture3/src/diff.rs`
 
 # Verification
 
@@ -54,7 +54,7 @@ layer2 forbidden: PASS
 layer3 config: PASS
 layer4 modules: PASS
 layer5 static: PASS
-layer6 goldencheck: PASS
+layer6 fixture3: PASS
 layer7 cli: PASS
 PASS
 ```

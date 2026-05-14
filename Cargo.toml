@@ -1,12 +1,12 @@
 [workspace]
-members = ["crates/goldencheck", "crates/goldencheck-install"]
+members = ["crates/fixture3", "crates/fixture3-install"]
 resolver = "3"
 
 [workspace.package]
 edition = "2024"
 rust-version = "1.93"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/websmasher/goldencheck"
+repository = "https://github.com/websmasher/fixture3"
 publish = false
 
 [workspace.lints.rust]

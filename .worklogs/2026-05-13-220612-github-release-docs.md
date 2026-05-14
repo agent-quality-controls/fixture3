@@ -1,6 +1,6 @@
 Summary
 - Updated README install and usage docs for the GitHub `v0.1.4` release.
-- Clarified that the full agent-oriented guide is available in `goldencheck --help`.
+- Clarified that the full agent-oriented guide is available in `fixture3 --help`.
 
 Decisions made
 - Documented direct GitHub tarball installation because `v0.1.4` is being released to GitHub before publishing a matching crates.io install stub.
