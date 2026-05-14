@@ -227,3 +227,11 @@ scripts/verify-all.sh
 ```
 
 The verifier checks the tree, forbidden test files, config, module dependencies, formatting, compilation, clippy, G3RS, self-hosted fixture behavior, CLI help, and the feature-pipeline contract.
+
+The repository also includes a fake project under `examples/fake-project`. It is a small external-style project used to prove the workflow outside fixture3's own self suite:
+
+```bash
+scripts/verify-fake-project.sh
+```
+
+That verifier copies the fake project to `.fixture3/fake-project-run` and runs `doctor`, `explain`, `check --suite`, `check --tag`, `check --feature`, `status --json`, `diff --json`, `approve`, `new suite`, and `init` against the copy.

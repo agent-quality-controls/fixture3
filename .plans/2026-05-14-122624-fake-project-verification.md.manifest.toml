@@ -1,0 +1,42 @@
+[[tree]]
+path = "examples/fake-project/fixture3.yaml"
+
+[[tree]]
+path = "examples/fake-project/scripts/fake-app.sh"
+
+[[tree]]
+path = "examples/fake-project/docs/features/parsing.md"
+
+[[tree]]
+path = "examples/fake-project/docs/features/review.md"
+
+[[tree]]
+path = "examples/fake-project/behavior/changes/fake-change.md"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/parser-basic/lower/input.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/parser-basic/upper/input.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/cli-errors/missing-field/input.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/review-drift/current/input.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/approved/parser-basic/approved.normalized.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/approved/cli-errors/approved.normalized.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/approved/review-drift/approved.normalized.json"
+
+[[tree]]
+path = "scripts/verify-fake-project.sh"
+
+[[command]]
+name = "fake-project"
+argv = ["scripts/verify-fake-project.sh"]

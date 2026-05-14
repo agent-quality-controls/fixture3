@@ -1,0 +1,15 @@
+{
+  "count": 2,
+  "records": [
+    {
+      "case": "lower",
+      "kind": "parse",
+      "observed": "ALPHA"
+    },
+    {
+      "case": "upper",
+      "kind": "parse",
+      "observed": "BETA"
+    }
+  ]
+}

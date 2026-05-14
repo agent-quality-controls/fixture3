@@ -1,0 +1,68 @@
+version: 1
+features:
+  parsing:
+    spec: "docs/features/parsing.md"
+    suites:
+      - "parser-basic"
+      - "cli-errors"
+  review:
+    spec: "docs/features/review.md"
+    suites:
+      - "review-drift"
+suites:
+  parser-basic:
+    tags:
+      - "parser"
+      - "smoke"
+    fixtures:
+      - "behavior/fixtures/parser-basic/*/input.json"
+    command:
+      argv:
+        - "bash"
+        - "scripts/fake-app.sh"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/approved/parser-basic"
+      received_dir: ".fixture3/parser-basic"
+      diff_dir: ".fixture3/parser-basic"
+  cli-errors:
+    tags:
+      - "cli"
+      - "smoke"
+    fixtures:
+      - "behavior/fixtures/cli-errors/*/input.json"
+    command:
+      argv:
+        - "bash"
+        - "scripts/fake-app.sh"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/approved/cli-errors"
+      received_dir: ".fixture3/cli-errors"
+      diff_dir: ".fixture3/cli-errors"
+  review-drift:
+    tags:
+      - "review"
+    fixtures:
+      - "behavior/fixtures/review-drift/*/input.json"
+    command:
+      argv:
+        - "bash"
+        - "scripts/fake-app.sh"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/approved/review-drift"
+      received_dir: ".fixture3/review-drift"
+      diff_dir: ".fixture3/review-drift"

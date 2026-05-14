@@ -1,0 +1,11 @@
+{
+  "count": 1,
+  "records": [
+    {
+      "case": "missing-field",
+      "error": "missing field",
+      "kind": "diagnostic",
+      "observed": ""
+    }
+  ]
+}
