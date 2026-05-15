@@ -1,12 +1,14 @@
 Summary
-- Rewrote the reducer plan to remove open implementation choices and make `fixture3 minimize` executable by future agents.
+- Rewrote the reducer plan to remove open implementation choices and make `fixture3 reduce` executable by future agents.
+- Renamed the planned user-facing command from `fixture3 minimize` to `fixture3 reduce`.
 - Marked the older embedded handoff plan copy as superseded.
 - Included the root `code-sessions` resume helper in the working set.
 
 Decisions made
 - Chose in-place mutation as normal reducer behavior and dry-run restore behavior as the non-mutating mode.
+- Removed public `--pass` execution because individual reducer passes are implementation details.
 - Chose JSON row matching for stdout contracts and stderr text exclusion.
-- Chose manifest-owned proof path, source globs, pass list, and exit-code semantics.
+- Chose manifest-owned proof path, source globs, fixed pass order, and exit-code semantics.
 - Chose `walkdir`, `toml_edit`, `treereduce`, `tree-sitter-rust`, `tempfile`, `similar`, and existing `sha2` as the concrete dependency stack.
 
 Key files for context
