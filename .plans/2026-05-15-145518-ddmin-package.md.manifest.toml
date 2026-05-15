@@ -1,0 +1,107 @@
+[[tree]]
+path = "packages/ddmin/Cargo.toml"
+
+[[tree]]
+path = "packages/ddmin/src/lib.rs"
+
+[[tree]]
+path = "packages/ddmin/src/algorithm.rs"
+
+[[tree]]
+path = "packages/ddmin/src/types.rs"
+
+[[tree]]
+path = "packages/ddmin/examples/behavior.rs"
+
+[[tree]]
+path = "scripts/verify-ddmin.py"
+
+[[tree]]
+path = "scripts/verify-ddmin.sh"
+
+[[workspace_member]]
+path = "packages/ddmin"
+
+[package]
+path = "packages/ddmin/Cargo.toml"
+name = "fixture3-ddmin"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[public_api]
+crate_path = "packages/ddmin/src/lib.rs"
+types = [
+  "DdminInput",
+  "DdminOptions",
+  "OracleOutcome",
+  "UnresolvedReason",
+  "DdminOracle",
+  "DdminOutput",
+  "DdminStats",
+  "DdminGuarantee",
+  "DdminStopReason",
+]
+functions = ["ddmin"]
+
+[[closed_set]]
+kind = "enum"
+type = "OracleOutcome"
+variants = ["Interesting", "NotInteresting", "Unresolved"]
+
+[[closed_set]]
+kind = "enum"
+type = "UnresolvedReason"
+variants = [
+  "Timeout",
+  "MaterializationFailed",
+  "OracleFailed",
+  "InvalidCandidateSet",
+  "NonDeterministic",
+]
+
+[[closed_set]]
+kind = "enum"
+type = "DdminGuarantee"
+variants = ["OneMinimalWithinCandidateSet", "Incomplete"]
+
+[[closed_set]]
+kind = "enum"
+type = "DdminStopReason"
+variants = ["MaxOracleCallsReached", "BaselineNotInteresting"]
+
+[[behavior_case]]
+name = "baseline-interesting"
+
+[[behavior_case]]
+name = "baseline-not-interesting"
+
+[[behavior_case]]
+name = "empty-candidates"
+
+[[behavior_case]]
+name = "one-required-candidate"
+
+[[behavior_case]]
+name = "two-required-candidates"
+
+[[behavior_case]]
+name = "duplicate-labels-unique-ids"
+
+[[behavior_case]]
+name = "order-preserving-subsequence"
+
+[[behavior_case]]
+name = "non-monotonic-oracle"
+
+[[behavior_case]]
+name = "unresolved-not-accepted"
+
+[[behavior_case]]
+name = "no-removable-candidate"
+
+[[behavior_case]]
+name = "max-oracle-calls"
+
+[[command]]
+name = "ddmin-verifier"
+argv = ["scripts/verify-ddmin.sh"]

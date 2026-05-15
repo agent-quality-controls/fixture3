@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/fixture3", "crates/fixture3-install"]
+members = ["crates/fixture3", "crates/fixture3-install", "packages/ddmin"]
 resolver = "3"
 
 [workspace.package]
