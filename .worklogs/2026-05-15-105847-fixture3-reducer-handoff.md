@@ -2,6 +2,9 @@
 
 ## Current State
 
+- The reducer plan was made decisive after this handoff was first written.
+- The current source of truth is `.plans/2026-05-14-202459-fixture3-reducer.md`.
+- The embedded plan copy later in this handoff is superseded and must not be used for implementation.
 - Repository folder before rename: `/Users/tartakovsky/Projects/websmasher/goldencheck`.
 - Project/repo name has already been changed conceptually to `fixture3`; the local folder has not been renamed yet.
 - User plans to rename the folder manually, so the next session should rediscover the repo path.
@@ -145,6 +148,10 @@ Rejected:
   - reason: published crate is effectively a placeholder
 
 ## Full Current Reducer Plan File
+
+Superseded section.
+
+Read `.plans/2026-05-14-202459-fixture3-reducer.md` instead. The live plan resolves the earlier open decisions about contract format, dry-run behavior, mutation model, proof location, source glob policy, symlink handling, and exit codes.
 
 Path:
 
