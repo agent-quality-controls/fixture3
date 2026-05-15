@@ -87,6 +87,9 @@ Workflow:
   `fixture3 check --tag <tag>` runs every suite with that tag.
   `fixture3 check --feature <feature>` runs every suite in that feature.
   `fixture3 check --json` writes suite results as structured JSON.
+  `fixture3 reduce --suite <suite> --fixture-root <path> --work-dir <path>` minimizes copied fixture trees.
+  `fixture3 reduce` preserves the selected suite's approved output.
+  `fixture3 reduce` never edits `--fixture-root` directly.
   `fixture3 diff --suite <suite>` shows the latest stored diff.
   `fixture3 diff --suite <suite> --refresh` reruns check before showing the diff.
   `fixture3 diff --suite <suite> --json` writes diff status and text as JSON.
@@ -149,6 +152,31 @@ Show one suite or every suite from fixture3.yaml.
 Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`.
 Omit all target flags to list every suite.
 Use `--json` when an agent needs approved, received, and diff booleans per suite.
+";
+
+const REDUCE_HELP: &str = "\
+Minimize copied fixture trees.
+
+reduce uses DDMin to find fixture files that can be removed while the selected suite
+preserves the selected suite's approved output. It never edits --fixture-root directly.
+
+Required inputs:
+  --suite <suite> names one suite from fixture3.yaml.
+  --fixture-root <path> is the copied fixture tree to reduce.
+  --work-dir <path> is scratch space for trial trees and reports.
+
+Optional inputs:
+  --manifest <path> defaults to fixture3.yaml.
+
+Outputs:
+  JSON is written to stdout.
+  The same JSON is written to <work-dir>/reduce-report.json.
+  Removed file paths are written to <work-dir>/removed-files.txt.
+  Remaining file paths are written to <work-dir>/remaining-files.txt.
+
+Exit codes:
+  0  reducer completed and produced a report
+  2  manifest, fixture-root, work-dir, trial tree, or oracle execution failed
 ";
 
 const INIT_HELP: &str = "\
@@ -215,6 +243,9 @@ pub(crate) enum Commands {
     #[command(about = "Show approved, received, and diff file state")]
     #[command(long_about = STATUS_HELP)]
     Status(StatusArgs),
+    #[command(about = "Minimize copied fixture trees")]
+    #[command(long_about = REDUCE_HELP)]
+    Reduce(ReduceArgs),
     #[command(about = "Create an example fixture3.yaml manifest")]
     #[command(long_about = INIT_HELP)]
     Init(InitArgs),
@@ -306,6 +337,21 @@ pub(crate) struct StatusArgs {
 
     #[arg(long, help = "Write machine-readable JSON output")]
     pub(crate) json: bool,
+}
+
+#[derive(Debug, Parser)]
+pub(crate) struct ReduceArgs {
+    #[arg(long, help = "Suite name from fixture3.yaml")]
+    pub(crate) suite: String,
+
+    #[arg(long, default_value = "fixture3.yaml", help = "Manifest path")]
+    pub(crate) manifest: PathBuf,
+
+    #[arg(long, help = "Copied fixture tree to reduce")]
+    pub(crate) fixture_root: PathBuf,
+
+    #[arg(long, help = "Scratch directory for trial trees and reports")]
+    pub(crate) work_dir: PathBuf,
 }
 
 #[derive(Debug, Parser)]

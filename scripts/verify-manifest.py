@@ -106,6 +106,8 @@ def layer_config(manifest: dict) -> int:
 
 
 def module_name(path: Path) -> str:
+    if path.name == "mod.rs":
+        return path.parent.name
     return path.stem
 
 
@@ -128,7 +130,9 @@ def module_imports(path: Path, module_names: set[str]) -> set[str]:
 
 def layer_modules(manifest: dict) -> int:
     src_dir = Path("apps/fixtures/crates/fixture3/src")
-    module_files = {module_name(path): path for path in src_dir.glob("*.rs")}
+    root_modules = list(src_dir.glob("*.rs"))
+    directory_modules = list(src_dir.glob("*/mod.rs"))
+    module_files = {module_name(path): path for path in root_modules + directory_modules}
     module_names = set(module_files)
     allowed = {row["from"]: set(row["to"]) for row in manifest.get("module_dep", [])}
 

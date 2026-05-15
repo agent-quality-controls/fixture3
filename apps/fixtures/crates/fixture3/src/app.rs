@@ -61,6 +61,7 @@ fn run_checked(cli: crate::args::Cli) -> Result<AppOutcome, AppError> {
         crate::args::Commands::Diff(args) => diff_command(&args),
         crate::args::Commands::Approve(args) => approve(&args),
         crate::args::Commands::Status(args) => status(&args),
+        crate::args::Commands::Reduce(args) => reduce_command(&args),
         crate::args::Commands::Init(args) => init(&args),
         crate::args::Commands::Explain(args) => explain(&args),
         crate::args::Commands::Doctor(args) => doctor_command(&args),
@@ -198,6 +199,11 @@ fn status(args: &crate::args::StatusArgs) -> Result<AppOutcome, AppError> {
     Ok(AppOutcome { exit_code: 0, stdout: output, stderr: String::new() })
 }
 
+fn reduce_command(args: &crate::args::ReduceArgs) -> Result<AppOutcome, AppError> {
+    let report = crate::reduce::run(args)?;
+    Ok(AppOutcome { exit_code: 0, stdout: json(&report)?, stderr: String::new() })
+}
+
 fn init(args: &crate::args::InitArgs) -> Result<AppOutcome, AppError> {
     crate::storage::init_manifest(&args.manifest)?;
     Ok(AppOutcome {
@@ -291,8 +297,8 @@ struct LoadedSuite {
 }
 
 #[derive(Debug)]
-struct CheckResult {
-    report: crate::diff::DiffReport,
+pub(crate) struct CheckResult {
+    pub(crate) report: crate::diff::DiffReport,
     stdout: String,
     stderr: String,
     diff_text: String,
@@ -301,7 +307,10 @@ struct CheckResult {
     diff_path: PathBuf,
 }
 
-fn run_check(suite_name: &str, manifest_path: &std::path::Path) -> Result<CheckResult, AppError> {
+pub(crate) fn run_check(
+    suite_name: &str,
+    manifest_path: &std::path::Path,
+) -> Result<CheckResult, AppError> {
     let manifest = crate::manifest::load(manifest_path)?;
     let suite = manifest
         .suites

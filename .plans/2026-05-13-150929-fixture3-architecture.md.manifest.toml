@@ -80,6 +80,27 @@ path = "apps/fixtures/crates/fixture3/src/metadata.rs"
 path = "apps/fixtures/crates/fixture3/src/normalize.rs"
 
 [[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/mod.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/candidate.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/oracle.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/report.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/run.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/rewrite.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/trial_tree.rs"
+
+[[tree]]
 path = "apps/fixtures/crates/fixture3/src/scaffold.rs"
 
 [[tree]]
@@ -370,6 +391,9 @@ path = "scripts/self-check-harness.py"
 [[tree]]
 path = "scripts/self-case-normalize-json.py"
 
+[[tree]]
+path = "scripts/verify-reducer.py"
+
 [[config_value]]
 file = "apps/fixtures/guardrail3-rs.toml"
 key = "checks.test"
@@ -416,6 +440,7 @@ to = [
   "manifest",
   "metadata",
   "normalize",
+  "reduce",
   "scaffold",
   "selection",
   "storage",
@@ -434,6 +459,7 @@ to = [
   "manifest",
   "metadata",
   "normalize",
+  "reduce",
   "scaffold",
   "selection",
   "storage",
@@ -482,6 +508,10 @@ to = ["error", "fixture", "fs", "git", "manifest"]
 [[module_dep]]
 from = "normalize"
 to = ["command", "error", "manifest"]
+
+[[module_dep]]
+from = "reduce"
+to = ["args", "error", "fs"]
 
 [[module_dep]]
 from = "scaffold"
@@ -547,6 +577,20 @@ help_contains = [
 ]
 
 [[cli_command]]
+name = "reduce"
+required_flags = ["--suite", "--fixture-root", "--work-dir"]
+optional_flags = ["--manifest"]
+exit_codes = [0, 2]
+help_contains = [
+  "Minimize copied fixture trees",
+  "preserves the selected suite's approved output",
+  "never edits --fixture-root directly",
+  "reduce-report.json",
+  "removed-files.txt",
+  "remaining-files.txt",
+]
+
+[[cli_command]]
 name = "init"
 required_flags = []
 optional_flags = ["--manifest"]
@@ -604,6 +648,8 @@ contains = [
   "`fixture3 check --all` runs every suite",
   "`fixture3 check --tag <tag>` runs every suite with that tag.",
   "`fixture3 check --json` writes suite results as structured JSON.",
+  "`fixture3 reduce` preserves the selected suite's approved output.",
+  "`fixture3 reduce` never edits `--fixture-root` directly.",
   "`fixture3 explain --suite <suite>` shows the resolved suite configuration.",
   "`fixture3 doctor` validates manifest paths, fixtures, features, and storage.",
   "`fixture3 diff --suite <suite> --refresh` reruns check before showing the diff.",

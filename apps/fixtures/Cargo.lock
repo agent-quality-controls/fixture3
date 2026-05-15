@@ -162,6 +162,7 @@ name = "fixture3-cli"
 version = "0.1.6"
 dependencies = [
  "clap",
+ "fixture3-ddmin",
  "glob",
  "serde",
  "serde_json",
@@ -170,6 +171,10 @@ dependencies = [
  "thiserror",
  "time",
 ]
+
+[[package]]
+name = "fixture3-ddmin"
+version = "0.1.0"
 
 [[package]]
 name = "generic-array"

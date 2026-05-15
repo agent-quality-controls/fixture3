@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# g3rs:begin managed repo guardrails
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+if [ -x ".githooks/pre-commit.d/g3rs" ]; then
+    . ".githooks/pre-commit.d/g3rs"
+else
+    echo "ERROR: missing executable .githooks/pre-commit.d/g3rs"
+    exit 1
+fi
+# g3rs:end managed repo guardrails
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 export CARGO_TARGET_DIR="$REPO_ROOT/.cargo-target"
@@ -48,7 +58,7 @@ while IFS= read -r file; do
     fi
 done <<< "$STAGED_FILES"
 
-g3rs validate-repo
+g3rs validate repo --path "$REPO_ROOT"
 
 find_owning_unit() {
     local start_dir="$1"
@@ -98,7 +108,7 @@ if [ -n "$RUST_UNIQUE_UNITS" ]; then
     echo "Running Rust validate per owning unit..."
     while IFS= read -r unit; do
         [ -n "$unit" ] || continue
-        g3rs validate --path "$unit" --staged
+        g3rs validate workspace --path "$unit" --staged
     done <<< "$RUST_UNIQUE_UNITS"
 fi
 
