@@ -1,0 +1,78 @@
+{
+  "cases": [
+    {
+      "name": "baseline-interesting",
+      "candidate_count": 3,
+      "interesting_when_contains_all": [1],
+      "expected_remaining": [1],
+      "expected_guarantee": "complete"
+    },
+    {
+      "name": "baseline-not-interesting",
+      "candidate_count": 3,
+      "interesting_when_contains_all": [9],
+      "expected_remaining": [0, 1, 2],
+      "expected_guarantee": "incomplete:BaselineNotInteresting"
+    },
+    {
+      "name": "empty-candidates",
+      "candidate_count": 0,
+      "interesting_when_contains_all": [],
+      "expected_remaining": [],
+      "expected_guarantee": "complete"
+    },
+    {
+      "name": "one-required-candidate",
+      "candidate_count": 1,
+      "interesting_when_contains_all": [0],
+      "expected_remaining": [0],
+      "expected_guarantee": "complete"
+    },
+    {
+      "name": "two-required-candidates",
+      "candidate_count": 4,
+      "interesting_when_contains_all": [0, 2],
+      "expected_remaining": [0, 2],
+      "expected_guarantee": "complete"
+    },
+    {
+      "name": "order-preserving-subsequence",
+      "candidate_count": 5,
+      "interesting_when_contains_all": [1, 4],
+      "expected_remaining": [1, 4],
+      "expected_guarantee": "complete"
+    },
+    {
+      "name": "non-monotonic-oracle",
+      "candidate_count": 4,
+      "interesting_masks": [5, 13, 7, 15],
+      "expected_remaining": [0, 2],
+      "expected_guarantee": "complete"
+    },
+    {
+      "name": "unresolved-not-accepted",
+      "candidate_count": 3,
+      "interesting_masks": [2, 3, 6, 7],
+      "unresolved_masks": [2],
+      "expected_remaining_len": 2,
+      "expected_remaining_contains": [1],
+      "expected_guarantee": "complete",
+      "minimum_unresolved_trials": 1
+    },
+    {
+      "name": "no-removable-candidate",
+      "candidate_count": 3,
+      "interesting_masks": [7],
+      "expected_remaining": [0, 1, 2],
+      "expected_guarantee": "complete"
+    },
+    {
+      "name": "max-oracle-calls",
+      "candidate_count": 3,
+      "interesting_when_contains_all": [1],
+      "max_oracle_calls": 1,
+      "expected_guarantee": "incomplete:MaxOracleCallsReached",
+      "expected_oracle_calls": 1
+    }
+  ]
+}

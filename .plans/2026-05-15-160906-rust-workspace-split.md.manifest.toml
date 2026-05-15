@@ -8,7 +8,7 @@ packages = ["fixture3"]
 
 [[workspace]]
 path = "packages/ddmin"
-packages = ["fixture3-ddmin"]
+packages = ["fixture3-ddmin", "fixture3-ddmin-probe"]
 
 [[forbidden_path]]
 path = "Cargo.toml"

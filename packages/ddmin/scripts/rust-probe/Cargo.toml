@@ -1,0 +1,11 @@
+[package]
+name = "fixture3-ddmin-probe"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+fixture3-ddmin = { path = "../../crates/ddmin" }
+
+[lints]
+workspace = true
