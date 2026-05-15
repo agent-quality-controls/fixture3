@@ -579,15 +579,17 @@ help_contains = [
 [[cli_command]]
 name = "reduce"
 required_flags = ["--suite", "--fixture-root", "--work-dir"]
-optional_flags = ["--manifest"]
+optional_flags = ["--manifest", "--max-oracle-calls"]
 exit_codes = [0, 2]
 help_contains = [
   "Minimize copied fixture trees",
   "preserves the selected suite's approved output",
   "never edits --fixture-root directly",
   "reduce-report.json",
+  "best/reduce-report.json",
   "removed-files.txt",
   "remaining-files.txt",
+  "trial-current",
 ]
 
 [[cli_command]]

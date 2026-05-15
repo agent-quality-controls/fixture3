@@ -1,11 +1,53 @@
 use std::path::Path;
 
-use fixture3_ddmin::{DdminGuarantee, DdminOutput, DdminStopReason};
+use fixture3_ddmin::{DdminGuarantee, DdminOutput, DdminStopReason, OracleOutcome};
 use serde::Serialize;
 
 use crate::error::AppError;
 
 use super::candidate::FileCandidate;
+
+#[derive(Clone, Copy, Debug, Default)]
+pub(crate) struct ReduceProgress {
+    oracle_calls: usize,
+    interesting_trials: usize,
+    not_interesting_trials: usize,
+    unresolved_trials: usize,
+}
+
+impl ReduceProgress {
+    pub(crate) const fn recorded(mut self, outcome: &OracleOutcome) -> Self {
+        self.oracle_calls = self.oracle_calls.saturating_add(1);
+        match outcome {
+            OracleOutcome::Interesting => {
+                self.interesting_trials = self.interesting_trials.saturating_add(1);
+            }
+            OracleOutcome::NotInteresting => {
+                self.not_interesting_trials = self.not_interesting_trials.saturating_add(1);
+            }
+            OracleOutcome::Unresolved(_) => {
+                self.unresolved_trials = self.unresolved_trials.saturating_add(1);
+            }
+        }
+        self
+    }
+
+    pub(crate) const fn oracle_calls(self) -> usize {
+        self.oracle_calls
+    }
+
+    const fn interesting_trials(self) -> usize {
+        self.interesting_trials
+    }
+
+    const fn not_interesting_trials(self) -> usize {
+        self.not_interesting_trials
+    }
+
+    const fn unresolved_trials(self) -> usize {
+        self.unresolved_trials
+    }
+}
 
 #[derive(Debug, Serialize)]
 pub(crate) struct ReduceReport {
@@ -49,6 +91,32 @@ impl ReduceReport {
         }
     }
 
+    pub(crate) fn best_so_far(
+        suite: &str,
+        fixture_root: &Path,
+        work_dir: &Path,
+        original: &[FileCandidate],
+        remaining: &[FileCandidate],
+        progress: ReduceProgress,
+    ) -> Self {
+        let removed = removed_from_original(original, remaining);
+        Self {
+            suite: suite.to_owned(),
+            fixture_root: fixture_root.to_string_lossy().into_owned(),
+            work_dir: work_dir.to_string_lossy().into_owned(),
+            candidate_count: original.len(),
+            remaining_count: remaining.len(),
+            removed_count: removed.len(),
+            oracle_calls: progress.oracle_calls(),
+            interesting_trials: progress.interesting_trials(),
+            not_interesting_trials: progress.not_interesting_trials(),
+            unresolved_trials: progress.unresolved_trials(),
+            guarantee: "best-so-far".to_owned(),
+            remaining_files: file_list(remaining),
+            removed_files: file_list(&removed),
+        }
+    }
+
     fn removed_files(&self) -> &[String] {
         &self.removed_files
     }
@@ -72,10 +140,23 @@ pub(crate) fn write(work_dir: &Path, report: &ReduceReport) -> Result<(), AppErr
     )
 }
 
+pub(crate) fn write_best(work_dir: &Path, report: &ReduceReport) -> Result<(), AppError> {
+    write(&work_dir.join("best"), report)
+}
+
 fn file_list(candidates: &[FileCandidate]) -> Vec<String> {
     let mut paths = candidates.iter().map(FileCandidate::display_path).collect::<Vec<_>>();
     paths.sort();
     paths
+}
+
+fn removed_from_original(
+    original: &[FileCandidate],
+    remaining: &[FileCandidate],
+) -> Vec<FileCandidate> {
+    let remaining_ids =
+        remaining.iter().map(FileCandidate::id).collect::<std::collections::BTreeSet<_>>();
+    original.iter().filter(|candidate| !remaining_ids.contains(&candidate.id())).cloned().collect()
 }
 
 fn guarantee_text(guarantee: DdminGuarantee) -> String {

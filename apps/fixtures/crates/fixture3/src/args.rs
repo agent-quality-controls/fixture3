@@ -1,3 +1,4 @@
+use std::num::NonZeroUsize;
 use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
@@ -167,12 +168,15 @@ Required inputs:
 
 Optional inputs:
   --manifest <path> defaults to fixture3.yaml.
+  --max-oracle-calls <count> stops after that many oracle calls.
 
 Outputs:
   JSON is written to stdout.
   The same JSON is written to <work-dir>/reduce-report.json.
   Removed file paths are written to <work-dir>/removed-files.txt.
   Remaining file paths are written to <work-dir>/remaining-files.txt.
+  Best-so-far report is written to <work-dir>/best/reduce-report.json.
+  The current oracle trial uses <work-dir>/trial-current/.
 
 Exit codes:
   0  reducer completed and produced a report
@@ -352,6 +356,9 @@ pub(crate) struct ReduceArgs {
 
     #[arg(long, help = "Scratch directory for trial trees and reports")]
     pub(crate) work_dir: PathBuf,
+
+    #[arg(long, help = "Stop after this many oracle calls")]
+    pub(crate) max_oracle_calls: Option<NonZeroUsize>,
 }
 
 #[derive(Debug, Parser)]
