@@ -32,12 +32,11 @@ impl TrialTree {
 }
 
 pub(crate) fn create(
-    call_number: usize,
     fixture_root: &Path,
     work_dir: &Path,
     remaining: &[FileCandidate],
 ) -> Result<TrialTree, AppError> {
-    let call_dir = work_dir.join("trials").join(call_number.to_string());
+    let call_dir = work_dir.join("trial-current");
     crate::fs::remove_dir_all(&call_dir)?;
 
     let trial = TrialTree {

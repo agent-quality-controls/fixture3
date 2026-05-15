@@ -12,7 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 RUN_ROOT = ROOT / ".fixture3" / "reducer-run"
 SOURCE = ROOT / "examples" / "fake-project"
 FIXTURE3 = ROOT / "apps" / "fixtures" / "target" / "debug" / "fixture3"
-MANIFEST = ROOT / ".plans" / "2026-05-15-193357-fixture-reducer-adapter.md.manifest.toml"
+MANIFESTS = [
+    ROOT / ".plans" / "2026-05-15-193357-fixture-reducer-adapter.md.manifest.toml",
+    ROOT / ".plans" / "2026-05-15-225212-reducer-runtime-controls.md.manifest.toml",
+]
 
 
 def run(argv: list[str], cwd: Path) -> tuple[int, str, str]:
@@ -61,30 +64,31 @@ def read_report(path: Path) -> dict:
 
 
 def verify_manifest_rows() -> list[str]:
-    manifest = tomllib.loads(MANIFEST.read_text())
     findings: list[str] = []
-    for row in manifest.get("tree", []):
-        if not (ROOT / row["path"]).exists():
-            findings.append(f"missing path: {row['path']}")
+    for manifest_path in MANIFESTS:
+        manifest = tomllib.loads(manifest_path.read_text())
+        for row in manifest.get("tree", []):
+            if not (ROOT / row["path"]).exists():
+                findings.append(f"missing path: {row['path']}")
 
-    for row in manifest.get("manifest_contains", []):
-        text = (ROOT / row["file"]).read_text()
-        for expected in row["contains"]:
-            if expected not in text:
-                findings.append(f"{row['file']} missing text: {expected}")
+        for row in manifest.get("manifest_contains", []):
+            text = (ROOT / row["file"]).read_text()
+            for expected in row["contains"]:
+                if expected not in text:
+                    findings.append(f"{row['file']} missing text: {expected}")
 
-    for row in manifest.get("cli_command", []):
-        code, stdout, stderr = run([str(FIXTURE3), row["name"], "--help"], ROOT)
-        output = stdout + stderr
-        if code != 0:
-            findings.append(f"cli help failed: {row['name']} exit {code}\n{output}")
-            continue
-        for flag in row["required_flags"] + row["optional_flags"]:
-            if flag not in output:
-                findings.append(f"cli command {row['name']} missing flag: {flag}")
-        for expected in row.get("help_contains", []):
-            if expected not in output:
-                findings.append(f"cli command {row['name']} missing help text: {expected}")
+        for row in manifest.get("cli_command", []):
+            code, stdout, stderr = run([str(FIXTURE3), row["name"], "--help"], ROOT)
+            output = stdout + stderr
+            if code != 0:
+                findings.append(f"cli help failed: {row['name']} exit {code}\n{output}")
+                continue
+            for flag in row["required_flags"] + row["optional_flags"]:
+                if flag not in output:
+                    findings.append(f"cli command {row['name']} missing flag: {flag}")
+            for expected in row.get("help_contains", []):
+                if expected not in output:
+                    findings.append(f"cli command {row['name']} missing help text: {expected}")
 
     return findings
 
@@ -157,6 +161,55 @@ def verify_basic(run_root: Path) -> list[str]:
     )
     if after_files != before_files:
         findings.append(f"original fixture root changed: before {before_files!r}, after {after_files!r}")
+    if (run_root / work_dir / "trials").exists():
+        findings.append("reducer-basic created obsolete trials directory")
+    if not (run_root / work_dir / "trial-current").exists():
+        findings.append("reducer-basic did not create trial-current")
+
+    return findings
+
+
+def verify_max_oracle_calls(run_root: Path) -> list[str]:
+    findings: list[str] = []
+    work_dir = ".fixture3/reducer-basic-limited"
+    code, stdout, stderr = run(
+        [
+            str(FIXTURE3),
+            "reduce",
+            "--suite",
+            "reducer-basic",
+            "--manifest",
+            "behavior/fixtures/reducer-basic/fixture3.yaml",
+            "--fixture-root",
+            "behavior/fixtures/reducer-basic/project",
+            "--work-dir",
+            work_dir,
+            "--max-oracle-calls",
+            "2",
+        ],
+        run_root,
+    )
+    if code != 0:
+        findings.append(f"reducer-basic-limited exit {code}\nstdout:\n{stdout}\nstderr:\n{stderr}")
+        return findings
+    report = json.loads(stdout)
+    if report.get("guarantee") != "incomplete:max-oracle-calls-reached":
+        findings.append(f"limited guarantee mismatch: {report.get('guarantee')!r}")
+
+    best_report_path = run_root / work_dir / "best" / "reduce-report.json"
+    if not best_report_path.exists():
+        findings.append("limited reducer did not write best/reduce-report.json")
+    else:
+        best_report = read_report(best_report_path)
+        if best_report.get("guarantee") != "best-so-far":
+            findings.append(f"best guarantee mismatch: {best_report.get('guarantee')!r}")
+        if not best_report.get("remaining_files"):
+            findings.append("best report remaining_files was empty")
+
+    if (run_root / work_dir / "trials").exists():
+        findings.append("limited reducer created obsolete trials directory")
+    if not (run_root / work_dir / "trial-current").exists():
+        findings.append("limited reducer did not create trial-current")
 
     return findings
 
@@ -199,6 +252,7 @@ def main() -> int:
     findings = []
     findings.extend(verify_manifest_rows())
     findings.extend(verify_basic(run_root))
+    findings.extend(verify_max_oracle_calls(run_root))
     findings.extend(verify_symlink(run_root))
     if findings:
         return fail("\n".join(findings))

@@ -1,0 +1,42 @@
+[[tree]]
+path = ".plans/2026-05-15-225212-reducer-runtime-controls.md"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/args.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/run.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/oracle.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/report.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/trial_tree.rs"
+
+[[tree]]
+path = "scripts/verify-reducer.py"
+
+[[cli_command]]
+name = "reduce"
+required_flags = ["--suite", "--fixture-root", "--work-dir"]
+optional_flags = ["--manifest", "--max-oracle-calls"]
+help_contains = [
+  "best/reduce-report.json",
+  "trial-current",
+  "--max-oracle-calls",
+]
+
+[[manifest_contains]]
+file = "README.md"
+contains = [
+  "--max-oracle-calls",
+  "<work-dir>/best/",
+  "<work-dir>/trial-current/",
+]
+
+[[command]]
+name = "reducer-verifier"
+argv = ["python3", "scripts/verify-reducer.py"]

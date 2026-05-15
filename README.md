@@ -165,10 +165,10 @@ fixture3 status --all
 Reduce a copied fixture tree:
 
 ```bash
-fixture3 reduce --suite lint-rules --fixture-root behavior/fixtures/lint-rules/copied-project --work-dir .fixture3/reduce-lint-rules
+fixture3 reduce --suite lint-rules --fixture-root behavior/fixtures/lint-rules/copied-project --work-dir .fixture3/reduce-lint-rules --max-oracle-calls 200
 ```
 
-`reduce` uses DDMin to remove files from a trial copy while preserving the selected suite's approved output. It never edits `--fixture-root` directly. It writes JSON to stdout and writes the same report to `<work-dir>/reduce-report.json`, plus `<work-dir>/removed-files.txt` and `<work-dir>/remaining-files.txt`.
+`reduce` uses DDMin to remove files from a trial copy while preserving the selected suite's approved output. It never edits `--fixture-root` directly. It writes JSON to stdout and writes the same report to `<work-dir>/reduce-report.json`, plus `<work-dir>/removed-files.txt` and `<work-dir>/remaining-files.txt`. During the run, the best known matched candidate is written under `<work-dir>/best/`. The active trial tree is reused at `<work-dir>/trial-current/`.
 
 ## Agent output
 
@@ -197,6 +197,7 @@ fixture3 doctor --json
 - `fixture3 approve --suite <suite> --change <path>`: promotes received output to approved output.
 - `fixture3 status`: lists state for every suite.
 - `fixture3 reduce --suite <suite> --fixture-root <path> --work-dir <path>`: removes unnecessary files from a copied fixture tree without editing the source tree.
+- `fixture3 reduce --suite <suite> --fixture-root <path> --work-dir <path> --max-oracle-calls <count>`: stops after a fixed oracle-call budget and reports the best reduction found so far.
 - `fixture3 explain --suite <suite>`: shows resolved fixture globs, fixture count, command argv, tags, feature membership, storage paths, and file state.
 - `fixture3 doctor`: validates manifest shape without running project behavior.
 
