@@ -13,7 +13,3 @@ allowed_deps = [
 
 [checks]
 test = false
-garde = false
-release = false
-hooks_shared = false
-hooks_rs = false

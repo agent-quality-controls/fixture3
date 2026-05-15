@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -338,7 +339,17 @@ def contains_all(haystack: str, needle: str | list[str]) -> bool:
 
 
 def main() -> int:
-    binary = Path("target/debug/fixture3")
+    candidates = [
+        Path(os.environ["CARGO_TARGET_DIR"]) / "debug/fixture3"
+        if "CARGO_TARGET_DIR" in os.environ
+        else None,
+        Path("apps/fixtures/target/debug/fixture3"),
+        Path(".cargo-target/debug/fixture3"),
+        Path("target/debug/fixture3"),
+    ]
+    binary = next((path for path in candidates if path is not None and path.exists()), None)
+    if binary is None:
+        binary = Path("target/debug/fixture3")
     if not binary.exists():
         print(f"missing binary: {binary}", file=sys.stderr)
         return 2

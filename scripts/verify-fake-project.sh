@@ -19,14 +19,15 @@ if missing:
     sys.exit(1)
 PY
 
-cargo build -q -p fixture3-cli
+export CARGO_TARGET_DIR="$root/.cargo-target"
+cargo build -q --manifest-path apps/fixtures/Cargo.toml -p fixture3-cli
 
 run_dir="$root/.fixture3/fake-project-run"
 rm -rf "$run_dir"
 mkdir -p "$(dirname "$run_dir")"
 cp -R "$root/examples/fake-project" "$run_dir"
 
-fixture3_bin="$root/target/debug/fixture3"
+fixture3_bin="$root/.cargo-target/debug/fixture3"
 
 assert_json() {
   local file="$1"

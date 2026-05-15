@@ -7,8 +7,8 @@ description = "Install stub for the fixture3 CLI; use cargo binstall for the rea
 license.workspace = true
 repository.workspace = true
 publish = true
-readme = "../../README.md"
-include = ["src/**", "Cargo.toml", "../../README.md", "../../LICENSE*"]
+readme = "README.md"
+include = ["src/**", "Cargo.toml", "README.md"]
 keywords = ["approval", "fixtures", "snapshot", "cli"]
 categories = ["command-line-utilities", "development-tools::testing"]
 

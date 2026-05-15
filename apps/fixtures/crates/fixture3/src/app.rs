@@ -7,10 +7,6 @@ use clap::Error as ClapError;
 use serde::Serialize;
 
 use crate::error::AppError;
-use crate::{
-    args, command, diff, doctor, fixture, manifest, metadata, normalize, scaffold, selection,
-    storage,
-};
 
 #[derive(Debug)]
 pub(crate) struct AppOutcome {
@@ -21,7 +17,7 @@ pub(crate) struct AppOutcome {
 
 #[must_use]
 pub fn run_to_stdio() -> ExitCode {
-    let outcome = match args::Cli::parse() {
+    let outcome = match crate::args::Cli::parse() {
         Ok(cli) => run(cli),
         Err(error) => AppOutcome::from_clap_error(&error),
     };
@@ -52,31 +48,31 @@ impl AppOutcome {
     }
 }
 
-pub(crate) fn run(cli: args::Cli) -> AppOutcome {
+pub(crate) fn run(cli: crate::args::Cli) -> AppOutcome {
     match run_checked(cli) {
         Ok(outcome) => outcome,
         Err(error) => AppOutcome::tool_error(&error.to_string()),
     }
 }
 
-fn run_checked(cli: args::Cli) -> Result<AppOutcome, AppError> {
+fn run_checked(cli: crate::args::Cli) -> Result<AppOutcome, AppError> {
     match cli.command {
-        args::Commands::Check(args) => check(&args),
-        args::Commands::Diff(args) => diff_command(&args),
-        args::Commands::Approve(args) => approve(&args),
-        args::Commands::Status(args) => status(&args),
-        args::Commands::Init(args) => init(&args),
-        args::Commands::Explain(args) => explain(&args),
-        args::Commands::Doctor(args) => doctor_command(&args),
-        args::Commands::New(args) => new_command(&args),
+        crate::args::Commands::Check(args) => check(&args),
+        crate::args::Commands::Diff(args) => diff_command(&args),
+        crate::args::Commands::Approve(args) => approve(&args),
+        crate::args::Commands::Status(args) => status(&args),
+        crate::args::Commands::Init(args) => init(&args),
+        crate::args::Commands::Explain(args) => explain(&args),
+        crate::args::Commands::Doctor(args) => doctor_command(&args),
+        crate::args::Commands::New(args) => new_command(&args),
     }
 }
 
-fn check(args: &args::CheckArgs) -> Result<AppOutcome, AppError> {
-    let manifest = manifest::load(&args.manifest)?;
-    let suite_names = selection::suite_names(
+fn check(args: &crate::args::CheckArgs) -> Result<AppOutcome, AppError> {
+    let manifest = crate::manifest::load(&args.manifest)?;
+    let suite_names = crate::selection::suite_names(
         &manifest,
-        selection::Selector {
+        crate::selection::Selector {
             suite: args.suite.as_deref(),
             all: args.all,
             tag: args.tag.as_deref(),
@@ -118,7 +114,7 @@ fn check(args: &args::CheckArgs) -> Result<AppOutcome, AppError> {
     Ok(AppOutcome { exit_code, stdout, stderr })
 }
 
-fn diff_command(args: &args::DiffArgs) -> Result<AppOutcome, AppError> {
+fn diff_command(args: &crate::args::DiffArgs) -> Result<AppOutcome, AppError> {
     if args.refresh {
         let result = run_check(&args.suite, &args.manifest)?;
         if args.json {
@@ -136,16 +132,16 @@ fn diff_command(args: &args::DiffArgs) -> Result<AppOutcome, AppError> {
     }
 
     let loaded = load_suite(&args.suite, &args.manifest)?;
-    let (report, diff_text) = storage::read_diff(&loaded.suite.storage)?;
+    let (report, diff_text) = crate::storage::read_diff(&loaded.suite.storage)?;
     let stdout =
         if args.json { json(&DiffJson { report: &report, text: &diff_text })? } else { diff_text };
     Ok(AppOutcome { exit_code: report.exit_code(), stdout, stderr: String::new() })
 }
 
-fn approve(args: &args::ApproveArgs) -> Result<AppOutcome, AppError> {
+fn approve(args: &crate::args::ApproveArgs) -> Result<AppOutcome, AppError> {
     let loaded = load_suite(&args.suite, &args.manifest)?;
     let change_path = args.change.as_ref().map(|path| path.to_string_lossy().into_owned());
-    storage::approve_received(&loaded.suite.storage, change_path)?;
+    crate::storage::approve_received(&loaded.suite.storage, change_path)?;
     Ok(AppOutcome {
         exit_code: 0,
         stdout: format!("suite: {}\nstatus: approved\n", args.suite),
@@ -153,11 +149,11 @@ fn approve(args: &args::ApproveArgs) -> Result<AppOutcome, AppError> {
     })
 }
 
-fn status(args: &args::StatusArgs) -> Result<AppOutcome, AppError> {
-    let manifest = manifest::load(&args.manifest)?;
-    let suite_names = selection::suite_names(
+fn status(args: &crate::args::StatusArgs) -> Result<AppOutcome, AppError> {
+    let manifest = crate::manifest::load(&args.manifest)?;
+    let suite_names = crate::selection::suite_names(
         &manifest,
-        selection::Selector {
+        crate::selection::Selector {
             suite: args.suite.as_deref(),
             all: args.all,
             tag: args.tag.as_deref(),
@@ -173,7 +169,7 @@ fn status(args: &args::StatusArgs) -> Result<AppOutcome, AppError> {
             .suites
             .get(&name)
             .ok_or_else(|| AppError::Manifest(format!("suite not found in manifest: {name}")))?;
-        let state = storage::status(&suite.storage);
+        let state = crate::storage::status(&suite.storage);
         if args.json {
             records.push(StatusRecord {
                 suite: name,
@@ -202,8 +198,8 @@ fn status(args: &args::StatusArgs) -> Result<AppOutcome, AppError> {
     Ok(AppOutcome { exit_code: 0, stdout: output, stderr: String::new() })
 }
 
-fn init(args: &args::InitArgs) -> Result<AppOutcome, AppError> {
-    storage::init_manifest(&args.manifest)?;
+fn init(args: &crate::args::InitArgs) -> Result<AppOutcome, AppError> {
+    crate::storage::init_manifest(&args.manifest)?;
     Ok(AppOutcome {
         exit_code: 0,
         stdout: format!("manifest: {}\nstatus: initialized\n", args.manifest.display()),
@@ -211,19 +207,19 @@ fn init(args: &args::InitArgs) -> Result<AppOutcome, AppError> {
     })
 }
 
-fn explain(args: &args::ExplainArgs) -> Result<AppOutcome, AppError> {
-    let manifest = manifest::load(&args.manifest)?;
+fn explain(args: &crate::args::ExplainArgs) -> Result<AppOutcome, AppError> {
+    let manifest = crate::manifest::load(&args.manifest)?;
     let suite = manifest.suites.get(&args.suite).ok_or_else(|| {
         AppError::Manifest(format!("suite not found in manifest: {}", args.suite))
     })?;
-    let fixtures = fixture::discover(suite)?;
+    let fixtures = crate::fixture::discover(suite)?;
     let features = manifest
         .features
         .iter()
         .filter(|(_, feature)| feature.suites.iter().any(|name| name == &args.suite))
         .map(|(name, _)| name.clone())
         .collect::<Vec<_>>();
-    let state = storage::status(&suite.storage);
+    let state = crate::storage::status(&suite.storage);
     let record = ExplainRecord {
         suite: args.suite.clone(),
         tags: suite.tags.clone(),
@@ -245,9 +241,9 @@ fn explain(args: &args::ExplainArgs) -> Result<AppOutcome, AppError> {
     Ok(AppOutcome { exit_code: 0, stdout, stderr: String::new() })
 }
 
-fn doctor_command(args: &args::DoctorArgs) -> Result<AppOutcome, AppError> {
-    let manifest = manifest::load(&args.manifest)?;
-    let findings = doctor::inspect(&manifest);
+fn doctor_command(args: &crate::args::DoctorArgs) -> Result<AppOutcome, AppError> {
+    let manifest = crate::manifest::load(&args.manifest)?;
+    let findings = crate::doctor::inspect(&manifest);
     let exit_code = if findings.is_empty() { 0 } else { 2 };
     let stdout = if args.json {
         json(&DoctorJson { findings })?
@@ -265,16 +261,16 @@ fn doctor_command(args: &args::DoctorArgs) -> Result<AppOutcome, AppError> {
     Ok(AppOutcome { exit_code, stdout, stderr: String::new() })
 }
 
-fn new_command(args: &args::NewArgs) -> Result<AppOutcome, AppError> {
+fn new_command(args: &crate::args::NewArgs) -> Result<AppOutcome, AppError> {
     match &args.command {
-        args::NewCommands::Suite(suite_args) => {
+        crate::args::NewCommands::Suite(suite_args) => {
             let root = manifest_root(&suite_args.manifest);
-            let request = scaffold::NewSuiteRequest {
+            let request = crate::scaffold::NewSuiteRequest {
                 name: &suite_args.name,
                 fixture_name: &suite_args.fixture,
                 command: &suite_args.command,
             };
-            let result = scaffold::create_suite(&root, &request)?;
+            let result = crate::scaffold::create_suite(&root, &request)?;
             Ok(AppOutcome {
                 exit_code: 0,
                 stdout: format!(
@@ -296,7 +292,7 @@ struct LoadedSuite {
 
 #[derive(Debug)]
 struct CheckResult {
-    report: diff::DiffReport,
+    report: crate::diff::DiffReport,
     stdout: String,
     stderr: String,
     diff_text: String,
@@ -306,19 +302,23 @@ struct CheckResult {
 }
 
 fn run_check(suite_name: &str, manifest_path: &std::path::Path) -> Result<CheckResult, AppError> {
-    let manifest = manifest::load(manifest_path)?;
+    let manifest = crate::manifest::load(manifest_path)?;
     let suite = manifest
         .suites
         .get(suite_name)
         .ok_or_else(|| AppError::Manifest(format!("suite not found in manifest: {suite_name}")))?;
-    let fixtures = fixture::discover(suite)?;
-    let command_output = command::run_fixture_command(&suite.command, &fixtures)?;
-    let normalized = normalize::normalize(&command_output.stdout, &suite.output)?;
-    let metadata = metadata::build(suite_name, suite, manifest_path, &fixtures)?;
-    let stored =
-        storage::write_received(&suite.storage, &command_output.stdout, &normalized, &metadata)?;
-    let (report, diff_text) = diff::compare(&stored.approved, &normalized);
-    storage::write_diff(&suite.storage, &report, &diff_text)?;
+    let fixtures = crate::fixture::discover(suite)?;
+    let command_output = crate::command::run_fixture_command(&suite.command, &fixtures)?;
+    let normalized = crate::normalize::normalize(&command_output.stdout, &suite.output)?;
+    let metadata = crate::metadata::build(suite_name, suite, manifest_path, &fixtures)?;
+    let stored = crate::storage::write_received(
+        &suite.storage,
+        &command_output.stdout,
+        &normalized,
+        &metadata,
+    )?;
+    let (report, diff_text) = crate::diff::compare(&stored.approved, &normalized);
+    crate::storage::write_diff(&suite.storage, &report, &diff_text)?;
 
     let stderr = String::from_utf8(command_output.stderr)
         .map_err(|source| AppError::Utf8 { context: "command stderr".to_owned(), source })?;
@@ -344,7 +344,7 @@ fn run_check(suite_name: &str, manifest_path: &std::path::Path) -> Result<CheckR
 }
 
 fn load_suite(suite_name: &str, manifest_path: &Path) -> Result<LoadedSuite, AppError> {
-    let mut manifest = manifest::load(manifest_path)?;
+    let mut manifest = crate::manifest::load(manifest_path)?;
     let suite = manifest
         .suites
         .remove(suite_name)
@@ -421,7 +421,7 @@ impl CheckRecord {
 
 #[derive(Debug, Serialize)]
 struct DiffJson<'a> {
-    report: &'a diff::DiffReport,
+    report: &'a crate::diff::DiffReport,
     text: &'a str,
 }
 
@@ -498,7 +498,7 @@ impl ExplainRecord {
 
 #[derive(Debug, Serialize)]
 struct DoctorJson {
-    findings: Vec<doctor::Finding>,
+    findings: Vec<crate::doctor::Finding>,
 }
 
 fn comma_list(items: &[String]) -> String {

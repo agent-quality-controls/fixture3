@@ -7,7 +7,15 @@ import tomllib
 from pathlib import Path
 
 MANIFEST = Path(".plans/2026-05-14-113743-feature-pipeline-fixtures.md.manifest.toml")
-CURRENT_SCAN_ROOTS = [Path("README.md"), Path("AGENTS.md"), Path("crates"), Path("scripts"), Path("behavior"), Path("fixture3.yaml")]
+CURRENT_SCAN_ROOTS = [
+    Path("README.md"),
+    Path("AGENTS.md"),
+    Path("apps"),
+    Path("packages"),
+    Path("scripts"),
+    Path("behavior"),
+    Path("fixture3.yaml"),
+]
 
 
 def load_manifest() -> dict:
@@ -25,7 +33,11 @@ def files_under(path: Path) -> list[Path]:
     if path.is_file():
         return [path]
     if path.is_dir():
-        return [item for item in path.rglob("*") if item.is_file()]
+        return [
+            item
+            for item in path.rglob("*")
+            if item.is_file() and "target" not in item.parts and ".cargo-target" not in item.parts
+        ]
     return []
 
 
@@ -66,7 +78,19 @@ def verify_manifest_contains(manifest: dict) -> list[str]:
 def verify_cli(manifest: dict) -> list[str]:
     findings: list[str] = []
     for row in manifest.get("cli_command", []):
-        code, output = run(["cargo", "run", "-p", "fixture3-cli", "--", row["name"], "--help"])
+        code, output = run(
+            [
+                "cargo",
+                "run",
+                "--manifest-path",
+                "apps/fixtures/Cargo.toml",
+                "-p",
+                "fixture3-cli",
+                "--",
+                row["name"],
+                "--help",
+            ]
+        )
         if code != 0:
             findings.append(f"cli help failed: {row['name']} exit {code}\n{output}")
             continue

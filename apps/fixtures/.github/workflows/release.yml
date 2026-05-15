@@ -1,0 +1,24 @@
+name: fixtures-release-check
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+
+jobs:
+  release-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Publish dry run
+        run: cargo publish --dry-run --manifest-path apps/fixtures/crates/fixture3/Cargo.toml
+      - name: Release-plz
+        uses: release-plz/action@v0.5
+        with:
+          command: release-pr
+          manifest_path: apps/fixtures/Cargo.toml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}

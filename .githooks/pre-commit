@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+export CARGO_TARGET_DIR="$REPO_ROOT/.cargo-target"
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$STAGED_FILES" ]; then
+    echo "No staged files. Skipping pre-commit checks."
+    exit 0
+fi
+
+echo "Checking for merge conflict markers..."
+CONFLICT_FILES=""
+while IFS= read -r file; do
+    [ -n "$file" ] || continue
+    [ -f "$file" ] || continue
+    if grep -qE '^(<{7} |={7}$|>{7} )' "$file" 2>/dev/null; then
+        CONFLICT_FILES="$CONFLICT_FILES $file"
+    fi
+done <<< "$STAGED_FILES"
+if [ -n "$CONFLICT_FILES" ]; then
+    echo "Merge conflict markers found in:$CONFLICT_FILES"
+    exit 1
+fi
+
+echo "Scanning for secrets..."
+if ! command -v gitleaks &> /dev/null; then
+    echo "ERROR: gitleaks not installed. Install: brew install gitleaks"
+    exit 1
+fi
+if ! gitleaks protect --staged --no-banner; then
+    echo "Secret detected in staged files. Remove it before committing."
+    exit 1
+fi
+
+echo "Checking file sizes..."
+MAX_FILE_SIZE=1048576
+while IFS= read -r file; do
+    [ -n "$file" ] || continue
+    if git cat-file -e ":$file" 2>/dev/null; then
+        file_size=$(git cat-file -s ":$file")
+        if [ "$file_size" -gt "$MAX_FILE_SIZE" ]; then
+            echo "File $file is too large (${file_size} bytes, max ${MAX_FILE_SIZE}). Use Git LFS for large files."
+            exit 1
+        fi
+    fi
+done <<< "$STAGED_FILES"
+
+g3rs validate-repo
+
+find_owning_unit() {
+    local start_dir="$1"
+    local dir="$start_dir"
+    while :; do
+        if [ -f "$dir/Cargo.toml" ] && [ -f "$dir/guardrail3-rs.toml" ]; then
+            if grep -qE '^[[:space:]]*\[workspace\]' "$dir/Cargo.toml" 2>/dev/null; then
+                echo "$dir"
+                return 0
+            fi
+        fi
+        if [ "$dir" = "$REPO_ROOT" ] || [ "$dir" = "/" ] || [ -z "$dir" ]; then
+            return 1
+        fi
+        dir=$(dirname "$dir")
+    done
+}
+
+staged_file_dir() {
+    local rel="$1"
+    local dir
+    dir=$(dirname "$rel")
+    if [ "$dir" = "." ] || [ -z "$dir" ]; then
+        echo "$REPO_ROOT"
+    else
+        echo "$REPO_ROOT/$dir"
+    fi
+}
+
+RUST_RELEVANT_PATTERN='(\.rs$|(^|/)Cargo\.toml$|(^|/)Cargo\.lock$|(^|/)rust-toolchain$|(^|/)rust-toolchain\.toml$|(^|/)rustfmt\.toml$|(^|/)\.rustfmt\.toml$|(^|/)clippy\.toml$|(^|/)\.clippy\.toml$|(^|/)deny\.toml$|(^|/)\.deny\.toml$|(^|/)guardrail3-rs\.toml$|(^|/)\.cargo/config$|(^|/)\.cargo/config\.toml$|(^|/)README\.md$|(^|/)Readme\.md$|(^|/)readme\.md$|(^|/)cliff\.toml$|(^|/)release-plz\.toml$)'
+RUST_RELEVANT_FILES=$(echo "$STAGED_FILES" | grep -E "$RUST_RELEVANT_PATTERN" || true)
+
+RUST_OWNING_UNITS=""
+if [ -n "$RUST_RELEVANT_FILES" ]; then
+    while IFS= read -r file; do
+        [ -n "$file" ] || continue
+        start_dir=$(staged_file_dir "$file")
+        if unit=$(find_owning_unit "$start_dir"); then
+            RUST_OWNING_UNITS="${RUST_OWNING_UNITS}${unit}"$'\n'
+        fi
+    done <<< "$RUST_RELEVANT_FILES"
+fi
+
+RUST_UNIQUE_UNITS=$(printf '%s' "$RUST_OWNING_UNITS" | awk 'NF' | sort -u)
+
+if [ -n "$RUST_UNIQUE_UNITS" ]; then
+    echo "Running Rust validate per owning unit..."
+    while IFS= read -r unit; do
+        [ -n "$unit" ] || continue
+        g3rs validate --path "$unit" --staged
+    done <<< "$RUST_UNIQUE_UNITS"
+fi
+
+echo "All pre-commit checks passed."

@@ -1,0 +1,78 @@
+[[workspace]]
+path = "apps/fixtures"
+packages = ["fixture3-cli"]
+
+[[workspace]]
+path = "apps/fixture3-install"
+packages = ["fixture3"]
+
+[[workspace]]
+path = "packages/ddmin"
+packages = ["fixture3-ddmin"]
+
+[[forbidden_path]]
+path = "Cargo.toml"
+
+[[forbidden_path]]
+path = "guardrail3-rs.toml"
+
+[[tree]]
+path = "apps/fixtures/Cargo.toml"
+
+[[tree]]
+path = "apps/fixtures/guardrail3-rs.toml"
+
+[[tree]]
+path = "apps/fixtures/clippy.toml"
+
+[[tree]]
+path = "apps/fixtures/deny.toml"
+
+[[tree]]
+path = "apps/fixtures/rustfmt.toml"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/Cargo.toml"
+
+[[tree]]
+path = "apps/fixture3-install/Cargo.toml"
+
+[[tree]]
+path = "apps/fixture3-install/guardrail3-rs.toml"
+
+[[tree]]
+path = "apps/fixture3-install/clippy.toml"
+
+[[tree]]
+path = "apps/fixture3-install/deny.toml"
+
+[[tree]]
+path = "apps/fixture3-install/rustfmt.toml"
+
+[[tree]]
+path = "apps/fixture3-install/crates/fixture3-install/Cargo.toml"
+
+[[tree]]
+path = "packages/ddmin/Cargo.toml"
+
+[[tree]]
+path = "packages/ddmin/guardrail3-rs.toml"
+
+[[tree]]
+path = "packages/ddmin/clippy.toml"
+
+[[tree]]
+path = "packages/ddmin/deny.toml"
+
+[[tree]]
+path = "packages/ddmin/rustfmt.toml"
+
+[[tree]]
+path = "packages/ddmin/crates/ddmin/Cargo.toml"
+
+[[tree]]
+path = "scripts/verify-rust-workspaces.py"
+
+[[command]]
+name = "rust-workspaces"
+argv = ["python3", "scripts/verify-rust-workspaces.py"]
