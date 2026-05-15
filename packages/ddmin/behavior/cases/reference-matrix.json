@@ -1,0 +1,12 @@
+{
+  "reference": "Zeller DD.py ddmin loop with fixture3 partition policy",
+  "candidate_counts_for_exhaustive_boolean": [1, 2, 3, 4],
+  "candidate_counts_for_requires": [1, 2, 3, 4, 5, 6, 7, 8],
+  "random_seed": 123456789,
+  "random_candidate_counts": [5, 6, 7],
+  "random_cases_per_candidate_count": 250,
+  "include_unresolved_random_cases": true,
+  "expected_total_cases": 18463,
+  "expected_exact_reference_mismatches": 0,
+  "expected_invariant_failures": 0
+}

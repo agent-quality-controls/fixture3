@@ -118,7 +118,9 @@ def main() -> int:
     if args.check:
         findings.extend(run_for_workspaces("cargo check", ["cargo", "check", "--manifest-path"]))
     if args.fmt:
-        findings.extend(run_for_workspaces("cargo fmt", ["cargo", "fmt", "--manifest-path"], ["--check"]))
+        findings.extend(
+            run_for_workspaces("cargo fmt", ["cargo", "fmt", "--manifest-path"], ["--all", "--check"])
+        )
     if args.clippy:
         findings.extend(
             run_for_workspaces(
