@@ -96,11 +96,13 @@ def run_for_workspaces(kind: str, before_manifest: list[str], after_manifest: li
 
 def run_g3rs() -> list[str]:
     findings: list[str] = []
-    code, output = run(["g3rs", "validate-repo"])
+    code, output = run(["g3rs", "validate", "repo"])
     if code != 0:
-        findings.append(f"g3rs validate-repo failed exit {code}\n{output}")
+        findings.append(f"g3rs validate repo failed exit {code}\n{output}")
     for workspace in WORKSPACES:
-        code, output = run(["g3rs", "validate", "--path", str(workspace), "--rules-only"])
+        code, output = run(
+            ["g3rs", "validate", "workspace", "--path", str(workspace), "--rules-only"]
+        )
         if code != 0:
             findings.append(f"g3rs validate failed for {workspace} exit {code}\n{output}")
     return findings

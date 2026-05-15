@@ -1,0 +1,71 @@
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/mod.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/candidate.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/trial_tree.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/oracle.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/report.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/run.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/rewrite.rs"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-basic/project/keep/input.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-basic/project/remove/noise.txt"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-basic/project/remove/deep/noise.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-basic/fixture3.yaml"
+
+[[tree]]
+path = "examples/fake-project/behavior/approved/reducer-basic/approved.normalized.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-symlink/project/keep/input.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-symlink/fixture3.yaml"
+
+[[tree]]
+path = "examples/fake-project/behavior/approved/reducer-symlink/approved.normalized.json"
+
+[[tree]]
+path = "examples/fake-project/scripts/reducer-app.sh"
+
+[[tree]]
+path = "scripts/verify-reducer.py"
+
+[[cli_command]]
+name = "reduce"
+required_flags = ["--suite", "--fixture-root", "--work-dir"]
+optional_flags = ["--manifest"]
+help_contains = [
+  "Minimize copied fixture trees",
+  "preserves the selected suite's approved output",
+  "never edits --fixture-root directly",
+  "reduce-report.json",
+  "removed-files.txt",
+  "remaining-files.txt",
+]
+
+[[manifest_contains]]
+file = "apps/fixtures/crates/fixture3/Cargo.toml"
+contains = ["fixture3-ddmin"]
+
+[[command]]
+name = "reducer-verifier"
+argv = ["python3", "scripts/verify-reducer.py"]

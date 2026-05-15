@@ -1,0 +1,20 @@
+version: 1
+suites:
+  reducer-symlink:
+    tags:
+      - "reducer"
+    fixtures:
+      - "behavior/fixtures/reducer-symlink/project/**/*"
+    command:
+      argv:
+        - "bash"
+        - "scripts/reducer-app.sh"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    output:
+      format: "json"
+    storage:
+      approved_dir: "behavior/approved/reducer-symlink"
+      received_dir: ".fixture3/reducer-symlink"
+      diff_dir: ".fixture3/reducer-symlink"

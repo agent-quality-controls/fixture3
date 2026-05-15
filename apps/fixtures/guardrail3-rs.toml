@@ -2,6 +2,7 @@ profile = "service"
 
 allowed_deps = [
   "clap",
+  "fixture3-ddmin",
   "glob",
   "serde",
   "serde_json",

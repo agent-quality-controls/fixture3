@@ -1,0 +1,10 @@
+{
+  "count": 1,
+  "records": [
+    {
+      "case": "reducer-symlink",
+      "kind": "reduce",
+      "observed": "KEPT"
+    }
+  ]
+}

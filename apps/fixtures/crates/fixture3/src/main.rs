@@ -3,6 +3,7 @@
 use std::process::ExitCode;
 
 use clap as _;
+use fixture3_ddmin as _;
 use glob as _;
 use serde as _;
 use serde_json as _;

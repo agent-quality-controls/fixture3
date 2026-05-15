@@ -3,6 +3,7 @@ set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
+export PYTHONDONTWRITEBYTECODE=1
 
 scripts/verify-layer-1-tree.sh
 scripts/verify-layer-2-forbidden.sh
@@ -15,5 +16,6 @@ python3 scripts/verify-rust-workspaces.py
 python3 scripts/verify-feature-pipeline.py
 scripts/verify-fake-project.sh
 scripts/verify-ddmin.sh
+python3 scripts/verify-reducer.py
 
 printf 'PASS\n'

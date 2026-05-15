@@ -12,6 +12,7 @@ pub(crate) mod git;
 pub(crate) mod manifest;
 pub(crate) mod metadata;
 pub(crate) mod normalize;
+pub(crate) mod reduce;
 pub(crate) mod scaffold;
 pub(crate) mod selection;
 pub(crate) mod storage;

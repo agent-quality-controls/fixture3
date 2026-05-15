@@ -1,0 +1,10 @@
+{
+  "count": 1,
+  "records": [
+    {
+      "case": "reducer-basic",
+      "kind": "reduce",
+      "observed": "KEPT"
+    }
+  ]
+}
