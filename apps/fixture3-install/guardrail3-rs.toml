@@ -1,0 +1,6 @@
+profile = "service"
+
+allowed_deps = []
+
+[checks]
+test = false

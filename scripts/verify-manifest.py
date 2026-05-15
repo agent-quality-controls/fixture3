@@ -49,13 +49,17 @@ def path_matches(pattern: str) -> list[str]:
 
 
 def source_files() -> list[Path]:
-    roots = [Path("crates"), Path("scripts"), Path("Cargo.toml")]
+    roots = [Path("apps"), Path("packages"), Path("scripts")]
     files: list[Path] = []
     for root in roots:
         if root.is_file():
             files.append(root)
         elif root.exists():
-            files.extend(path for path in root.rglob("*") if path.is_file())
+            files.extend(
+                path
+                for path in root.rglob("*")
+                if path.is_file() and "target" not in path.parts and ".cargo-target" not in path.parts
+            )
     return files
 
 
@@ -123,7 +127,7 @@ def module_imports(path: Path, module_names: set[str]) -> set[str]:
 
 
 def layer_modules(manifest: dict) -> int:
-    src_dir = Path("crates/fixture3/src")
+    src_dir = Path("apps/fixtures/crates/fixture3/src")
     module_files = {module_name(path): path for path in src_dir.glob("*.rs")}
     module_names = set(module_files)
     allowed = {row["from"]: set(row["to"]) for row in manifest.get("module_dep", [])}
@@ -200,7 +204,19 @@ def layer_cli(manifest: dict) -> int:
                 findings.append(f"top-level cli help missing text: {text}")
 
     for row in manifest.get("cli_command", []):
-        code, output = run_command(["cargo", "run", "-p", "fixture3-cli", "--", row["name"], "--help"])
+        code, output = run_command(
+            [
+                "cargo",
+                "run",
+                "--manifest-path",
+                "apps/fixtures/Cargo.toml",
+                "-p",
+                "fixture3-cli",
+                "--",
+                row["name"],
+                "--help",
+            ]
+        )
         if code != 0:
             findings.append(f"cli help failed: {row['name']} exit {code}\n{output}")
             continue

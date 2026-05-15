@@ -2,16 +2,19 @@
 path = "packages/ddmin/Cargo.toml"
 
 [[tree]]
-path = "packages/ddmin/src/lib.rs"
+path = "packages/ddmin/crates/ddmin/Cargo.toml"
 
 [[tree]]
-path = "packages/ddmin/src/algorithm.rs"
+path = "packages/ddmin/crates/ddmin/src/lib.rs"
 
 [[tree]]
-path = "packages/ddmin/src/types.rs"
+path = "packages/ddmin/crates/ddmin/src/algorithm.rs"
 
 [[tree]]
-path = "packages/ddmin/examples/behavior.rs"
+path = "packages/ddmin/crates/ddmin/src/types.rs"
+
+[[tree]]
+path = "packages/ddmin/crates/ddmin/examples/behavior.rs"
 
 [[tree]]
 path = "scripts/verify-ddmin.py"
@@ -20,16 +23,18 @@ path = "scripts/verify-ddmin.py"
 path = "scripts/verify-ddmin.sh"
 
 [[workspace_member]]
-path = "packages/ddmin"
+workspace = "packages/ddmin/Cargo.toml"
+member = "crates/ddmin"
 
 [package]
-path = "packages/ddmin/Cargo.toml"
+workspace = "packages/ddmin/Cargo.toml"
+path = "packages/ddmin/crates/ddmin/Cargo.toml"
 name = "fixture3-ddmin"
 license = "MIT OR Apache-2.0"
 publish = false
 
 [public_api]
-crate_path = "packages/ddmin/src/lib.rs"
+crate_path = "packages/ddmin/crates/ddmin/src/lib.rs"
 types = [
   "DdminInput",
   "DdminOptions",

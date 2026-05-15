@@ -23,13 +23,13 @@ path = "behavior/fixtures/self/cases/tag-selection/fixture3.yaml"
 path = "behavior/fixtures/self/cases/feature-selection/fixture3.yaml"
 
 [[tree]]
-path = "crates/fixture3/src/selection.rs"
+path = "apps/fixtures/crates/fixture3/src/selection.rs"
 
 [[tree]]
-path = "crates/fixture3/src/doctor.rs"
+path = "apps/fixtures/crates/fixture3/src/doctor.rs"
 
 [[tree]]
-path = "crates/fixture3/src/scaffold.rs"
+path = "apps/fixtures/crates/fixture3/src/scaffold.rs"
 
 [[tree]]
 path = "scripts/verify-feature-pipeline.py"

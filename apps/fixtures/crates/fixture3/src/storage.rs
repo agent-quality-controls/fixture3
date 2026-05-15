@@ -142,6 +142,10 @@ suites:
     fs::write_string(path, text)
 }
 
+#[allow(
+    clippy::disallowed_methods,
+    reason = "read_json is the storage JSON boundary for fixture3 metadata and diff files"
+)]
 fn read_json<T: serde::de::DeserializeOwned>(path: &std::path::Path) -> Result<T, AppError> {
     let source = fs::read(path)?;
     serde_json::from_slice(&source)

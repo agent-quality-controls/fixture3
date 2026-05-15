@@ -7,7 +7,7 @@ description = "CLI for fixture-based approval testing"
 license.workspace = true
 repository.workspace = true
 publish.workspace = true
-readme = "../../README.md"
+readme = "../../../../README.md"
 keywords = ["approval", "fixtures", "snapshot", "cli"]
 categories = ["command-line-utilities", "development-tools::testing"]
 

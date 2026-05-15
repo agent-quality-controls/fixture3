@@ -11,6 +11,12 @@ enum TrialResult<C> {
     LimitReached,
 }
 
+#[derive(Debug, Clone, Copy)]
+enum TrialMode {
+    Partition,
+    Complement,
+}
+
 /// Minimize an ordered candidate list while preserving an oracle property.
 pub fn ddmin<C, O>(input: DdminInput<C>, oracle: &mut O) -> DdminOutput<C>
 where
@@ -40,7 +46,14 @@ where
         granularity = granularity.clamp(2, remaining.len());
         let partitions = partition_ranges(remaining.len(), granularity);
 
-        match try_partitions(&remaining, &partitions, oracle, &options, &mut stats) {
+        match try_ranges(
+            &remaining,
+            &partitions,
+            TrialMode::Partition,
+            oracle,
+            &options,
+            &mut stats,
+        ) {
             TrialResult::Reduced(candidate) => {
                 remaining = candidate;
                 granularity = 2;
@@ -58,7 +71,14 @@ where
             }
         }
 
-        match try_complements(&remaining, &partitions, oracle, &options, &mut stats) {
+        match try_ranges(
+            &remaining,
+            &partitions,
+            TrialMode::Complement,
+            oracle,
+            &options,
+            &mut stats,
+        ) {
             TrialResult::Reduced(candidate) => {
                 remaining = candidate;
                 granularity = granularity.saturating_sub(1).max(2);
@@ -112,9 +132,10 @@ where
     }
 }
 
-fn try_partitions<C, O>(
+fn try_ranges<C, O>(
     remaining: &[C],
     partitions: &[PartitionRange],
+    mode: TrialMode,
     oracle: &mut O,
     options: &DdminOptions,
     stats: &mut DdminStats,
@@ -124,29 +145,10 @@ where
     O: DdminOracle<C>,
 {
     for &(start, end) in partitions {
-        let candidate = sublist(remaining, start, end);
-        match evaluate(&candidate, oracle, options, stats) {
-            Some(OracleOutcome::Interesting) => return TrialResult::Reduced(candidate),
-            Some(OracleOutcome::NotInteresting | OracleOutcome::Unresolved(_)) => {}
-            None => return TrialResult::LimitReached,
-        }
-    }
-    TrialResult::NotReduced
-}
-
-fn try_complements<C, O>(
-    remaining: &[C],
-    partitions: &[PartitionRange],
-    oracle: &mut O,
-    options: &DdminOptions,
-    stats: &mut DdminStats,
-) -> TrialResult<C>
-where
-    C: Clone,
-    O: DdminOracle<C>,
-{
-    for &(start, end) in partitions {
-        let candidate = complement(remaining, start, end);
+        let candidate = match mode {
+            TrialMode::Partition => sublist(remaining, start, end),
+            TrialMode::Complement => complement(remaining, start, end),
+        };
         match evaluate(&candidate, oracle, options, stats) {
             Some(OracleOutcome::Interesting) => return TrialResult::Reduced(candidate),
             Some(OracleOutcome::NotInteresting | OracleOutcome::Unresolved(_)) => {}

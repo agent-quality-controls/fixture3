@@ -1,74 +1,95 @@
 [[tree]]
-path = "Cargo.toml"
+path = "apps/fixtures/Cargo.toml"
 
 [[tree]]
-path = "crates/fixture3/Cargo.toml"
+path = "apps/fixtures/guardrail3-rs.toml"
 
 [[tree]]
-path = "crates/fixture3-install/Cargo.toml"
+path = "apps/fixtures/clippy.toml"
 
 [[tree]]
-path = "crates/fixture3-install/src/main.rs"
+path = "apps/fixtures/deny.toml"
 
 [[tree]]
-path = "crates/fixture3/src/main.rs"
+path = "apps/fixtures/rustfmt.toml"
 
 [[tree]]
-path = "crates/fixture3/src/lib.rs"
+path = "apps/fixture3-install/Cargo.toml"
 
 [[tree]]
-path = "crates/fixture3/src/app.rs"
+path = "apps/fixture3-install/guardrail3-rs.toml"
 
 [[tree]]
-path = "crates/fixture3/src/args.rs"
+path = "apps/fixture3-install/clippy.toml"
 
 [[tree]]
-path = "crates/fixture3/src/command.rs"
+path = "apps/fixture3-install/deny.toml"
 
 [[tree]]
-path = "crates/fixture3/src/diff.rs"
+path = "apps/fixture3-install/rustfmt.toml"
 
 [[tree]]
-path = "crates/fixture3/src/doctor.rs"
+path = "apps/fixtures/crates/fixture3/Cargo.toml"
 
 [[tree]]
-path = "crates/fixture3/src/error.rs"
+path = "apps/fixture3-install/crates/fixture3-install/Cargo.toml"
 
 [[tree]]
-path = "crates/fixture3/src/fixture.rs"
+path = "apps/fixture3-install/crates/fixture3-install/src/main.rs"
 
 [[tree]]
-path = "crates/fixture3/src/fs.rs"
+path = "apps/fixtures/crates/fixture3/src/main.rs"
 
 [[tree]]
-path = "crates/fixture3/src/git.rs"
+path = "apps/fixtures/crates/fixture3/src/lib.rs"
 
 [[tree]]
-path = "crates/fixture3/src/manifest.rs"
+path = "apps/fixtures/crates/fixture3/src/app.rs"
 
 [[tree]]
-path = "crates/fixture3/src/metadata.rs"
+path = "apps/fixtures/crates/fixture3/src/args.rs"
 
 [[tree]]
-path = "crates/fixture3/src/normalize.rs"
+path = "apps/fixtures/crates/fixture3/src/command.rs"
 
 [[tree]]
-path = "crates/fixture3/src/scaffold.rs"
+path = "apps/fixtures/crates/fixture3/src/diff.rs"
 
 [[tree]]
-path = "crates/fixture3/src/selection.rs"
+path = "apps/fixtures/crates/fixture3/src/doctor.rs"
 
 [[tree]]
-path = "crates/fixture3/src/storage.rs"
+path = "apps/fixtures/crates/fixture3/src/error.rs"
 
 [[tree]]
-path = "guardrail3-rs.toml"
+path = "apps/fixtures/crates/fixture3/src/fixture.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/fs.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/git.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/manifest.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/metadata.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/normalize.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/scaffold.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/selection.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/storage.rs"
 
 [[tree]]
 path = "README.md"
-
-[[tree]]
-path = "release-plz.toml"
 
 [[tree]]
 path = ".github/workflows/ci.yml"
@@ -78,12 +99,6 @@ path = ".github/workflows/release.yml"
 
 [[tree]]
 path = ".github/workflows/binary-release.yml"
-
-[[tree]]
-path = "clippy.toml"
-
-[[tree]]
-path = "deny.toml"
 
 [[tree]]
 path = "behavior/fixtures/bootstrap/.gitkeep"
@@ -356,7 +371,17 @@ path = "scripts/self-check-harness.py"
 path = "scripts/self-case-normalize-json.py"
 
 [[config_value]]
-file = "guardrail3-rs.toml"
+file = "apps/fixtures/guardrail3-rs.toml"
+key = "checks.test"
+value = false
+
+[[config_value]]
+file = "apps/fixture3-install/guardrail3-rs.toml"
+key = "checks.test"
+value = false
+
+[[config_value]]
+file = "packages/ddmin/guardrail3-rs.toml"
 key = "checks.test"
 value = false
 
@@ -563,7 +588,7 @@ help_contains = [
 ]
 
 [[cli_help]]
-argv = ["cargo", "run", "-p", "fixture3-cli", "--", "--help"]
+argv = ["cargo", "run", "--manifest-path", "apps/fixtures/Cargo.toml", "-p", "fixture3-cli", "--", "--help"]
 contains = [
   "runs project commands against fixture files",
   "Use it for fixture-based approval testing",
@@ -589,7 +614,7 @@ contains = [
 ]
 
 [[cli_help]]
-argv = ["cargo", "run", "-p", "fixture3-cli", "--", "--version"]
+argv = ["cargo", "run", "--manifest-path", "apps/fixtures/Cargo.toml", "-p", "fixture3-cli", "--", "--version"]
 contains = [
   "fixture3 0.1.6",
 ]
@@ -616,20 +641,20 @@ path = ".fixture3/self/diff.txt"
 
 [[command]]
 name = "static-g3rs"
-argv = ["g3rs", "validate", "--path", ".", "--rules-only"]
+argv = ["python3", "scripts/verify-rust-workspaces.py", "--g3rs"]
 
 [[command]]
 name = "compile"
-argv = ["cargo", "check"]
+argv = ["python3", "scripts/verify-rust-workspaces.py", "--check"]
 
 [[command]]
 name = "format"
-argv = ["cargo", "fmt", "--check"]
+argv = ["python3", "scripts/verify-rust-workspaces.py", "--fmt"]
 
 [[command]]
 name = "clippy"
-argv = ["cargo", "clippy", "--workspace", "--all-targets", "--all-features", "--", "-D", "warnings"]
+argv = ["python3", "scripts/verify-rust-workspaces.py", "--clippy"]
 
 [[command]]
 name = "self-check"
-argv = ["cargo", "run", "-p", "fixture3-cli", "--", "check", "--suite", "self", "--manifest", "fixture3.yaml"]
+argv = ["cargo", "run", "--manifest-path", "apps/fixtures/Cargo.toml", "-p", "fixture3-cli", "--", "check", "--suite", "self", "--manifest", "fixture3.yaml"]

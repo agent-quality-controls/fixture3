@@ -44,12 +44,12 @@ def check_tree(manifest: dict) -> list[str]:
 
 
 def check_workspace(manifest: dict) -> list[str]:
-    root_cargo = tomllib.loads(Path("Cargo.toml").read_text())
-    members = dotted_value(root_cargo, "workspace.members") or []
     findings: list[str] = []
     for row in manifest.get("workspace_member", []):
-        if row["path"] not in members:
-            findings.append(f"workspace member missing: {row['path']}")
+        workspace = tomllib.loads(Path(row["workspace"]).read_text())
+        members = dotted_value(workspace, "workspace.members") or []
+        if row["member"] not in members:
+            findings.append(f"workspace member missing: {row['workspace']} -> {row['member']}")
     return findings
 
 
@@ -57,7 +57,7 @@ def check_package(manifest: dict) -> list[str]:
     expected = manifest["package"]
     package_path = Path(expected["path"])
     cargo = tomllib.loads(package_path.read_text())
-    workspace = tomllib.loads(Path("Cargo.toml").read_text())
+    workspace = tomllib.loads(Path(expected["workspace"]).read_text())
     package = cargo.get("package", {})
     findings: list[str] = []
     for key in ("name", "license", "publish"):
@@ -119,12 +119,24 @@ def check_closed_sets(manifest: dict) -> list[str]:
 
 
 def ddmin_source_text() -> str:
-    src_dir = Path("packages/ddmin/src")
+    src_dir = Path("packages/ddmin/crates/ddmin/src")
     return "\n".join(path.read_text() for path in sorted(src_dir.glob("*.rs")))
 
 
 def check_behavior(manifest: dict) -> list[str]:
-    code, output = run(["cargo", "run", "-q", "-p", "fixture3-ddmin", "--example", "behavior"])
+    code, output = run(
+        [
+            "cargo",
+            "run",
+            "-q",
+            "--manifest-path",
+            "packages/ddmin/Cargo.toml",
+            "-p",
+            "fixture3-ddmin",
+            "--example",
+            "behavior",
+        ]
+    )
     if code != 0:
         return [f"ddmin behavior example failed with exit {code}\n{output}"]
     findings: list[str] = []
