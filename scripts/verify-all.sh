@@ -13,5 +13,6 @@ scripts/verify-layer-6-fixture3.sh
 scripts/verify-layer-7-cli.sh
 python3 scripts/verify-feature-pipeline.py
 scripts/verify-fake-project.sh
+scripts/verify-ddmin.sh
 
 printf 'PASS\n'
