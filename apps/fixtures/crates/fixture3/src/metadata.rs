@@ -22,17 +22,16 @@ pub(crate) struct RunMetadata {
     pub(crate) recorded_at: String,
     pub(crate) fixture_hash: String,
     pub(crate) manifest_hash: String,
-    pub(crate) normalizer_hash: String,
     pub(crate) tool_version: String,
     pub(crate) output_schema_version: String,
     pub(crate) fixtures: Vec<FixtureRecord>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) change_path: Option<String>,
+    pub(crate) comment: Option<String>,
 }
 
 pub(crate) fn build(
     suite_name: &str,
-    suite: &SuiteConfig,
+    _suite: &SuiteConfig,
     manifest_path: &Path,
     fixture_paths: &[PathBuf],
 ) -> Result<RunMetadata, AppError> {
@@ -43,7 +42,6 @@ pub(crate) fn build(
     let fixtures = fixture::records(fixture_paths)?;
     let fixture_hash = hash_fixture_set(&fixtures)?;
     let manifest_hash = hash_bytes(&fs::read(manifest_path)?);
-    let normalizer_hash = hash_bytes(format!("{:?}", suite.output).as_bytes());
     let manifest_suffix = manifest_hash.chars().skip(7).take(8).collect::<String>();
     let run_id = format!("{}-{}", recorded_at.replace(':', "-"), manifest_suffix);
 
@@ -56,17 +54,16 @@ pub(crate) fn build(
         recorded_at,
         fixture_hash,
         manifest_hash,
-        normalizer_hash,
         tool_version: env!("CARGO_PKG_VERSION").to_owned(),
         output_schema_version: "1".to_owned(),
         fixtures,
-        change_path: None,
+        comment: None,
     })
 }
 
-pub(crate) fn approve(mut metadata: RunMetadata, change_path: Option<String>) -> RunMetadata {
+pub(crate) fn approve(mut metadata: RunMetadata, comment: Option<String>) -> RunMetadata {
     "approved".clone_into(&mut metadata.kind);
-    metadata.change_path = change_path;
+    metadata.comment = comment;
     metadata
 }
 
@@ -77,7 +74,6 @@ pub(crate) fn assert_hashes_match(
     let checks = [
         ("fixture", &approved.fixture_hash, &received.fixture_hash),
         ("manifest", &approved.manifest_hash, &received.manifest_hash),
-        ("normalizer", &approved.normalizer_hash, &received.normalizer_hash),
     ];
 
     for (name, approved_hash, received_hash) in checks {

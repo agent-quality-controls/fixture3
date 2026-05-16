@@ -81,7 +81,7 @@ if [[ "${diff_code:-0}" != "1" ]]; then
 fi
 assert_json review-diff.json 'assert data["report"]["changed"] is True'
 
-"$fixture3_bin" approve --suite review-drift --manifest fixture3.yaml --change behavior/changes/fake-change.md | grep -q "status: approved"
+"$fixture3_bin" approve --suite review-drift --manifest fixture3.yaml --comment "fake change reviewed" | grep -q "status: approved"
 "$fixture3_bin" check --suite review-drift --manifest fixture3.yaml | grep -q "status: matched"
 
 "$fixture3_bin" new suite generated-fake --manifest fixture3.yaml > new-suite.txt

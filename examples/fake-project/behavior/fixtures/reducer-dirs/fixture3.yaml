@@ -1,0 +1,18 @@
+version: 1
+suites:
+  reducer-dirs:
+    tags:
+      - "reducer"
+    fixtures:
+      - "behavior/fixtures/reducer-dirs/project/**/*"
+    command:
+      argv:
+        - "bash"
+        - "scripts/reducer-dir-app.sh"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    storage:
+      approved_dir: "behavior/approved/reducer-dirs"
+      received_dir: ".fixture3/reducer-dirs"
+      diff_dir: ".fixture3/reducer-dirs"

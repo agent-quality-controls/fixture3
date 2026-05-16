@@ -17,7 +17,7 @@ pub(crate) struct FileCandidate {
 }
 
 impl CandidateId {
-    const fn new(value: u32) -> Self {
+    pub(crate) const fn new(value: u32) -> Self {
         Self(value)
     }
 
@@ -97,7 +97,7 @@ fn collect_paths(root: &Path, directory: &Path, paths: &mut Vec<PathBuf>) -> Res
     Ok(())
 }
 
-fn has_excluded_component(path: &Path) -> bool {
+pub(crate) fn has_excluded_component(path: &Path) -> bool {
     path.components().any(|component| {
         let Component::Normal(name) = component else {
             return false;
@@ -106,11 +106,11 @@ fn has_excluded_component(path: &Path) -> bool {
     })
 }
 
-fn has_unsafe_component(path: &Path) -> bool {
+pub(crate) fn has_unsafe_component(path: &Path) -> bool {
     path.components()
         .any(|component| !matches!(component, Component::Normal(_) | Component::CurDir))
 }
 
-fn symlink_error(path: &Path) -> AppError {
+pub(crate) fn symlink_error(path: &Path) -> AppError {
     AppError::Manifest(format!("symlink fixture content is not supported: {}", path.display()))
 }

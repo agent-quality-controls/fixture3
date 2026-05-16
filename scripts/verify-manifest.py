@@ -63,6 +63,31 @@ def source_files() -> list[Path]:
     return files
 
 
+def manifest_text_files(row: dict) -> list[Path]:
+    files: list[Path] = []
+
+    for file_name in row.get("files", []):
+        path = Path(file_name)
+        if path.is_file():
+            files.append(path)
+
+    for root_name in row.get("roots", []):
+        root = Path(root_name)
+        if root.is_file():
+            files.append(root)
+        elif root.exists():
+            files.extend(
+                path
+                for path in root.rglob("*")
+                if path.is_file()
+                and path.suffix in {".yaml", ".yml"}
+                and ".git" not in path.parts
+                and "target" not in path.parts
+            )
+
+    return sorted(set(files))
+
+
 def layer_forbidden(manifest: dict) -> int:
     findings: list[str] = []
     for row in manifest.get("forbidden_path", []):
@@ -75,6 +100,13 @@ def layer_forbidden(manifest: dict) -> int:
             text = path.read_text(errors="ignore")
             if pattern in text:
                 findings.append(f"forbidden source '{pattern}' found in {path}")
+
+    for row in manifest.get("forbidden_manifest_text", []):
+        for pattern in row["patterns"]:
+            for path in manifest_text_files(row):
+                text = path.read_text(errors="ignore")
+                if pattern in text:
+                    findings.append(f"forbidden manifest text '{pattern}' found in {path}")
 
     if findings:
         return fail(findings)

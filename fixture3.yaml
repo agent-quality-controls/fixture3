@@ -18,8 +18,6 @@ suites:
         - "{fixtures}"
       ok_exit_codes:
         - 0
-    output:
-      format: "json"
     storage:
       approved_dir: "behavior/approved/self"
       received_dir: ".fixture3/self"

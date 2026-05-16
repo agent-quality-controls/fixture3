@@ -206,22 +206,22 @@ path = "behavior/fixtures/self/cases/approve-no-change/input.txt"
 path = "behavior/fixtures/self/cases/approve-no-change/approved/approved.normalized.json"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/approve-requires-change/fixture3.yaml"
+path = "behavior/fixtures/self/cases/approve-without-comment/fixture3.yaml"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/approve-requires-change/input.txt"
+path = "behavior/fixtures/self/cases/approve-without-comment/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/approve-requires-change/approved/approved.normalized.json"
+path = "behavior/fixtures/self/cases/approve-without-comment/approved/approved.normalized.json"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/approve-with-change/fixture3.yaml"
+path = "behavior/fixtures/self/cases/approve-with-comment/fixture3.yaml"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/approve-with-change/input.txt"
+path = "behavior/fixtures/self/cases/approve-with-comment/input.txt"
 
 [[tree]]
-path = "behavior/fixtures/self/cases/approve-with-change/approved/approved.normalized.json"
+path = "behavior/fixtures/self/cases/approve-with-comment/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/status/fixture3.yaml"
@@ -246,15 +246,6 @@ path = "behavior/fixtures/self/cases/hash-drift/approved/approved.normalized.jso
 
 [[tree]]
 path = "behavior/fixtures/self/cases/hash-drift/approved/approved.meta.json"
-
-[[tree]]
-path = "behavior/fixtures/self/cases/normalizer/fixture3.yaml"
-
-[[tree]]
-path = "behavior/fixtures/self/cases/normalizer/input.txt"
-
-[[tree]]
-path = "behavior/fixtures/self/cases/normalizer/approved/approved.normalized.json"
 
 [[tree]]
 path = "behavior/fixtures/self/cases/check-all-match/fixture3.yaml"
@@ -389,9 +380,6 @@ path = "scripts/self-case-exit-7.py"
 path = "scripts/self-check-harness.py"
 
 [[tree]]
-path = "scripts/self-case-normalize-json.py"
-
-[[tree]]
 path = "scripts/verify-reducer.py"
 
 [[config_value]]
@@ -420,6 +408,26 @@ pattern = "#[cfg(test)]"
 
 [[forbidden_source]]
 pattern = "cargo test"
+
+[[forbidden_source]]
+pattern = "NormalizerConfig"
+
+[[forbidden_source]]
+pattern = "OutputConfig"
+
+[[forbidden_source]]
+pattern = "OutputFormat"
+
+[[forbidden_source]]
+pattern = "normalizer_hash"
+
+[[forbidden_source]]
+pattern = "run_stdin_command"
+
+[[forbidden_manifest_text]]
+files = ["fixture3.yaml"]
+roots = ["behavior", "examples"]
+patterns = ["output:", "normalizer:"]
 
 [[module_dep]]
 from = "main"
@@ -533,8 +541,9 @@ exit_codes = [0, 1, 2]
 help_contains = [
   "Run one suite or every suite from fixture3.yaml.",
   "discovers fixtures",
-  "writes received files",
-  "received output with `approved.normalized.json`",
+  "parses stdout as JSON",
+  "writes diff files",
+  "`approved.normalized.json`",
   "Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`",
   "`--json` writes one record per selected suite",
   "Exit code is 2 if any",
@@ -556,12 +565,12 @@ help_contains = [
 [[cli_command]]
 name = "approve"
 required_flags = ["--suite"]
-optional_flags = ["--manifest", "--change"]
+optional_flags = ["--manifest", "--comment"]
 exit_codes = [0, 2]
 help_contains = [
   "Publish the last received output",
   "approved.normalized.json",
-  "--change <path>",
+  "--comment <text>",
 ]
 
 [[cli_command]]
@@ -637,13 +646,13 @@ help_contains = [
 argv = ["cargo", "run", "--manifest-path", "apps/fixtures/Cargo.toml", "-p", "fixture3-cli", "--", "--help"]
 contains = [
   "runs project commands against fixture files",
-  "Use it for fixture-based approval testing",
+  "Use it for fixture-based approval",
   "Run `fixture3 init` to create a usable example fixture3.yaml.",
   "Manifest schema:",
   "Feature pipeline:",
   "`{fixtures}` is replaced with every discovered fixture path.",
-  "The only supported `output.format` is `json`.",
-  "`output.normalizer` is optional.",
+  "The suite command must write JSON to stdout.",
+  "fixture3 parses suite command stdout as JSON and writes canonical pretty JSON before comparison.",
   "approved_dir/approved.normalized.json is the committed approved output.",
   "received_dir/received.raw.json stores command stdout from the latest check.",
   "diff_dir/diff.txt is the human-readable diff.",
@@ -655,7 +664,7 @@ contains = [
   "`fixture3 explain --suite <suite>` shows the resolved suite configuration.",
   "`fixture3 doctor` validates manifest paths, fixtures, features, and storage.",
   "`fixture3 diff --suite <suite> --refresh` reruns check before showing the diff.",
-  "The path should point to the reviewed change note, issue, PR, or local change file.",
+  "`--comment <text>` is optional approval metadata.",
   "A suite is one fixture approval check",
   "Exit codes:",
   "fixture3.yaml",
@@ -664,7 +673,7 @@ contains = [
 [[cli_help]]
 argv = ["cargo", "run", "--manifest-path", "apps/fixtures/Cargo.toml", "-p", "fixture3-cli", "--", "--version"]
 contains = [
-  "fixture3 0.1.6",
+  "fixture3 0.1.7",
 ]
 
 [[generated_file]]

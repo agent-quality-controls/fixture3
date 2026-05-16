@@ -1,0 +1,92 @@
+[[tree]]
+path = ".plans/2026-05-16-113428-directory-reducer.md"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/args.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/mod.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/candidate.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/directory.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/oracle.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/reducer.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/report.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/run.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/state.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/trial_tree.rs"
+
+[[tree]]
+path = "examples/fake-project/scripts/reducer-dir-app.sh"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-dirs/fixture3.yaml"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-dirs/project/keep/input.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-dirs/project/keep/support/a.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-dirs/project/removable-family/a/noise.txt"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-dirs/project/removable-family/b/noise.txt"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-dirs/project/removable-family/c/noise.txt"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-dirs/project/mixed/keep/input.json"
+
+[[tree]]
+path = "examples/fake-project/behavior/fixtures/reducer-dirs/project/mixed/remove/noise.txt"
+
+[[tree]]
+path = "examples/fake-project/behavior/approved/reducer-dirs/approved.normalized.json"
+
+[[tree]]
+path = "scripts/verify-reducer.py"
+
+[[cli_command]]
+name = "reduce"
+required_flags = ["--suite", "--fixture-root", "--work-dir"]
+optional_flags = ["--manifest", "--max-oracle-calls", "--reducers"]
+help_contains = [
+  "--reducers",
+  "dirs,files",
+  "dirs",
+  "files",
+  "directory subtrees",
+  "file candidates",
+  "shared oracle-call budget",
+]
+
+[[manifest_contains]]
+file = "README.md"
+contains = [
+  "--reducers dirs,files",
+  "--reducers dirs",
+  "--reducers files",
+  "directory subtrees",
+]
+
+[[command]]
+name = "reducer-verifier"
+argv = ["python3", "scripts/verify-reducer.py"]

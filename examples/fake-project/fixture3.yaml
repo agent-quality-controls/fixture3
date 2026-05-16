@@ -23,8 +23,6 @@ suites:
         - "{fixtures}"
       ok_exit_codes:
         - 0
-    output:
-      format: "json"
     storage:
       approved_dir: "behavior/approved/parser-basic"
       received_dir: ".fixture3/parser-basic"
@@ -42,8 +40,6 @@ suites:
         - "{fixtures}"
       ok_exit_codes:
         - 0
-    output:
-      format: "json"
     storage:
       approved_dir: "behavior/approved/cli-errors"
       received_dir: ".fixture3/cli-errors"
@@ -60,8 +56,6 @@ suites:
         - "{fixtures}"
       ok_exit_codes:
         - 0
-    output:
-      format: "json"
     storage:
       approved_dir: "behavior/approved/review-drift"
       received_dir: ".fixture3/review-drift"

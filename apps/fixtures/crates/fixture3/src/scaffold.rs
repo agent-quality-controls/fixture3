@@ -47,7 +47,7 @@ pub(crate) fn create_suite(
     fs::write_string(&approved_path, "{}\n")?;
 
     let manifest_block = format!(
-        "{name}:\n  tags: []\n  fixtures:\n    - \"behavior/fixtures/{name}/*/{fixture}\"\n  command:\n    argv:\n      - \"{command}\"\n      - \"{{fixtures}}\"\n    ok_exit_codes:\n      - 0\n  output:\n    format: \"json\"\n  storage:\n    approved_dir: \"behavior/approved/{name}\"\n    received_dir: \".fixture3/{name}\"\n    diff_dir: \".fixture3/{name}\"\n",
+        "{name}:\n  tags: []\n  fixtures:\n    - \"behavior/fixtures/{name}/*/{fixture}\"\n  command:\n    argv:\n      - \"{command}\"\n      - \"{{fixtures}}\"\n    ok_exit_codes:\n      - 0\n  storage:\n    approved_dir: \"behavior/approved/{name}\"\n    received_dir: \".fixture3/{name}\"\n    diff_dir: \".fixture3/{name}\"\n",
         name = request.name,
         fixture = request.fixture_name,
         command = request.command

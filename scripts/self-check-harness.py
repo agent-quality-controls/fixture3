@@ -15,13 +15,14 @@ EXPECTED = {
         "approved_meta_kind": "approved",
         "approved_normalized_matches_received": True,
     },
-    "approve-requires-change": {
-        "exit_code": 2,
-        "stderr_contains": "approve requires --change",
-    },
-    "approve-with-change": {
+    "approve-without-comment": {
         "exit_code": 0,
-        "approved_change_path": "behavior/changes/.gitkeep",
+        "approved_meta_kind": "approved",
+        "approved_normalized_matches_received": True,
+    },
+    "approve-with-comment": {
+        "exit_code": 0,
+        "approved_comment": "reviewed behavior update",
         "approved_meta_kind": "approved",
         "approved_normalized_matches_received": True,
     },
@@ -110,6 +111,7 @@ EXPECTED = {
     "init": {
         "exit_code": 0,
         "created_manifest": ".fixture3/self-init/generated.yaml",
+        "created_manifest_forbidden_text_absent": ["output:", "normalizer:"],
     },
     "mismatch": {
         "exit_code": 1,
@@ -118,14 +120,15 @@ EXPECTED = {
         "stdout_status": "different",
     },
     "missing-approved": {
-        "exit_code": 2,
-        "stderr_contains": "approved output missing",
-    },
-    "normalizer": {
-        "exit_code": 0,
-        "diff_status": "matched",
-        "diff_changed": False,
-        "stdout_status": "matched",
+        "exit_code": 1,
+        "diff_changed": True,
+        "diff_status": "different",
+        "stdout_status": "different",
+        "generated_files": [
+            ".fixture3/self-cases/missing-approved/approved/approved.normalized.json",
+            ".fixture3/self-cases/missing-approved/received.normalized.json",
+            ".fixture3/self-cases/missing-approved/diff.json",
+        ],
     },
     "new-suite": {
         "exit_code": 0,
@@ -213,15 +216,20 @@ def run_case(binary: Path, manifest: Path) -> dict:
     if "generated_files" in expected:
         record["generated_files_ok"] = all(Path(path).exists() for path in expected["generated_files"])
     if "created_manifest" in expected:
-        record["created_manifest_exists"] = Path(expected["created_manifest"]).exists()
+        created_manifest = Path(expected["created_manifest"])
+        record["created_manifest_exists"] = created_manifest.exists()
+        if "created_manifest_forbidden_text_absent" in expected and created_manifest.exists():
+            text = created_manifest.read_text()
+            record["created_manifest_forbidden_text_absent_ok"] = all(
+                pattern not in text
+                for pattern in expected["created_manifest_forbidden_text_absent"]
+            )
     if "approved_meta_kind" in expected and approved_meta is not None:
         record["approved_meta_kind"] = approved_meta.get("kind")
         record["approved_meta_kind_ok"] = approved_meta.get("kind") == expected["approved_meta_kind"]
-    if "approved_change_path" in expected and approved_meta is not None:
-        record["approved_change_path"] = approved_meta.get("change_path")
-        record["approved_change_path_ok"] = (
-            approved_meta.get("change_path") == expected["approved_change_path"]
-        )
+    if "approved_comment" in expected and approved_meta is not None:
+        record["approved_comment"] = approved_meta.get("comment")
+        record["approved_comment_ok"] = approved_meta.get("comment") == expected["approved_comment"]
     if "approved_normalized_matches_received" in expected:
         approved_path = approved_root(case, manifest) / "approved.normalized.json"
         received_path = received_root / "received.normalized.json"
@@ -259,6 +267,8 @@ def prepare_case(case: str, manifest: Path, received_root: Path) -> None:
         Path(".fixture3/self-init/generated.yaml").unlink(missing_ok=True)
     if case == "new-suite":
         shutil.rmtree(manifest.parent / "behavior", ignore_errors=True)
+    if case == "missing-approved":
+        shutil.rmtree(received_root, ignore_errors=True)
     if case.startswith("check-all-") or case == "status-all":
         shutil.rmtree(received_root, ignore_errors=True)
         return
@@ -279,10 +289,10 @@ def run_case_command(binary: Path, case: str, manifest: Path) -> subprocess.Comp
     if case == "approve-no-change":
         run_command(check_command(binary, manifest))
         return run_command([str(binary), "approve", "--suite", "case", "--manifest", str(manifest)])
-    if case == "approve-requires-change":
+    if case == "approve-without-comment":
         run_command(check_command(binary, manifest))
         return run_command([str(binary), "approve", "--suite", "case", "--manifest", str(manifest)])
-    if case == "approve-with-change":
+    if case == "approve-with-comment":
         run_command(check_command(binary, manifest))
         return run_command(
             [
@@ -292,8 +302,8 @@ def run_case_command(binary: Path, case: str, manifest: Path) -> subprocess.Comp
                 "case",
                 "--manifest",
                 str(manifest),
-                "--change",
-                "behavior/changes/.gitkeep",
+                "--comment",
+                "reviewed behavior update",
             ]
         )
     if case == "diff-existing":

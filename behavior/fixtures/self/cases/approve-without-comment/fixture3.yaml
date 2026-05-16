@@ -1,0 +1,16 @@
+version: 1
+suites:
+  case:
+    fixtures:
+      - "behavior/fixtures/self/cases/approve-without-comment/input.txt"
+    command:
+      argv:
+        - "python3"
+        - "scripts/self-case-emit-json.py"
+        - "{fixtures}"
+      ok_exit_codes:
+        - 0
+    storage:
+      approved_dir: ".fixture3/self-cases/approve-without-comment/approved"
+      received_dir: ".fixture3/self-cases/approve-without-comment"
+      diff_dir: ".fixture3/self-cases/approve-without-comment"

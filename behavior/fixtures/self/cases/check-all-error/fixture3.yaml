@@ -10,8 +10,6 @@ suites:
         - "{fixtures}"
       ok_exit_codes:
         - 0
-    output:
-      format: "json"
     storage:
       approved_dir: "behavior/fixtures/self/cases/check-all-error/approved/alpha"
       received_dir: ".fixture3/self-cases/check-all-error/alpha"
@@ -25,8 +23,6 @@ suites:
         - "scripts/self-case-exit-7.py"
       ok_exit_codes:
         - 0
-    output:
-      format: "json"
     storage:
       approved_dir: "behavior/fixtures/self/cases/check-all-error/approved/beta"
       received_dir: ".fixture3/self-cases/check-all-error/beta"

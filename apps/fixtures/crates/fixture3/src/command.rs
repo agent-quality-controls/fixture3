@@ -1,4 +1,3 @@
-use std::io::Write as _;
 use std::path::PathBuf;
 use std::process::Stdio;
 
@@ -31,16 +30,6 @@ pub(crate) fn run_fixture_command(
     Ok(output)
 }
 
-pub(crate) fn run_stdin_command(argv: &[String], stdin: &[u8]) -> Result<CommandOutput, AppError> {
-    let output = run_argv_with_stdin(argv, &StdinInput::Bytes(stdin))?;
-
-    if output.exit_code != 0 {
-        return Err(AppError::Command(format!("normalizer exited with {}", output.exit_code)));
-    }
-
-    Ok(output)
-}
-
 pub(crate) fn run_program(program: &str, arguments: &[&str]) -> Result<CommandOutput, AppError> {
     let command_argv = std::iter::once(program.to_owned())
         .chain(arguments.iter().map(|arg| (*arg).to_owned()))
@@ -65,39 +54,16 @@ fn expand_fixture_args(argv: &[String], fixtures: &[PathBuf]) -> Vec<String> {
 
 #[allow(clippy::disallowed_methods, reason = "This module is the command adapter.")]
 fn run_argv(argv: &[String]) -> Result<CommandOutput, AppError> {
-    run_argv_with_stdin(argv, &StdinInput::Null)
-}
-
-enum StdinInput<'a> {
-    Null,
-    Bytes(&'a [u8]),
-}
-
-#[allow(clippy::disallowed_methods, reason = "This module is the command adapter.")]
-fn run_argv_with_stdin(argv: &[String], stdin: &StdinInput<'_>) -> Result<CommandOutput, AppError> {
     let Some((program, arguments)) = argv.split_first() else {
         return Err(AppError::Command("empty argv".to_owned()));
     };
 
-    let mut child = std::process::Command::new(program)
+    let output = std::process::Command::new(program)
         .args(arguments)
-        .stdin(stdin.stdio())
+        .stdin(Stdio::null())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
-        .spawn()
-        .map_err(|source| AppError::Command(format!("failed to run {program}: {source}")))?;
-
-    if let StdinInput::Bytes(bytes) = stdin {
-        let Some(mut child_stdin) = child.stdin.take() else {
-            return Err(AppError::Command("failed to open command stdin".to_owned()));
-        };
-        child_stdin.write_all(bytes).map_err(|source| {
-            AppError::Command(format!("failed to write command stdin: {source}"))
-        })?;
-    }
-
-    let output = child
-        .wait_with_output()
+        .output()
         .map_err(|source| AppError::Command(format!("failed to wait for {program}: {source}")))?;
 
     Ok(CommandOutput {
@@ -105,13 +71,4 @@ fn run_argv_with_stdin(argv: &[String], stdin: &StdinInput<'_>) -> Result<Comman
         stderr: output.stderr,
         exit_code: output.status.code().unwrap_or(2),
     })
-}
-
-impl StdinInput<'_> {
-    fn stdio(&self) -> Stdio {
-        match self {
-            Self::Null => Stdio::null(),
-            Self::Bytes(_) => Stdio::piped(),
-        }
-    }
 }

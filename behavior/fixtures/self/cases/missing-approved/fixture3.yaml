@@ -10,9 +10,7 @@ suites:
         - "{fixtures}"
       ok_exit_codes:
         - 0
-    output:
-      format: "json"
     storage:
-      approved_dir: "behavior/fixtures/self/cases/missing-approved/approved"
+      approved_dir: ".fixture3/self-cases/missing-approved/approved"
       received_dir: ".fixture3/self-cases/missing-approved"
       diff_dir: ".fixture3/self-cases/missing-approved"
