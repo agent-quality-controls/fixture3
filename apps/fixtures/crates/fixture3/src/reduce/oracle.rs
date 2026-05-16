@@ -3,7 +3,8 @@ use std::path::PathBuf;
 use fixture3_ddmin::{OracleOutcome, UnresolvedReason};
 
 use super::candidate::FileCandidate;
-use super::report::ReduceProgress;
+use super::report::{ReduceProgress, ReportContext};
+use super::state::ReductionState;
 
 #[derive(Debug)]
 pub(crate) struct ReduceOracle {
@@ -11,8 +12,7 @@ pub(crate) struct ReduceOracle {
     manifest_path: PathBuf,
     fixture_root: PathBuf,
     work_dir: PathBuf,
-    original: Vec<FileCandidate>,
-    best_remaining: Option<Vec<FileCandidate>>,
+    best_state: Option<ReductionState>,
     progress: ReduceProgress,
     calls: usize,
 }
@@ -23,15 +23,14 @@ impl ReduceOracle {
         manifest_path: PathBuf,
         fixture_root: PathBuf,
         work_dir: PathBuf,
-        original: Vec<FileCandidate>,
+        _original: Vec<FileCandidate>,
     ) -> Self {
         Self {
             suite,
             manifest_path,
             fixture_root,
             work_dir,
-            original,
-            best_remaining: None,
+            best_state: None,
             progress: ReduceProgress::default(),
             calls: 0,
         }
@@ -40,17 +39,29 @@ impl ReduceOracle {
     pub(crate) const fn calls(&self) -> usize {
         self.calls
     }
-}
 
-impl fixture3_ddmin::DdminOracle<FileCandidate> for ReduceOracle {
-    fn evaluate(&mut self, remaining: &[FileCandidate]) -> OracleOutcome {
+    pub(crate) const fn progress(&self) -> ReduceProgress {
+        self.progress
+    }
+
+    pub(crate) fn evaluate_state(
+        &mut self,
+        state: &ReductionState,
+        context: &ReportContext,
+    ) -> OracleOutcome {
         self.calls = self.calls.saturating_add(1);
-        let Ok(trial) = super::trial_tree::create(&self.fixture_root, &self.work_dir, remaining)
+        let remaining = state.remaining_files();
+        let Ok(trial) = super::trial_tree::create(&self.fixture_root, &self.work_dir, &remaining)
         else {
             return self.recorded(OracleOutcome::Unresolved(UnresolvedReason::OracleFailed));
         };
-        if super::rewrite::write_trial_manifest(&self.manifest_path, &self.suite, &trial, remaining)
-            .is_err()
+        if super::rewrite::write_trial_manifest(
+            &self.manifest_path,
+            &self.suite,
+            &trial,
+            &remaining,
+        )
+        .is_err()
         {
             return self.recorded(OracleOutcome::Unresolved(UnresolvedReason::OracleFailed));
         }
@@ -62,7 +73,7 @@ impl fixture3_ddmin::DdminOracle<FileCandidate> for ReduceOracle {
         };
 
         if matches!(outcome, OracleOutcome::Interesting)
-            && self.write_best(remaining, self.progress.recorded(&outcome)).is_err()
+            && self.write_best(state, context, self.progress.recorded(&outcome)).is_err()
         {
             return self.recorded(OracleOutcome::Unresolved(UnresolvedReason::OracleFailed));
         }
@@ -79,19 +90,20 @@ impl ReduceOracle {
 
     fn write_best(
         &mut self,
-        remaining: &[FileCandidate],
+        state: &ReductionState,
+        context: &ReportContext,
         progress: ReduceProgress,
     ) -> Result<(), crate::error::AppError> {
-        self.best_remaining = Some(remaining.to_vec());
-        let best_remaining = self.best_remaining.as_deref().ok_or_else(|| {
-            crate::error::AppError::Manifest("missing best reducer candidate set".to_owned())
+        self.best_state = Some(state.clone());
+        let best_state = self.best_state.as_ref().ok_or_else(|| {
+            crate::error::AppError::Manifest("missing best reducer state".to_owned())
         })?;
         let report = super::report::ReduceReport::best_so_far(
             &self.suite,
             &self.fixture_root,
             &self.work_dir,
-            &self.original,
-            best_remaining,
+            context,
+            best_state,
             progress,
         );
         super::report::write_best(&self.work_dir, &report)

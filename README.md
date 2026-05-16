@@ -61,11 +61,6 @@ suites:
       ok_exit_codes:
         - 0
         - 1
-    output:
-      format: "json"
-      normalizer:
-        argv:
-          - "scripts/normalize-output.py"
     storage:
       approved_dir: "behavior/approved/lint-rules"
       received_dir: ".fixture3/lint-rules"
@@ -74,7 +69,9 @@ suites:
 
 `{fixtures}` is replaced with discovered fixture paths in deterministic order. If an arg is exactly `{fixtures}`, each fixture becomes a separate argv item. If it appears inside a larger arg, fixture paths are joined with spaces.
 
-The only supported output format is JSON. A normalizer is optional. When present, `fixture3` writes command stdout to the normalizer stdin and reads normalized JSON from normalizer stdout.
+The suite command must write JSON to stdout. `fixture3` parses suite command stdout as JSON and writes canonical pretty JSON before comparison. Project-specific cleanup belongs inside the suite command.
+
+If `approved.normalized.json` is missing, `check` creates it as empty JSON (`{}`) before comparing. The first real command output then appears as a normal diff against `{}`.
 
 ## Files
 
@@ -149,7 +146,7 @@ fixture3 diff --suite lint-rules --refresh
 Approve a reviewed change:
 
 ```bash
-fixture3 approve --suite lint-rules --change behavior/changes/2026-05-14-rule-change.md
+fixture3 approve --suite lint-rules --comment "reviewed lint rule update"
 ```
 
 Show state:
@@ -166,9 +163,14 @@ Reduce a copied fixture tree:
 
 ```bash
 fixture3 reduce --suite lint-rules --fixture-root behavior/fixtures/lint-rules/copied-project --work-dir .fixture3/reduce-lint-rules --max-oracle-calls 200
+fixture3 reduce --suite lint-rules --fixture-root behavior/fixtures/lint-rules/copied-project --work-dir .fixture3/reduce-lint-rules --reducers dirs,files
+fixture3 reduce --suite lint-rules --fixture-root behavior/fixtures/lint-rules/copied-project --work-dir .fixture3/reduce-lint-rules --reducers dirs
+fixture3 reduce --suite lint-rules --fixture-root behavior/fixtures/lint-rules/copied-project --work-dir .fixture3/reduce-lint-rules --reducers files
 ```
 
-`reduce` uses DDMin to remove files from a trial copy while preserving the selected suite's approved output. It never edits `--fixture-root` directly. It writes JSON to stdout and writes the same report to `<work-dir>/reduce-report.json`, plus `<work-dir>/removed-files.txt` and `<work-dir>/remaining-files.txt`. During the run, the best known matched candidate is written under `<work-dir>/best/`. The active trial tree is reused at `<work-dir>/trial-current/`.
+`reduce` uses DDMin to remove directory subtrees and file candidates from a trial copy while preserving the selected suite's approved output. It never edits `--fixture-root` directly. The default reducer list is `--reducers dirs,files`: top-down directory subtree reduction first, then individual file reduction. `--reducers dirs` runs only the directory pass. `--reducers files` runs only the file pass. All reducers share the same `--max-oracle-calls` budget.
+
+It writes JSON to stdout and writes the same report to `<work-dir>/reduce-report.json`, plus `<work-dir>/removed-files.txt` and `<work-dir>/remaining-files.txt`. During the run, the best known matched candidate is written under `<work-dir>/best/`. The active trial tree is reused at `<work-dir>/trial-current/`.
 
 ## Agent output
 
@@ -194,10 +196,11 @@ fixture3 doctor --json
 - `fixture3 check --feature <feature>`: runs suites listed under a feature.
 - `fixture3 diff --suite <suite>`: shows the latest stored diff.
 - `fixture3 diff --suite <suite> --refresh`: reruns the suite before showing the diff.
-- `fixture3 approve --suite <suite> --change <path>`: promotes received output to approved output.
+- `fixture3 approve --suite <suite> --comment <text>`: promotes received output to approved output and optionally records a comment.
 - `fixture3 status`: lists state for every suite.
 - `fixture3 reduce --suite <suite> --fixture-root <path> --work-dir <path>`: removes unnecessary files from a copied fixture tree without editing the source tree.
 - `fixture3 reduce --suite <suite> --fixture-root <path> --work-dir <path> --max-oracle-calls <count>`: stops after a fixed oracle-call budget and reports the best reduction found so far.
+- `fixture3 reduce --suite <suite> --fixture-root <path> --work-dir <path> --reducers dirs,files`: runs directory subtree reduction, then file reduction.
 - `fixture3 explain --suite <suite>`: shows resolved fixture globs, fixture count, command argv, tags, feature membership, storage paths, and file state.
 - `fixture3 doctor`: validates manifest shape without running project behavior.
 
@@ -205,7 +208,7 @@ Exit codes:
 
 - `0`: received output matches approved output, or setup validation passed.
 - `1`: received output differs from approved output.
-- `2`: tool, config, command, normalizer, manifest, or runtime error.
+- `2`: tool, config, command, JSON, manifest, or runtime error.
 
 For multi-suite checks, exit `2` wins over exit `1`.
 
@@ -215,16 +218,14 @@ For multi-suite checks, exit `2` wins over exit `1`.
 
 - approved output is missing
 - the project command exits with a code outside `ok_exit_codes`
-- the normalizer exits non-zero
-- command output or normalized output is invalid JSON
-- approved metadata exists and fixture, manifest, or normalizer hashes changed
+- command output is invalid JSON
+- approved metadata exists and fixture or manifest hashes changed
 
 `fixture3 doctor` exits `2` when:
 
 - a feature references a missing suite
 - fixture globs are invalid or match no files
 - command argv or exit-code lists are empty
-- normalizer argv is empty
 - approved output is missing
 - storage paths collide
 
@@ -252,4 +253,4 @@ Reducer verification also uses the fake project:
 python3 scripts/verify-reducer.py
 ```
 
-That verifier proves `reduce` removes irrelevant files, keeps required files, rejects symlinks, writes the report files, and leaves the original fixture root unchanged.
+That verifier proves `reduce` removes irrelevant files and directory subtrees, keeps required files, rejects symlinks, writes the report files, and leaves the original fixture root unchanged.

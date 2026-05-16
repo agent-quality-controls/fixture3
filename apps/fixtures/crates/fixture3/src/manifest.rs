@@ -7,6 +7,7 @@ use crate::error::AppError;
 use crate::fs;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct Manifest {
     pub(crate) version: u16,
     #[serde(default)]
@@ -15,45 +16,31 @@ pub(crate) struct Manifest {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct FeatureConfig {
     pub(crate) suites: Vec<String>,
     pub(crate) spec: Option<PathBuf>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct SuiteConfig {
     #[serde(default)]
     pub(crate) tags: Vec<String>,
     pub(crate) fixtures: Vec<String>,
     pub(crate) command: CommandConfig,
-    pub(crate) output: OutputConfig,
     pub(crate) storage: StorageConfig,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct CommandConfig {
     pub(crate) argv: Vec<String>,
     pub(crate) ok_exit_codes: Vec<i32>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub(crate) struct OutputConfig {
-    pub(crate) format: OutputFormat,
-    pub(crate) normalizer: Option<NormalizerConfig>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "lowercase")]
-pub(crate) enum OutputFormat {
-    Json,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub(crate) struct NormalizerConfig {
-    pub(crate) argv: Vec<String>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct StorageConfig {
     #[serde(rename = "approved_dir")]
     pub(crate) approved: PathBuf,

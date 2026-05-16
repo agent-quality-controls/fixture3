@@ -32,10 +32,7 @@ pub(crate) fn write_received(
 ) -> Result<StoredRun, AppError> {
     let approved_path = storage.approved.join("approved.normalized.json");
     if !fs::exists(&approved_path) {
-        return Err(AppError::Manifest(format!(
-            "approved output missing: {}",
-            approved_path.display()
-        )));
+        fs::write_string(&approved_path, "{}\n")?;
     }
 
     let approved = fs::read_to_string(&approved_path)?;
@@ -84,18 +81,11 @@ pub(crate) fn read_diff(storage: &StorageConfig) -> Result<DiffRead, AppError> {
 
 pub(crate) fn approve_received(
     storage: &StorageConfig,
-    change_path: Option<String>,
+    comment: Option<String>,
 ) -> Result<(), AppError> {
-    let (report, _) = read_diff(storage)?;
-    if report.changed && change_path.is_none() {
-        return Err(AppError::Manifest(
-            "approve requires --change when received output differs".to_owned(),
-        ));
-    }
-
     let received_output = fs::read(&storage.received.join("received.normalized.json"))?;
     let received_metadata: RunMetadata = read_json(&storage.received.join("received.meta.json"))?;
-    let approved_metadata = metadata::approve(received_metadata, change_path);
+    let approved_metadata = metadata::approve(received_metadata, comment);
 
     fs::write(&storage.approved.join("approved.normalized.json"), &received_output)?;
     write_json(&storage.approved.join("approved.meta.json"), &approved_metadata)
@@ -132,8 +122,6 @@ suites:
         - "{fixtures}"
       ok_exit_codes:
         - 0
-    output:
-      format: "json"
     storage:
       approved_dir: "behavior/approved/example"
       received_dir: ".fixture3/example"

@@ -11,8 +11,6 @@ suites:
         - "{fixtures}"
       ok_exit_codes:
         - 0
-    output:
-      format: "json"
     storage:
       approved_dir: "behavior/fixtures/self/cases/tag-selection/approved/alpha"
       received_dir: ".fixture3/self-cases/tag-selection/alpha"
@@ -28,8 +26,6 @@ suites:
         - "{fixtures}"
       ok_exit_codes:
         - 0
-    output:
-      format: "json"
     storage:
       approved_dir: "behavior/fixtures/self/cases/tag-selection/approved/beta"
       received_dir: ".fixture3/self-cases/tag-selection/beta"

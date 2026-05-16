@@ -12,8 +12,6 @@ suites:
         - "{fixtures}"
       ok_exit_codes:
         - 0
-    output:
-      format: "json"
     storage:
       approved_dir: "behavior/approved/reducer-symlink"
       received_dir: ".fixture3/reducer-symlink"

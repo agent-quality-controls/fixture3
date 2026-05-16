@@ -141,8 +141,7 @@ fn diff_command(args: &crate::args::DiffArgs) -> Result<AppOutcome, AppError> {
 
 fn approve(args: &crate::args::ApproveArgs) -> Result<AppOutcome, AppError> {
     let loaded = load_suite(&args.suite, &args.manifest)?;
-    let change_path = args.change.as_ref().map(|path| path.to_string_lossy().into_owned());
-    crate::storage::approve_received(&loaded.suite.storage, change_path)?;
+    crate::storage::approve_received(&loaded.suite.storage, args.comment.clone())?;
     Ok(AppOutcome {
         exit_code: 0,
         stdout: format!("suite: {}\nstatus: approved\n", args.suite),
@@ -318,7 +317,7 @@ pub(crate) fn run_check(
         .ok_or_else(|| AppError::Manifest(format!("suite not found in manifest: {suite_name}")))?;
     let fixtures = crate::fixture::discover(suite)?;
     let command_output = crate::command::run_fixture_command(&suite.command, &fixtures)?;
-    let normalized = crate::normalize::normalize(&command_output.stdout, &suite.output)?;
+    let normalized = crate::normalize::normalize(&command_output.stdout)?;
     let metadata = crate::metadata::build(suite_name, suite, manifest_path, &fixtures)?;
     let stored = crate::storage::write_received(
         &suite.storage,

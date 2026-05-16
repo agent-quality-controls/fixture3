@@ -4,26 +4,44 @@ use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 
 const TOP_LEVEL_HELP: &str = "\
-fixture3 runs project commands against fixture files and compares normalized output with
-committed approved output.
+fixture3 is a fixture-based approval testing CLI.
 
-Use it for fixture-based approval testing where the important output is a file or
-stdout value: CLI output, parser output, codegen output, API examples, diagnostics,
-migrations, or any stable JSON result that should not change without review.
+It runs project commands against fixture files, parses suite command stdout as JSON,
+writes canonical pretty JSON, compares that with committed approved output, and
+writes received output and diff files for review. Use it for fixture-based approval
+testing where behavior is easier to judge from input/output drift than from
+agent-maintained unit tests.
 
-A suite is one fixture approval check. It defines fixture globs, the command to run,
-accepted exit codes, output handling, tags, and approved/received/diff storage.
-A feature is a named group of suites with an optional spec path. fixture3 uses features
-only for selection and reporting; the project owns what the feature means.
+Use fixture3 for:
+  CLI output, parser output, diagnostics, codegen, migration plans, API examples,
+  rule-engine reports, static-analysis findings, and any stable JSON behavior that
+  should not change without approval.
+
+Core concepts:
+  fixture: an input file or copied input tree given to the project command.
+  suite: one approval check. A suite owns fixture globs, command argv, accepted
+    exit codes, and storage directories.
+  approved output: committed expected behavior at approved.normalized.json.
+  received output: latest command output from a check run.
+  diff: the review surface between approved and received output.
+  feature: a named group of suites with an optional spec path. fixture3 uses
+    features only for selection and reporting.
+  reducer: a DDMin-based helper that removes fixture files or directories while
+    preserving one suite's approved output.
+  A suite is one fixture approval check.
 
 Quick start:
-  1. Run `fixture3 init` to create a usable example fixture3.yaml.
-  2. Edit the example suite for your command and fixture paths.
-  3. Add approved output at behavior/approved/<suite>/approved.normalized.json.
-  4. Run `fixture3 check --suite <suite>`.
-  5. Run `fixture3 explain --suite <suite>` or `fixture3 doctor` when setup is unclear.
-  6. Review `.fixture3/<suite>/diff.txt`.
-  7. Run `fixture3 approve --suite <suite> --change <path>` for intentional drift.
+  1. Install the binary.
+     cargo binstall fixture3
+  2. Run `fixture3 init` to create a usable example fixture3.yaml.
+  3. Edit the suite fixture glob, command argv, and storage paths.
+  4. Put stable inputs under behavior/fixtures/<suite>/.
+  5. Run check once to create an empty approved JSON baseline if it is missing.
+  6. Run `fixture3 doctor`.
+  7. Run `fixture3 explain --suite <suite>`.
+  8. Run `fixture3 check --suite <suite>`.
+  9. Review .fixture3/<suite>/diff.txt when output differs.
+  10. Run `fixture3 approve --suite <suite> --comment <text>` for intentional drift.
 
 Manifest schema:
   version: 1
@@ -44,80 +62,122 @@ Manifest schema:
           - \"{fixtures}\"
         ok_exit_codes:
           - 0
-      output:
-        format: \"json\"
-        normalizer:
-          argv:
-            - \"optional-normalizer\"
       storage:
         approved_dir: \"behavior/approved/<suite>\"
         received_dir: \".fixture3/<suite>\"
         diff_dir: \".fixture3/<suite>\"
 
+Manifest rules:
+  version must be 1.
+  suites is required.
+  features is optional.
+  command.argv is required and must name the executable and arguments.
+  command.ok_exit_codes lists acceptable project command exit codes.
+  storage paths are per suite and should not overlap.
+
+Command argv rules:
+  `{fixtures}` is replaced with every discovered fixture path.
+  If an arg is exactly `{fixtures}`, each fixture becomes a separate argv item.
+  If `{fixtures}` appears inside a larger arg, fixture paths are joined with spaces.
+
+Output rules:
+  The suite command must write JSON to stdout.
+  fixture3 parses suite command stdout as JSON and writes canonical pretty JSON before comparison.
+  Formatting-only JSON changes do not matter.
+  stderr is not compared; command failure is reported separately.
+
+Files written by check:
+  approved_dir/approved.normalized.json is the committed approved output.
+  If it is missing, check creates it as empty JSON: {}.
+  approved_dir/approved.meta.json records approval metadata.
+  received_dir/received.raw.json stores command stdout from the latest check.
+  received_dir/received.normalized.json stores normalized output.
+  received_dir/received.meta.json stores run metadata.
+  diff_dir/diff.txt is the human-readable diff.
+  diff_dir/diff.json is machine-readable diff state.
+
 Feature pipeline:
   Fixtures are stable inputs.
-  approved_dir stores reviewed behavior.
+  approved_dir stores reviewed behavior. Missing approved output starts as {}.
   received_dir stores the latest command output.
   diff_dir stores the review surface.
   tags select loose groups of suites, such as parser or cli.
   features select intentional behavior slices, such as imports or migrations.
 
-Command argv:
-  `{fixtures}` is replaced with every discovered fixture path.
-  If an arg is exactly `{fixtures}`, each fixture becomes a separate argv item.
-  If `{fixtures}` appears inside a larger arg, fixture paths are joined with spaces.
+Commands:
+  init
+    Writes a starter fixture3.yaml.
+    Parameters: --manifest <path>, default fixture3.yaml.
 
-Output:
-  The only supported `output.format` is `json`.
-  `output.normalizer` is optional.
-  The command stdout must be JSON after the optional normalizer runs.
-  JSON is pretty-printed before comparison so formatting-only changes do not matter.
+  new suite <name>
+    Creates sample fixture and approved-output files and prints a manifest block.
+    Parameters: --manifest <path>, --fixture <file>, --command <program>.
 
-Files:
-  approved_dir/approved.normalized.json is the committed approved output.
-  approved_dir/approved.meta.json records approved fixture, manifest, and normalizer hashes.
-  received_dir/received.raw.json stores command stdout from the latest check.
-  received_dir/received.normalized.json stores normalized output from the latest check.
-  received_dir/received.meta.json stores run metadata from the latest check.
-  diff_dir/diff.txt is the human-readable diff.
-  diff_dir/diff.json is the machine-readable diff status.
+  doctor
+    Validates fixture3.yaml without running project behavior.
+    Parameters: --manifest <path>, --json.
+    Use before check when setup may be wrong.
+
+  explain
+    Shows resolved suite config without running project behavior.
+    Parameters: --suite <suite>, --manifest <path>, --json.
+    Use when fixture discovery or storage paths are unclear.
+
+  check
+    Runs suites and compares received output with approved output.
+    Select exactly one target: --suite <suite>, --all, --tag <tag>, or --feature <feature>.
+    Other parameters: --manifest <path>, --json.
+    Use for normal behavior verification.
+
+  diff
+    Shows the latest stored diff.
+    Parameters: --suite <suite>, --manifest <path>, --refresh, --json.
+    Use --refresh to rerun check before showing diff.
+
+  approve
+    Promotes received output to approved output.
+    Parameters: --suite <suite>, --manifest <path>, --comment <text>.
+    Use only after the behavior change has been reviewed.
+
+  status
+    Shows approved, received, and diff file state.
+    Target is optional: --suite <suite>, --all, --tag <tag>, or --feature <feature>.
+    Other parameters: --manifest <path>, --json.
+
+  reduce
+    Minimizes copied fixture trees while preserving one suite's approved output.
+    Required parameters: --suite <suite>, --fixture-root <path>, --work-dir <path>.
+    Other parameters: --manifest <path>, --reducers <list>, --max-oracle-calls <count>.
+    Default reducers are dirs,files. Default budgets are dirs=200 and files=100.
+    Use this after copying a real project into a fixture and before approving the fixture.
 
 Workflow:
-  `fixture3 check --suite <suite>` runs one suite and compares approved output.
   `fixture3 check --all` runs every suite and returns the highest-severity status.
   `fixture3 check --tag <tag>` runs every suite with that tag.
-  `fixture3 check --feature <feature>` runs every suite in that feature.
   `fixture3 check --json` writes suite results as structured JSON.
-  `fixture3 reduce --suite <suite> --fixture-root <path> --work-dir <path>` minimizes copied fixture trees.
   `fixture3 reduce` preserves the selected suite's approved output.
   `fixture3 reduce` never edits `--fixture-root` directly.
-  `fixture3 diff --suite <suite>` shows the latest stored diff.
-  `fixture3 diff --suite <suite> --refresh` reruns check before showing the diff.
-  `fixture3 diff --suite <suite> --json` writes diff status and text as JSON.
-  `fixture3 approve --suite <suite> --change <path>` promotes received output.
-  `fixture3 status` lists approved, received, and diff file state.
-  `fixture3 status --json` writes suite state as structured JSON.
   `fixture3 explain --suite <suite>` shows the resolved suite configuration.
   `fixture3 doctor` validates manifest paths, fixtures, features, and storage.
-  `fixture3 new suite <name>` creates fixture and approved-output scaffolding.
+  `fixture3 diff --suite <suite> --refresh` reruns check before showing the diff.
 
 Approve:
-  `--change <path>` is required when output differs.
-  The path should point to the reviewed change note, issue, PR, or local change file.
-  fixture3 records the string in approved.meta.json; it does not read that file.
+  `--comment <text>` is optional approval metadata.
+  fixture3 records the string in approved.meta.json; it does not interpret it.
 
 Exit codes:
   0  received output matches approved output
   1  received output differs from approved output
-  2  tool, manifest, command, normalizer, or runtime error
+  2  tool, manifest, command, JSON, or runtime error
 ";
 
 const CHECK_HELP: &str = "\
 Run one suite or every suite from fixture3.yaml.
 
-check discovers fixtures, runs each suite command, optionally runs the normalizer,
-normalizes JSON output, writes received files under `.fixture3/<suite>`, compares
-received output with `approved.normalized.json`, and writes diff files.
+check discovers fixtures, runs each suite command, parses stdout as JSON, writes
+canonical pretty JSON under `.fixture3/<suite>`, compares received output with
+`approved.normalized.json`, and writes diff files.
+If approved output is missing, check creates `approved.normalized.json` as `{}` first.
 
 Use `--suite <name>`, `--all`, `--tag <tag>`, or `--feature <feature>`.
 Exit code is 2 if any suite errors. Exit code is 1 if any suite differs and no suite errors.
@@ -143,8 +203,7 @@ Publish the last received output as approved output.
 
 approve copies `.fixture3/<suite>/received.normalized.json` to
 `behavior/approved/<suite>/approved.normalized.json` and writes approved metadata.
-If the stored diff says output changed, `--change <path>` is required so the approval
-records the reviewed change file.
+Use `--comment <text>` when the approval needs a human-readable note.
 ";
 
 const STATUS_HELP: &str = "\
@@ -158,17 +217,88 @@ Use `--json` when an agent needs approved, received, and diff booleans per suite
 const REDUCE_HELP: &str = "\
 Minimize copied fixture trees.
 
-reduce uses DDMin to find fixture files that can be removed while the selected suite
-preserves the selected suite's approved output. It never edits --fixture-root directly.
+reduce is for copied-project fixtures that are too large.
+
+It uses DDMin to remove fixture directory subtrees and file candidates while the
+selected suite still matches its committed approved output. The behavior contract is
+the selected suite's approved.normalized.json. If output changes, that candidate set
+is rejected. reduce never edits --fixture-root directly.
+It preserves the selected suite's approved output.
+
+Use reduce when:
+  a fixture was copied from a real project and contains irrelevant files
+  an agent needs proof that fixture content is removable under one behavior contract
+  the review surface is too large and needs a smaller fixture tree
+
+Do not use reduce when:
+  the approved output is missing or not trusted
+  the suite output is too weak to prove the behavior you care about
+  the fixture root is the real project source tree instead of a disposable fixture copy
 
 Required inputs:
   --suite <suite> names one suite from fixture3.yaml.
+  --manifest <path> points to the fixture3 manifest. Default: fixture3.yaml.
   --fixture-root <path> is the copied fixture tree to reduce.
   --work-dir <path> is scratch space for trial trees and reports.
 
 Optional inputs:
-  --manifest <path> defaults to fixture3.yaml.
-  --max-oracle-calls <count> stops after that many oracle calls.
+  --reducers <list> defaults to dirs,files. Allowed reducers are dirs and files.
+  --max-oracle-calls <count> overrides default budgets with one shared total cap.
+
+Reducers:
+  dirs removes directory subtrees top-down.
+  files removes individual file candidates.
+  reducers run left to right.
+  default reducer budgets are dirs=200 and files=100.
+  with default reducers, reduce spends up to 200 calls on dirs, then 100 on files.
+  with --max-oracle-calls, all reducers share that explicit total cap.
+  --max-oracle-calls is the shared oracle-call budget override.
+  unknown reducer names are errors.
+  duplicate reducer names are errors.
+
+Directory reducer:
+  Collects every directory under --fixture-root that contains included files.
+  Excludes generated directories such as .git, target, node_modules, dist,
+  .fixture3, and .goldencheck.
+  Rejects symlinks instead of following them.
+  Runs top-down by depth.
+  Accepts a removed directory only when the suite output still matches.
+  Prunes descendants after a parent directory is accepted.
+
+File reducer:
+  Starts from the state left by previous reducers.
+  Runs DDMin over remaining files.
+  Accepts removed files only when the suite output still matches.
+
+Manifest requirements:
+  The suite must exist in fixture3.yaml.
+  The suite command must write JSON to stdout.
+  The suite storage.approved_dir must contain approved.normalized.json.
+  The command should observe the behavior being protected.
+  Weak suite output proves only weak removability.
+
+Example manifest shape:
+  version: 1
+  suites:
+    my-suite:
+      fixtures:
+        - \"behavior/fixtures/my-suite/project/**/*\"
+      command:
+        argv:
+          - \"my-program\"
+          - \"{fixtures}\"
+        ok_exit_codes:
+          - 0
+      storage:
+        approved_dir: \"behavior/approved/my-suite\"
+        received_dir: \".fixture3/my-suite\"
+        diff_dir: \".fixture3/my-suite\"
+
+Examples:
+  fixture3 reduce --suite my-suite --fixture-root behavior/fixtures/my-suite/project --work-dir .fixture3/reduce/my-suite
+  fixture3 reduce --suite my-suite --fixture-root behavior/fixtures/my-suite/project --work-dir .fixture3/reduce/my-suite --reducers dirs
+  fixture3 reduce --suite my-suite --fixture-root behavior/fixtures/my-suite/project --work-dir .fixture3/reduce/my-suite --reducers files
+  fixture3 reduce --suite my-suite --fixture-root behavior/fixtures/my-suite/project --work-dir .fixture3/reduce/my-suite --max-oracle-calls 50
 
 Outputs:
   JSON is written to stdout.
@@ -177,6 +307,22 @@ Outputs:
   Remaining file paths are written to <work-dir>/remaining-files.txt.
   Best-so-far report is written to <work-dir>/best/reduce-report.json.
   The current oracle trial uses <work-dir>/trial-current/.
+  trial-current is scratch space and may hold the last failed trial.
+  The final accepted state is reduce-report.json, not trial-current.
+
+Report fields:
+  reducers lists the reducer sequence.
+  phases lists per-reducer candidate counts, remaining counts, and guarantee.
+  candidate_count is original file count.
+  directory_candidate_count is original directory candidate count.
+  remaining_count and removed_count are file counts.
+  removed_directories lists accepted removed directory subtrees.
+  guarantee is complete only when every requested reducer completed its budgeted run.
+
+Guarantees:
+  complete means DDMin finished for the requested reducers and budgets.
+  incomplete:max-oracle-calls-reached means the active budget stopped reduction.
+  incomplete:baseline-not-interesting means the original fixture root did not match approved output.
 
 Exit codes:
   0  reducer completed and produced a report
@@ -203,7 +349,7 @@ const DOCTOR_HELP: &str = "\
 Validate fixture3.yaml without running project behavior.
 
 doctor checks feature suite references, fixture globs, command argv, exit-code lists,
-normalizer argv, approved output files, and storage path collisions.
+and storage path collisions.
 It does not run project commands or compare behavior. Exit 0 means the manifest shape
 is usable. Exit 2 means setup needs repair.
 ";
@@ -313,8 +459,8 @@ pub(crate) struct ApproveArgs {
     #[arg(long, default_value = "fixture3.yaml", help = "Manifest path")]
     pub(crate) manifest: PathBuf,
 
-    #[arg(long, help = "Reviewed change file required when output differs")]
-    pub(crate) change: Option<PathBuf>,
+    #[arg(long, help = "Optional approval comment recorded in approved metadata")]
+    pub(crate) comment: Option<String>,
 }
 
 #[derive(Debug, Parser)]
@@ -357,7 +503,10 @@ pub(crate) struct ReduceArgs {
     #[arg(long, help = "Scratch directory for trial trees and reports")]
     pub(crate) work_dir: PathBuf,
 
-    #[arg(long, help = "Stop after this many oracle calls")]
+    #[arg(long, default_value = "dirs,files", help = "Comma-separated reducers: dirs,files")]
+    pub(crate) reducers: String,
+
+    #[arg(long, help = "Override default reducer budgets with one shared total oracle-call cap")]
     pub(crate) max_oracle_calls: Option<NonZeroUsize>,
 }
 

@@ -1,7 +1,6 @@
 use glob::glob;
 use serde::Serialize;
 
-use crate::fs;
 use crate::manifest::{Manifest, SuiteConfig};
 
 #[derive(Debug, Serialize)]
@@ -80,24 +79,9 @@ fn inspect_command(suite_name: &str, suite: &SuiteConfig, findings: &mut Vec<Fin
             &format!("suite has no ok_exit_codes: {suite_name}"),
         ));
     }
-    if let Some(normalizer) = &suite.output.normalizer
-        && normalizer.argv.is_empty()
-    {
-        findings.push(finding(
-            "normalizer_empty",
-            &format!("suite has empty normalizer argv: {suite_name}"),
-        ));
-    }
 }
 
 fn inspect_storage(suite_name: &str, suite: &SuiteConfig, findings: &mut Vec<Finding>) {
-    let approved = suite.storage.approved.join("approved.normalized.json");
-    if !fs::exists(&approved) {
-        findings.push(finding(
-            "approved_missing",
-            &format!("suite {suite_name} missing approved output: {}", approved.display()),
-        ));
-    }
     if suite.storage.approved == suite.storage.received {
         findings.push(finding(
             "storage_collision",

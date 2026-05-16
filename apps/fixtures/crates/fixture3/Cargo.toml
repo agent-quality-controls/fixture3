@@ -1,6 +1,6 @@
 [package]
 name = "fixture3-cli"
-version = "0.1.6"
+version = "0.1.7"
 edition.workspace = true
 rust-version.workspace = true
 description = "CLI for fixture-based approval testing"

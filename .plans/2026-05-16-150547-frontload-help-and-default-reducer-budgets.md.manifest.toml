@@ -1,0 +1,38 @@
+[[tree]]
+path = ".plans/2026-05-16-150547-frontload-help-and-default-reducer-budgets.md"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/args.rs"
+
+[[tree]]
+path = "apps/fixtures/crates/fixture3/src/reduce/run.rs"
+
+[[tree]]
+path = "scripts/verify-reducer.py"
+
+[[cli_command]]
+name = "reduce"
+required_flags = ["--suite", "--fixture-root", "--work-dir"]
+optional_flags = ["--manifest", "--reducers", "--max-oracle-calls"]
+help_contains = [
+  "reduce is for copied-project fixtures that are too large",
+  "default reducer budgets are dirs=200 and files=100",
+  "with default reducers, reduce spends up to 200 calls on dirs, then 100 on files",
+  "--max-oracle-calls is the shared oracle-call budget override",
+  "The final accepted state is reduce-report.json, not trial-current",
+  "Weak suite output proves only weak removability",
+]
+
+[[manifest_contains]]
+file = "apps/fixtures/crates/fixture3/src/args.rs"
+contains = [
+  "fixture3 is a fixture-based approval testing CLI",
+  "Core concepts:",
+  "Manifest schema:",
+  "Commands:",
+  "Default reducers are dirs,files. Default budgets are dirs=200 and files=100.",
+]
+
+[[command]]
+name = "reducer-verifier"
+argv = ["python3", "scripts/verify-reducer.py"]

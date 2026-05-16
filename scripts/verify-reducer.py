@@ -15,6 +15,8 @@ FIXTURE3 = ROOT / "apps" / "fixtures" / "target" / "debug" / "fixture3"
 MANIFESTS = [
     ROOT / ".plans" / "2026-05-15-193357-fixture-reducer-adapter.md.manifest.toml",
     ROOT / ".plans" / "2026-05-15-225212-reducer-runtime-controls.md.manifest.toml",
+    ROOT / ".plans" / "2026-05-16-113428-directory-reducer.md.manifest.toml",
+    ROOT / ".plans" / "2026-05-16-150547-frontload-help-and-default-reducer-budgets.md.manifest.toml",
 ]
 
 
@@ -214,6 +216,93 @@ def verify_max_oracle_calls(run_root: Path) -> list[str]:
     return findings
 
 
+def verify_directory_reducer(run_root: Path) -> list[str]:
+    findings: list[str] = []
+    manifest = "behavior/fixtures/reducer-dirs/fixture3.yaml"
+    fixture_root = "behavior/fixtures/reducer-dirs/project"
+
+    before_files = sorted(
+        path.relative_to(run_root / fixture_root).as_posix()
+        for path in (run_root / fixture_root).rglob("*")
+        if path.is_file()
+    )
+
+    code, stdout, stderr = run(
+        [
+            str(FIXTURE3),
+            "reduce",
+            "--suite",
+            "reducer-dirs",
+            "--manifest",
+            manifest,
+            "--fixture-root",
+            fixture_root,
+            "--work-dir",
+            ".fixture3/reducer-dirs-only",
+            "--reducers",
+            "dirs",
+            "--max-oracle-calls",
+            "20",
+        ],
+        run_root,
+    )
+    if code != 0:
+        findings.append(f"reducer-dirs-only exit {code}\nstdout:\n{stdout}\nstderr:\n{stderr}")
+        return findings
+
+    report = json.loads(stdout)
+    if report.get("reducers") != ["dirs"]:
+        findings.append(f"dirs-only reducers mismatch: {report.get('reducers')!r}")
+    if "removable-family" not in report.get("removed_directories", []):
+        findings.append(f"dirs-only did not remove removable-family: {report.get('removed_directories')!r}")
+    for required in ["keep/input.json", "keep/support/a.json", "mixed/keep/input.json"]:
+        if required not in report.get("remaining_files", []):
+            findings.append(f"dirs-only removed required file: {required}")
+    if (run_root / ".fixture3/reducer-dirs-only/trials").exists():
+        findings.append("dirs-only reducer created obsolete trials directory")
+    if not (run_root / ".fixture3/reducer-dirs-only/trial-current").exists():
+        findings.append("dirs-only reducer did not create trial-current")
+    if not (run_root / ".fixture3/reducer-dirs-only/best/reduce-report.json").exists():
+        findings.append("dirs-only reducer did not write best/reduce-report.json")
+
+    code, stdout, stderr = run(
+        [
+            str(FIXTURE3),
+            "reduce",
+            "--suite",
+            "reducer-dirs",
+            "--manifest",
+            manifest,
+            "--fixture-root",
+            fixture_root,
+            "--work-dir",
+            ".fixture3/reducer-dirs-default",
+        ],
+        run_root,
+    )
+    if code != 0:
+        findings.append(f"reducer-dirs-default exit {code}\nstdout:\n{stdout}\nstderr:\n{stderr}")
+        return findings
+
+    report = json.loads(stdout)
+    if report.get("reducers") != ["dirs", "files"]:
+        findings.append(f"default reducers mismatch: {report.get('reducers')!r}")
+    if report.get("oracle_calls", 0) > 300:
+        findings.append(f"default reducer budget exceeded 300 calls: {report.get('oracle_calls')!r}")
+    if report.get("guarantee") != "complete":
+        findings.append(f"default reducer guarantee mismatch: {report.get('guarantee')!r}")
+
+    after_files = sorted(
+        path.relative_to(run_root / fixture_root).as_posix()
+        for path in (run_root / fixture_root).rglob("*")
+        if path.is_file()
+    )
+    if after_files != before_files:
+        findings.append(f"directory fixture root changed: before {before_files!r}, after {after_files!r}")
+
+    return findings
+
+
 def verify_symlink(run_root: Path) -> list[str]:
     findings: list[str] = []
     link = run_root / "behavior" / "fixtures" / "reducer-symlink" / "project" / "link"
@@ -253,6 +342,7 @@ def main() -> int:
     findings.extend(verify_manifest_rows())
     findings.extend(verify_basic(run_root))
     findings.extend(verify_max_oracle_calls(run_root))
+    findings.extend(verify_directory_reducer(run_root))
     findings.extend(verify_symlink(run_root))
     if findings:
         return fail("\n".join(findings))
