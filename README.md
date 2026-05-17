@@ -5,10 +5,9 @@
 [![rust](https://img.shields.io/badge/rust-stable-orange)](rust-toolchain.toml)
 [![issues](https://img.shields.io/github/issues/agent-quality-controls/fixture3)](https://github.com/agent-quality-controls/fixture3/issues)
 
-
 `fixture3` is a CLI for fixture-based approval testing in agent-managed codebases.
 
-Install:
+## Install
 
 ```bash
 cargo install cargo-binstall
@@ -18,239 +17,29 @@ fixture3 --version
 
 Use `cargo binstall fixture3` as the install path. The crates.io package is an install stub for cargo-binstall metadata, not the real CLI implementation.
 
-The full agent guide is in `fixture3 --help`. It explains the model, manifest schema, fixture substitution, files, feature selectors, JSON output, approval flow, and exit codes from the top-level help screen.
-
-For design rationale (fixture vs snapshot, fail-closed semantics, why DDMin reduction) and how fixture3 compares to insta, ApprovalTests, and expect-test, see the [wiki](https://github.com/agent-quality-controls/fixture3/wiki).
-
-## The model
-
-`fixture3` manages approval plumbing. The project owns meaning.
-
-- A fixture is an input file.
-- A suite is one approval check over fixture inputs.
-- A feature is a named group of suites, usually tied to a spec path.
-- Tags are loose suite labels for operational groups.
-- Approved output is committed reviewed behavior.
-- Received output is the latest command output.
-- Diff output is the review surface.
-
-Features and tags do not teach `fixture3` what your app does. They give agents and humans stable handles for running the right behavior slice.
-
-## Manifest
-
-A project defines suites, tags, and features in `fixture3.yaml`:
-
-```yaml
-version: 1
-features:
-  linting:
-    spec: "docs/features/linting.md"
-    suites:
-      - "lint-rules"
-suites:
-  lint-rules:
-    tags:
-      - "lint"
-      - "rules"
-    fixtures:
-      - "behavior/fixtures/lint-rules/*/input.json"
-    command:
-      argv:
-        - "scripts/replay-fixture.sh"
-        - "{fixtures}"
-      ok_exit_codes:
-        - 0
-        - 1
-    storage:
-      approved_dir: "behavior/approved/lint-rules"
-      received_dir: ".fixture3/lint-rules"
-      diff_dir: ".fixture3/lint-rules"
-```
-
-`{fixtures}` is replaced with discovered fixture paths in deterministic order. If an arg is exactly `{fixtures}`, each fixture becomes a separate argv item. If it appears inside a larger arg, fixture paths are joined with spaces.
-
-The suite command must write JSON to stdout. `fixture3` parses suite command stdout as JSON and writes canonical pretty JSON before comparison. Project-specific cleanup belongs inside the suite command.
-
-If `approved.normalized.json` is missing, `check` creates it as empty JSON (`{}`) before comparing. The first real command output then appears as a normal diff against `{}`.
-
-## Files
-
-Committed files:
-
-```text
-behavior/
-  fixtures/
-  approved/
-  changes/
-```
-
-Generated files:
-
-```text
-.fixture3/
-  <suite>/
-    received.raw.json
-    received.normalized.json
-    received.meta.json
-    diff.json
-    diff.txt
-```
-
-Approved output:
-
-```text
-behavior/approved/<suite>/
-  approved.normalized.json
-  approved.meta.json
-```
-
-## Workflow
-
-Create a starter manifest:
+## Quick start
 
 ```bash
 fixture3 init
-```
-
-Create suite scaffolding:
-
-```bash
-fixture3 new suite lint-rules
-```
-
-`new suite` creates a sample fixture and an initial approved output, then prints the manifest block to add under `suites:`. It does not edit `fixture3.yaml`; the project keeps ownership of feature grouping and manifest formatting.
-
-Inspect setup before running behavior:
-
-```bash
-fixture3 explain --suite lint-rules
 fixture3 doctor
-```
-
-Run behavior:
-
-```bash
-fixture3 check --suite lint-rules
 fixture3 check --all
-fixture3 check --tag lint
-fixture3 check --feature linting
 ```
 
-Review drift:
+The full agent guide is in `fixture3 --help`. It covers the model, manifest schema, fixture substitution, files, feature selectors, JSON output, approval flow, and exit codes from the top-level help screen.
 
-```bash
-fixture3 diff --suite lint-rules
-fixture3 diff --suite lint-rules --refresh
-```
+## More
 
-Approve a reviewed change:
-
-```bash
-fixture3 approve --suite lint-rules --comment "reviewed lint rule update"
-```
-
-Show state:
-
-```bash
-fixture3 status
-fixture3 status --suite lint-rules
-fixture3 status --tag lint
-fixture3 status --feature linting
-fixture3 status --all
-```
-
-Reduce a copied fixture tree:
-
-```bash
-fixture3 reduce --suite lint-rules --fixture-root behavior/fixtures/lint-rules/copied-project --work-dir .fixture3/reduce-lint-rules --max-oracle-calls 200
-fixture3 reduce --suite lint-rules --fixture-root behavior/fixtures/lint-rules/copied-project --work-dir .fixture3/reduce-lint-rules --reducers dirs,files
-fixture3 reduce --suite lint-rules --fixture-root behavior/fixtures/lint-rules/copied-project --work-dir .fixture3/reduce-lint-rules --reducers dirs
-fixture3 reduce --suite lint-rules --fixture-root behavior/fixtures/lint-rules/copied-project --work-dir .fixture3/reduce-lint-rules --reducers files
-```
-
-`reduce` uses DDMin to remove directory subtrees and file candidates from a trial copy while preserving the selected suite's approved output. It never edits `--fixture-root` directly. The default reducer list is `--reducers dirs,files`: top-down directory subtree reduction first, then individual file reduction. `--reducers dirs` runs only the directory pass. `--reducers files` runs only the file pass. All reducers share the same `--max-oracle-calls` budget.
-
-It writes JSON to stdout and writes the same report to `<work-dir>/reduce-report.json`, plus `<work-dir>/removed-files.txt` and `<work-dir>/remaining-files.txt`. During the run, the best known matched candidate is written under `<work-dir>/best/`. The active trial tree is reused at `<work-dir>/trial-current/`.
-
-## Agent output
-
-Use JSON when another tool or agent needs to consume state without parsing terminal text:
-
-```bash
-fixture3 check --feature linting --json
-fixture3 status --all --json
-fixture3 diff --suite lint-rules --json
-fixture3 explain --suite lint-rules --json
-fixture3 doctor --json
-```
-
-`check --json` writes one record per selected suite with status, exit code, fixture count, received path, diff path, and error text. `status --json` writes approved, received, and diff booleans. `diff --json` writes diff status and text. `doctor --json` writes setup findings. `reduce` always writes JSON.
-
-## Commands
-
-- `fixture3 init`: writes an example `fixture3.yaml`.
-- `fixture3 new suite <name>`: creates fixture and approved-output scaffolding and prints a manifest block.
-- `fixture3 check --suite <suite>`: runs one suite.
-- `fixture3 check --all`: runs every suite.
-- `fixture3 check --tag <tag>`: runs suites with a tag.
-- `fixture3 check --feature <feature>`: runs suites listed under a feature.
-- `fixture3 diff --suite <suite>`: shows the latest stored diff.
-- `fixture3 diff --suite <suite> --refresh`: reruns the suite before showing the diff.
-- `fixture3 approve --suite <suite> --comment <text>`: promotes received output to approved output and optionally records a comment.
-- `fixture3 status`: lists state for every suite.
-- `fixture3 reduce --suite <suite> --fixture-root <path> --work-dir <path>`: removes unnecessary files from a copied fixture tree without editing the source tree.
-- `fixture3 reduce --suite <suite> --fixture-root <path> --work-dir <path> --max-oracle-calls <count>`: stops after a fixed oracle-call budget and reports the best reduction found so far.
-- `fixture3 reduce --suite <suite> --fixture-root <path> --work-dir <path> --reducers dirs,files`: runs directory subtree reduction, then file reduction.
-- `fixture3 explain --suite <suite>`: shows resolved fixture globs, fixture count, command argv, tags, feature membership, storage paths, and file state.
-- `fixture3 doctor`: validates manifest shape without running project behavior.
-
-Exit codes:
-
-- `0`: received output matches approved output, or setup validation passed.
-- `1`: received output differs from approved output.
-- `2`: tool, config, command, JSON, manifest, or runtime error.
-
-For multi-suite checks, exit `2` wins over exit `1`.
-
-## Fail-closed checks
-
-`fixture3 check` exits `2` when:
-
-- the project command exits with a code outside `ok_exit_codes`
-- command output is invalid JSON
-
-`fixture3 doctor` exits `2` when:
-
-- a feature references a missing suite
-- fixture globs are invalid or match no files
-- command argv or exit-code lists are empty
-- storage paths collide
-
-## Repository verification
-
-This repository uses its own fixture suite instead of Rust tests.
-
-```bash
-scripts/verify-all.sh
-```
-
-The verifier checks the tree, forbidden test files, config, module dependencies, formatting, compilation, clippy, G3RS, self-hosted fixture behavior, CLI help, and the feature-pipeline contract.
-
-The repository also includes a fake project under `examples/fake-project`. It is a small external-style project used to prove the workflow outside fixture3's own self suite:
-
-```bash
-scripts/verify-fake-project.sh
-```
-
-That verifier copies the fake project to `.fixture3/fake-project-run` and runs `doctor`, `explain`, `check --suite`, `check --tag`, `check --feature`, `status --json`, `diff --json`, `approve`, `new suite`, and `init` against the copy.
-
-Reducer verification also uses the fake project:
-
-```bash
-python3 scripts/verify-reducer.py
-```
-
-That verifier proves `reduce` removes irrelevant files and directory subtrees, keeps required files, rejects symlinks, writes the report files, and leaves the original fixture root unchanged.
+- [Philosophy](https://github.com/agent-quality-controls/fixture3/wiki/Philosophy) — fixtures vs snapshots, fail-closed semantics, why DDMin reduction.
+- [Comparison](https://github.com/agent-quality-controls/fixture3/wiki/Comparison) — fixture3 vs insta, ApprovalTests, expect-test, cargo-insta.
+- [The model](https://github.com/agent-quality-controls/fixture3/wiki/The-Model) — fixtures, suites, features, tags, approved and received output.
+- [Manifest](https://github.com/agent-quality-controls/fixture3/wiki/Manifest) — `fixture3.yaml` schema with examples.
+- [Files](https://github.com/agent-quality-controls/fixture3/wiki/Files) — committed vs generated paths.
+- [Workflow](https://github.com/agent-quality-controls/fixture3/wiki/Workflow) — init, check, diff, approve, status, reduce.
+- [Commands](https://github.com/agent-quality-controls/fixture3/wiki/Commands) — full CLI reference, exit codes, fail-closed checks.
+- [Agent output](https://github.com/agent-quality-controls/fixture3/wiki/Agent-Output) — JSON output for every command.
+- [Verification](https://github.com/agent-quality-controls/fixture3/wiki/Verification) — repository self-verification scripts.
+- [Contributing](.github/CONTRIBUTING.md) — dev setup, verification scripts, design principles.
+- [Security policy](.github/SECURITY.md) — vulnerability disclosure.
 
 ## License
 
