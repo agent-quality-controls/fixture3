@@ -1,5 +1,11 @@
 # fixture3
 
+[![crates.io](https://img.shields.io/crates/v/fixture3)](https://crates.io/crates/fixture3)
+[![license](https://img.shields.io/github/license/agent-quality-controls/fixture3)](LICENSE)
+[![rust](https://img.shields.io/badge/rust-stable-orange)](rust-toolchain.toml)
+[![issues](https://img.shields.io/github/issues/agent-quality-controls/fixture3)](https://github.com/agent-quality-controls/fixture3/issues)
+
+
 `fixture3` is a CLI for fixture-based approval testing in agent-managed codebases.
 
 Install:
@@ -251,3 +257,7 @@ python3 scripts/verify-reducer.py
 ```
 
 That verifier proves `reduce` removes irrelevant files and directory subtrees, keeps required files, rejects symlinks, writes the report files, and leaves the original fixture root unchanged.
+
+## License
+
+MIT
