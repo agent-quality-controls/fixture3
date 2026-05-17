@@ -105,8 +105,13 @@ EXPECTED = {
         ],
     },
     "hash-drift": {
-        "exit_code": 2,
-        "stderr_contains": "fixture hash changed",
+        "exit_code": 0,
+        "stdout_status": "matched",
+        "generated_files": [
+            ".fixture3/self-cases/hash-drift/received.normalized.json",
+            ".fixture3/self-cases/hash-drift/received.meta.json",
+            ".fixture3/self-cases/hash-drift/diff.json",
+        ],
     },
     "init": {
         "exit_code": 0,

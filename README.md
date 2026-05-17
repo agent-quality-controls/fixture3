@@ -216,17 +216,14 @@ For multi-suite checks, exit `2` wins over exit `1`.
 
 `fixture3 check` exits `2` when:
 
-- approved output is missing
 - the project command exits with a code outside `ok_exit_codes`
 - command output is invalid JSON
-- approved metadata exists and fixture or manifest hashes changed
 
 `fixture3 doctor` exits `2` when:
 
 - a feature references a missing suite
 - fixture globs are invalid or match no files
 - command argv or exit-code lists are empty
-- approved output is missing
 - storage paths collide
 
 ## Repository verification

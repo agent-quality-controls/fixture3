@@ -673,7 +673,7 @@ contains = [
 [[cli_help]]
 argv = ["cargo", "run", "--manifest-path", "apps/fixtures/Cargo.toml", "-p", "fixture3-cli", "--", "--version"]
 contains = [
-  "fixture3 0.1.7",
+  "fixture3 0.1.8",
 ]
 
 [[generated_file]]
