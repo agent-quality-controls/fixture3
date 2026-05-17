@@ -20,13 +20,7 @@ Use `cargo binstall fixture3` as the install path. The crates.io package is an i
 
 The full agent guide is in `fixture3 --help`. It explains the model, manifest schema, fixture substitution, files, feature selectors, JSON output, approval flow, and exit codes from the top-level help screen.
 
-## Why this exists
-
-Unit tests can be a bad fit for large agent-managed codebases. For behavior-heavy code, the test code can grow until it is as large as the production code. Then an agent has two equally easy ways to make a broken change pass: change the app back to the intended behavior, or rewrite the tests to accept the broken behavior.
-
-`fixture3` moves the trust boundary. Fixtures are stable inputs that describe the behavior surface layer by layer. Approved outputs are the reviewed behavior for the current accepted commit. When code changes, the inputs usually stay put and only the received output changes.
-
-That makes review smaller. Instead of judging a rewritten test suite, a reviewer can inspect the behavior diff: previous approved output against new received output. Agents are much better at reviewing a concrete output diff than guessing intent from changed test code.
+For design rationale (fixture vs snapshot, fail-closed semantics, why DDMin reduction) and how fixture3 compares to insta, ApprovalTests, and expect-test, see the [wiki](https://github.com/agent-quality-controls/fixture3/wiki).
 
 ## The model
 
