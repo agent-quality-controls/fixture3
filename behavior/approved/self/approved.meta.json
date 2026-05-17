@@ -1,13 +1,13 @@
 {
   "suite": "self",
   "kind": "approved",
-  "run_id": "2026-05-16T18-12-21.600344Z-24d2a4d4",
-  "run_commit": "9fcfaaf",
+  "run_id": "2026-05-17T15-09-45.307555Z-24d2a4d4",
+  "run_commit": "b844434",
   "working_tree": "dirty",
-  "recorded_at": "2026-05-16T18:12:21.600344Z",
+  "recorded_at": "2026-05-17T15:09:45.307555Z",
   "fixture_hash": "sha256:dce8c79dd2413377431c16ffaaca594702c2d50a8a08c572002dd6688d218e54",
   "manifest_hash": "sha256:24d2a4d4495ade54369c4c3dfb98ff10345b008941e3f7ff9c10ef0945d4d239",
-  "tool_version": "0.1.6",
+  "tool_version": "0.1.7",
   "output_schema_version": "1",
   "fixtures": [
     {
@@ -115,5 +115,5 @@
       "sha256": "sha256:363b19798fa24d664c67435589b5bbc988e8d00a803012daf52f772c3dc11427"
     }
   ],
-  "comment": "empty approved bootstrap and approval comments"
+  "comment": "metadata drift no longer blocks check"
 }

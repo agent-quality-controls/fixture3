@@ -67,26 +67,6 @@ pub(crate) fn approve(mut metadata: RunMetadata, comment: Option<String>) -> Run
     metadata
 }
 
-pub(crate) fn assert_hashes_match(
-    approved: &RunMetadata,
-    received: &RunMetadata,
-) -> Result<(), AppError> {
-    let checks = [
-        ("fixture", &approved.fixture_hash, &received.fixture_hash),
-        ("manifest", &approved.manifest_hash, &received.manifest_hash),
-    ];
-
-    for (name, approved_hash, received_hash) in checks {
-        if approved_hash != received_hash {
-            return Err(AppError::Manifest(format!(
-                "{name} hash changed: approved {approved_hash}, received {received_hash}"
-            )));
-        }
-    }
-
-    Ok(())
-}
-
 fn hash_fixture_set(fixtures: &[FixtureRecord]) -> Result<String, AppError> {
     let bytes = serde_json::to_vec(fixtures)
         .map_err(|source| AppError::Json { context: "fixture metadata".to_owned(), source })?;

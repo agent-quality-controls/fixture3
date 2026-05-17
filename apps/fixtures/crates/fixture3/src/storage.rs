@@ -8,7 +8,6 @@ use crate::manifest::StorageConfig;
 use crate::metadata::{self, RunMetadata};
 
 type DiffRead = (DiffReport, String);
-type OptionalMetadata = Option<RunMetadata>;
 
 #[derive(Debug)]
 pub(crate) struct StoredRun {
@@ -36,12 +35,6 @@ pub(crate) fn write_received(
     }
 
     let approved = fs::read_to_string(&approved_path)?;
-    if let Some(approved_metadata) =
-        read_optional_metadata(&storage.approved.join("approved.meta.json"))?
-    {
-        metadata::assert_hashes_match(&approved_metadata, metadata)?;
-    }
-
     let raw_path = storage.received.join("received.raw.json");
     let normalized_path = storage.received.join("received.normalized.json");
     let metadata_path = storage.received.join("received.meta.json");
@@ -138,11 +131,4 @@ fn read_json<T: serde::de::DeserializeOwned>(path: &std::path::Path) -> Result<T
     let source = fs::read(path)?;
     serde_json::from_slice(&source)
         .map_err(|source| AppError::Json { context: path.display().to_string(), source })
-}
-
-fn read_optional_metadata(path: &std::path::Path) -> Result<OptionalMetadata, AppError> {
-    if !fs::exists(path) {
-        return Ok(None);
-    }
-    Ok(Some(read_json(path)?))
 }

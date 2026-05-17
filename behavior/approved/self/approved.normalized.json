@@ -160,12 +160,14 @@
     },
     {
       "case": "hash-drift",
-      "exit_code": 2,
+      "exit_code": 0,
       "exit_code_ok": true,
-      "received_meta_exists": false,
-      "received_normalized_exists": false,
-      "received_raw_exists": false,
-      "stderr_contains_ok": true
+      "generated_files_ok": true,
+      "received_meta_exists": true,
+      "received_normalized_exists": true,
+      "received_raw_exists": true,
+      "stdout_status": "matched",
+      "stdout_status_ok": true
     },
     {
       "case": "init",
