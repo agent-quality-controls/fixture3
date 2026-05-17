@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or discussion
+    url: https://github.com/agent-quality-controls/fixture3/discussions
+    about: For usage questions, manifest-schema discussions, or open-ended feature brainstorming, please start a Discussion.
