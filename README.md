@@ -38,8 +38,7 @@ The full agent guide is in `fixture3 --help`. It covers the model, manifest sche
 - [Commands](https://github.com/agent-quality-controls/fixture3/wiki/Commands) — full CLI reference, exit codes, fail-closed checks.
 - [Agent output](https://github.com/agent-quality-controls/fixture3/wiki/Agent-Output) — JSON output for every command.
 - [Verification](https://github.com/agent-quality-controls/fixture3/wiki/Verification) — repository self-verification scripts.
-- [Contributing](.github/CONTRIBUTING.md) — dev setup, verification scripts, design principles.
-- [Security policy](.github/SECURITY.md) — vulnerability disclosure.
+- [Contributing](.github/CONTRIBUTING.md) — open a detailed issue first; PRs must pass the G3RS pre-commit gate and the verification scripts.
 
 ## License
 

@@ -4,12 +4,12 @@
 
 ## Why
 
-<!-- 1-2 sentences. What problem does it solve? -->
+<!-- 1-2 sentences. What problem does it solve? Reference the issue if one exists. -->
 
 ## Checklist
 
-- [ ] `scripts/verify-all.sh` passes
-- [ ] `scripts/verify-fake-project.sh` passes
-- [ ] `python3 scripts/verify-reducer.py` passes (if reducer touched)
+- [ ] Pre-commit hooks (G3RS) pass locally
+- [ ] Verification scripts pass: `scripts/verify-all.sh`, `scripts/verify-fake-project.sh`, `python3 scripts/verify-reducer.py` (if reducer touched)
 - [ ] Behavior changes have updated approved outputs with an `approve --comment`
-- [ ] CLI help (`fixture3 --help`) and README updated if user-facing surface changed
+- [ ] CLI help and wiki updated if user-facing surface changed
+- [ ] Linked issue closes when merged
