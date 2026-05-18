@@ -2,7 +2,16 @@
 path = "packages/ddmin/Cargo.toml"
 
 [[tree]]
+path = "packages/ddmin/release-plz.toml"
+
+[[tree]]
+path = "packages/ddmin/cliff.toml"
+
+[[tree]]
 path = "packages/ddmin/crates/ddmin/Cargo.toml"
+
+[[tree]]
+path = "packages/ddmin/crates/ddmin/README.md"
 
 [[tree]]
 path = "packages/ddmin/crates/ddmin/src/lib.rs"
@@ -15,6 +24,15 @@ path = "packages/ddmin/crates/ddmin/src/types.rs"
 
 [[tree]]
 path = "packages/ddmin/crates/ddmin/examples/basic.rs"
+
+[[tree]]
+path = "packages/ddmin/crates/ddmin/examples/budgeted.rs"
+
+[[tree]]
+path = "packages/ddmin/crates/ddmin/examples/unresolved.rs"
+
+[[tree]]
+path = "packages/ddmin/crates/ddmin/examples/file_candidates.rs"
 
 [[tree]]
 path = "packages/ddmin/behavior/cases/contract.json"
@@ -55,7 +73,11 @@ workspace = "packages/ddmin/Cargo.toml"
 path = "packages/ddmin/crates/ddmin/Cargo.toml"
 name = "fixture3-ddmin"
 license = "MIT OR Apache-2.0"
-publish = false
+publish = true
+readme = "README.md"
+description = "Sequential DDMin reducer for ordered candidate lists"
+include = ["src/**", "examples/**", "Cargo.toml", "README.md", "LICENSE*"]
+docs_rs_all_features = true
 
 [public_api]
 crate_path = "packages/ddmin/crates/ddmin/src/lib.rs"

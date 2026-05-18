@@ -1,0 +1,8 @@
+[workspace]
+git_release_enable = true
+release_always = false
+changelog_config = "cliff.toml"
+
+[[package]]
+name = "fixture3-ddmin"
+publish = true
