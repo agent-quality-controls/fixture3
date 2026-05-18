@@ -28,6 +28,20 @@ fixture3 check --all
 
 The full agent guide is in `fixture3 --help`. It covers the model, manifest schema, fixture substitution, files, feature selectors, JSON output, approval flow, and exit codes from the top-level help screen.
 
+## Reducer
+
+`fixture3 reduce` uses DDMin to remove unnecessary fixture content while preserving the same approved result. It can remove directory subtrees and files:
+
+```bash
+fixture3 reduce --suite my-suite --fixture-root behavior/fixtures/my-suite/project --work-dir .fixture3/reduce/my-suite
+fixture3 reduce --suite my-suite --fixture-root behavior/fixtures/my-suite/project --work-dir .fixture3/reduce/my-suite --reducers dirs,files
+fixture3 reduce --suite my-suite --fixture-root behavior/fixtures/my-suite/project --work-dir .fixture3/reduce/my-suite --reducers dirs
+fixture3 reduce --suite my-suite --fixture-root behavior/fixtures/my-suite/project --work-dir .fixture3/reduce/my-suite --reducers files
+fixture3 reduce --suite my-suite --fixture-root behavior/fixtures/my-suite/project --work-dir .fixture3/reduce/my-suite --max-oracle-calls 50
+```
+
+The best report is written under `<work-dir>/best/`. The active trial is reused at `<work-dir>/trial-current/`.
+
 ## More
 
 - [Philosophy](https://github.com/agent-quality-controls/fixture3/wiki/Philosophy) — fixtures vs snapshots, fail-closed semantics, why DDMin reduction.
