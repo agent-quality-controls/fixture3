@@ -28,5 +28,11 @@ jobs:
           python3 scripts/verify-rust-workspaces.py --clippy
       - name: Verify fixture3 self suite
         run: cargo run --manifest-path apps/fixtures/Cargo.toml -p fixture3-cli -- check --suite self --manifest fixture3.yaml
+      - name: Verify DDMin
+        run: scripts/verify-ddmin.sh
+      - name: Build DDMin docs
+        run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --manifest-path packages/ddmin/Cargo.toml -p fixture3-ddmin
       - name: Stub package dry run
         run: cargo publish --dry-run --manifest-path apps/fixture3-install/crates/fixture3-install/Cargo.toml
+      - name: DDMin package dry run
+        run: cargo publish --dry-run --manifest-path packages/ddmin/crates/ddmin/Cargo.toml

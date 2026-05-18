@@ -18,6 +18,13 @@ enum TrialMode {
 }
 
 /// Minimize an ordered candidate list while preserving an oracle property.
+///
+/// The initial candidate list must be interesting. If it is not, the function
+/// returns the original list with `DdminGuarantee::Incomplete`.
+///
+/// The returned `remaining` list is the smallest list accepted by this `DDMin`
+/// run under the configured oracle-call budget. When the guarantee is complete,
+/// the result is one-minimal within the input candidate set.
 pub fn ddmin<C, O>(input: DdminInput<C>, oracle: &mut O) -> DdminOutput<C>
 where
     C: Clone + Eq,

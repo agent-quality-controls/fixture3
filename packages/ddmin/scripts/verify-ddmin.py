@@ -61,11 +61,17 @@ def check_package(manifest: dict) -> list[str]:
     workspace = tomllib.loads((REPO_ROOT / expected["workspace"]).read_text())
     package = cargo.get("package", {})
     findings: list[str] = []
-    for key in ("name", "license", "publish"):
+    for key in ("name", "license", "publish", "readme", "description", "include"):
         actual = resolve_workspace_value(cargo, workspace, f"package.{key}", f"workspace.package.{key}")
         expected_value = expected[key]
         if actual != expected_value:
             findings.append(f"{expected['path']} package.{key} expected {expected_value!r}, got {actual!r}")
+    docs_rs_all_features = dotted_value(cargo, "package.metadata.docs.rs.all-features")
+    if docs_rs_all_features != expected["docs_rs_all_features"]:
+        findings.append(
+            f"{expected['path']} package.metadata.docs.rs.all-features expected "
+            f"{expected['docs_rs_all_features']!r}, got {docs_rs_all_features!r}"
+        )
     if package.get("edition") != {"workspace": True}:
         findings.append(f"{expected['path']} package.edition must use workspace")
     if package.get("rust-version") != {"workspace": True}:

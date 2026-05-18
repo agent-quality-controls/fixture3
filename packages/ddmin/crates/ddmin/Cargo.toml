@@ -3,12 +3,19 @@ name = "fixture3-ddmin"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
-description = "Generic sequential DDMin list reducer for fixture3"
+description = "Sequential DDMin reducer for ordered candidate lists"
+readme = "README.md"
 license.workspace = true
 repository.workspace = true
-publish = false
+publish = true
+include = ["src/**", "examples/**", "Cargo.toml", "README.md", "LICENSE*"]
+keywords = ["ddmin", "delta-debugging", "reducer", "testing", "minimize"]
+categories = ["algorithms", "development-tools::testing"]
 
 [dependencies]
+
+[package.metadata.docs.rs]
+all-features = true
 
 [features]
 default = ["algorithm"]
