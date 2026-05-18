@@ -42,6 +42,22 @@ fixture3 reduce --suite my-suite --fixture-root behavior/fixtures/my-suite/proje
 
 The best report is written under `<work-dir>/best/`. The active trial is reused at `<work-dir>/trial-current/`.
 
+## DDMin Library
+
+The reducer algorithm is also published as a standalone Rust crate:
+
+```bash
+cargo add fixture3-ddmin
+```
+
+Use it from Rust as `fixture3_ddmin`:
+
+```rust
+use fixture3_ddmin::{DdminInput, DdminOptions, OracleOutcome, ddmin};
+```
+
+Docs: https://docs.rs/fixture3-ddmin
+
 ## More
 
 - [Philosophy](https://github.com/agent-quality-controls/fixture3/wiki/Philosophy) — fixtures vs snapshots, fail-closed semantics, why DDMin reduction.

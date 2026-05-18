@@ -6,10 +6,29 @@ It is useful when you have a reproducible property and want to remove as many in
 
 ## Install
 
+Install it in an app or library crate:
+
+```bash
+cargo add fixture3-ddmin
+```
+
+Or add it manually:
+
 ```toml
 [dependencies]
 fixture3-ddmin = "0.1"
 ```
+
+Import it with the Rust crate name `fixture3_ddmin`:
+
+```rust
+use fixture3_ddmin::{DdminInput, DdminOptions, OracleOutcome, ddmin};
+```
+
+Links:
+
+- Crates.io: <https://crates.io/crates/fixture3-ddmin>
+- Docs.rs: <https://docs.rs/fixture3-ddmin>
 
 ## Core Model
 
