@@ -1,8 +1,8 @@
 # Goal
 
-Design `spec3`: a Rust CLI and library for spec-driven development where a reviewed machine-readable spec becomes the implementation contract.
+Design `specular`: a Rust CLI and library for spec-driven development where a reviewed machine-readable spec becomes the implementation contract.
 
-`spec3` is not a fixture/golden-output tool. Fixture tools catch behavior drift after implementation. `spec3` catches plan-to-code drift while implementation is being built.
+`specular` is not a fixture/golden-output tool. Fixture tools catch behavior drift after implementation. `specular` catches plan-to-code drift while implementation is being built.
 
 The core invariant:
 
@@ -28,22 +28,22 @@ agent claims done
 
 That only proves the current verifier agrees with current code. It does not prove the implementation matches the reviewed plan.
 
-`spec3` must make contract changes explicit by locking the spec and verifier files before implementation verification.
+`specular` must make contract changes explicit by locking the spec and verifier files before implementation verification.
 
 # Product Name
 
 Use package and binary name:
 
 ```text
-spec3
+specular
 ```
 
 # Format
 
 Support both:
 
-- JSONC source specs: `.spec3.jsonc`
-- Plain JSON source specs: `.spec3.json`
+- JSONC source specs: `.specular.jsonc`
+- Plain JSON source specs: `.specular.json`
 
 Plain JSON is parsed directly. JSONC is parsed with a real JSONC parser, not regex. Current preferred Rust dependency is `jsonc-parser`, then typed deserialization through `serde`.
 
@@ -52,9 +52,9 @@ The locked machine contract is canonical strict JSON.
 Pipeline:
 
 ```text
-.spec3.jsonc or .spec3.json
+.specular.jsonc or .specular.json
 -> parse
--> typed spec3 model
+-> typed specular model
 -> canonical JSON
 -> hash canonical JSON
 -> write/read lock
@@ -69,8 +69,8 @@ Suggested files:
 
 ```text
 .plans/foo.md
-.plans/foo.spec3.jsonc
-.plans/foo.spec3.lock.json
+.plans/foo.specular.jsonc
+.plans/foo.specular.lock.json
 ```
 
 The lock records:
@@ -81,12 +81,12 @@ The lock records:
 - canonical spec hash
 - verifier command list
 - verifier file hashes
-- spec3 version
+- specular version
 - lock created time
 
 # Command Surface
 
-## `spec3 lint`
+## `specular lint`
 
 Validate a source spec without locking or running implementation checks.
 
@@ -103,10 +103,10 @@ Checks:
 Example:
 
 ```bash
-spec3 lint .plans/foo.spec3.jsonc
+specular lint .plans/foo.specular.jsonc
 ```
 
-## `spec3 lock`
+## `specular lock`
 
 Freeze the reviewed contract.
 
@@ -120,16 +120,16 @@ Checks:
 Writes:
 
 ```text
-.plans/foo.spec3.lock.json
+.plans/foo.specular.lock.json
 ```
 
 Example:
 
 ```bash
-spec3 lock .plans/foo.spec3.jsonc
+specular lock .plans/foo.specular.jsonc
 ```
 
-## `spec3 verify`
+## `specular verify`
 
 Verify code against the locked contract.
 
@@ -145,8 +145,8 @@ Then runs the declared verifier commands.
 Example:
 
 ```bash
-spec3 verify .plans/foo.spec3.jsonc
-spec3 verify .plans/foo.spec3.lock.json
+specular verify .plans/foo.specular.jsonc
+specular verify .plans/foo.specular.lock.json
 ```
 
 Exit codes:
@@ -155,7 +155,7 @@ Exit codes:
 - `1`: implementation does not satisfy spec
 - `2`: spec, lock, verifier, parser, or runtime error
 
-## `spec3 status`
+## `specular status`
 
 Show whether the spec can be trusted right now.
 
@@ -170,10 +170,10 @@ Reports:
 Example:
 
 ```bash
-spec3 status .plans/foo.spec3.jsonc
+specular status .plans/foo.specular.jsonc
 ```
 
-## `spec3 normalize`
+## `specular normalize`
 
 Emit canonical strict JSON from JSONC or JSON.
 
@@ -182,7 +182,7 @@ This is useful for debugging lock diffs and for generated tooling.
 Example:
 
 ```bash
-spec3 normalize .plans/foo.spec3.jsonc
+specular normalize .plans/foo.specular.jsonc
 ```
 
 # Requirement Model
@@ -239,7 +239,7 @@ Example:
   "reason": "The CLI crate must keep stable entry modules.",
   "required": {
     "crates": {
-      "spec3": {
+      "specular": {
         "files": ["Cargo.toml"],
         "dirs": {
           "src": {
@@ -291,7 +291,7 @@ Verifier implementation:
 
 - Rust: parse `Cargo.toml`, possibly use cargo metadata
 - TypeScript: parse package metadata and imports
-- generic module graph: project-owned extractor can emit dependency facts for spec3 comparison
+- generic module graph: project-owned extractor can emit dependency facts for specular comparison
 
 ## `exports`
 
@@ -309,7 +309,7 @@ Verifier implementation:
 
 - Rust: use rustdoc JSON, `cargo public-api`, or a Rust AST extractor
 - TypeScript: use TypeScript compiler API or generated declaration files
-- spec3 should compare extracted facts, not parse every language itself in V1
+- specular should compare extracted facts, not parse every language itself in V1
 
 ## `closedSets`
 
@@ -408,7 +408,7 @@ Draft:
   "verifiers": [
     {
       "id": "tree",
-      "command": ["spec3", "builtin", "tree"],
+      "command": ["specular", "builtin", "tree"],
       "files": []
     },
     {
@@ -444,7 +444,7 @@ Do not rush language parsers into V1. Rust/TypeScript exports and dependency gra
 Human output should be compact:
 
 ```text
-spec: .plans/foo.spec3.jsonc
+spec: .plans/foo.specular.jsonc
 lock: matched
 requirements: 12
 verifiers: 4
@@ -454,7 +454,7 @@ status: passed
 JSON output should be available for agents and CI:
 
 ```bash
-spec3 verify .plans/foo.spec3.jsonc --json
+specular verify .plans/foo.specular.jsonc --json
 ```
 
 # Hashing Rules
@@ -464,7 +464,7 @@ Hash these:
 - prose plan bytes
 - canonical parsed spec JSON
 - verifier files listed in the spec
-- spec3 binary version in the lock
+- specular binary version in the lock
 
 Do not include JSONC comments in the canonical spec hash.
 
@@ -474,13 +474,13 @@ Open decision:
 
 # Relationship To Existing Tools
 
-`spec3` complements:
+`specular` complements:
 
 - `fixture3`: behavior and output drift
 - `g3rs` / `g3ts`: static architecture and style guardrails
 - project-owned scripts: language-specific extraction and conformance checks
 
-`spec3` should not replace:
+`specular` should not replace:
 
 - fixture/golden testing
 - static lint tools
@@ -509,32 +509,32 @@ Reason:
 If implemented in this repository:
 
 - `Cargo.toml`
-- `crates/spec3/Cargo.toml`
-- `crates/spec3/src/main.rs`
-- `crates/spec3/src/args.rs`
-- `crates/spec3/src/spec.rs`
-- `crates/spec3/src/jsonc.rs`
-- `crates/spec3/src/canonical.rs`
-- `crates/spec3/src/lock.rs`
-- `crates/spec3/src/hash.rs`
-- `crates/spec3/src/verify.rs`
-- `crates/spec3/src/builtin/tree.rs`
-- `crates/spec3/src/builtin/text.rs`
-- `crates/spec3/src/builtin/commands.rs`
-- `behavior/fixtures/spec3/`
+- `crates/specular/Cargo.toml`
+- `crates/specular/src/main.rs`
+- `crates/specular/src/args.rs`
+- `crates/specular/src/spec.rs`
+- `crates/specular/src/jsonc.rs`
+- `crates/specular/src/canonical.rs`
+- `crates/specular/src/lock.rs`
+- `crates/specular/src/hash.rs`
+- `crates/specular/src/verify.rs`
+- `crates/specular/src/builtin/tree.rs`
+- `crates/specular/src/builtin/text.rs`
+- `crates/specular/src/builtin/commands.rs`
+- `behavior/fixtures/specular/`
 - `fixture3.yaml`
 
 Open decision:
 
-- whether `spec3` belongs in this repository temporarily or should start as a separate `/Users/tartakovsky/Projects/websmasher/spec3` repository.
+- whether `specular` belongs in this repository temporarily or should start as a separate `/Users/tartakovsky/Projects/websmasher/specular` repository.
 
 # V1 Definition Of Done
 
-- `spec3 lint` validates JSON and JSONC source specs.
-- `spec3 normalize` emits canonical strict JSON.
-- `spec3 lock` writes a lock with plan, spec, verifier hashes.
-- `spec3 verify` refuses to run when plan/spec/verifier drift exists.
-- `spec3 verify` runs built-in tree/text/command checks.
+- `specular lint` validates JSON and JSONC source specs.
+- `specular normalize` emits canonical strict JSON.
+- `specular lock` writes a lock with plan, spec, verifier hashes.
+- `specular verify` refuses to run when plan/spec/verifier drift exists.
+- `specular verify` runs built-in tree/text/command checks.
 - The repo has at least one self fixture checked through `fixture3`.
 - No verifier script is allowed to silently define the spec shape. The spec owns the contract; verifiers implement checks.
 
